@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "707159312303",
+    "firebase_url": "https://peoplearoundme-fdbe6.firebaseio.com",
+    "project_id": "peoplearoundme-fdbe6",
+    "storage_bucket": "peoplearoundme-fdbe6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707159312303:android:a95e347e1854d66dbd915a",
+        "android_client_info": {
+          "package_name": "com.gharibyan.razmik.peoplearoundmemap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707159312303-m6kti7u3f97gkrkqvmhuihji4j95pfo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmTLSvO_fJ0MTCajRTRRr6LNXVY8ZtfBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707159312303-m6kti7u3f97gkrkqvmhuihji4j95pfo4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
