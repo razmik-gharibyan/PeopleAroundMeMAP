@@ -45,7 +45,7 @@ class ConnectionFragment: Fragment() {
         navController = Navigation.findNavController(activity!!,R.id.nav_host_fragment_connection)
 
         // ViewModel
-        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!)
+        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
         connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
             ConnectionViewModel::class.java)
         connectionViewModel.checkNetworkStatus()

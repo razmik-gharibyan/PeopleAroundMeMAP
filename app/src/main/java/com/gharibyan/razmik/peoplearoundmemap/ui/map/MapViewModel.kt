@@ -2,10 +2,7 @@ package com.gharibyan.razmik.peoplearoundmemap.ui.map
 
 import android.content.Context
 import android.location.Location
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.firestore.FirestoreApi
@@ -15,17 +12,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MapViewModel(val context: Context) : ViewModel() {
+class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : ViewModel() {
 
     // LiveData
     private var _locationLD = MutableLiveData<Location>()
     private var _allUsersLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _currentUserLD = MutableLiveData<FirestoreUserDAO>()
     private var _currentUserDocumentLD = MutableLiveData<String>()
+    private var _newUserDocumentLD = MutableLiveData<String>()
     var locationUpdates: LiveData<Location> = _locationLD
     var allUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _allUsersLD
     var currentUser: LiveData<FirestoreUserDAO> = _currentUserLD
     var currentUserDocument: LiveData<String> = _currentUserDocumentLD
+    var newUserDocumentId: LiveData<String> = _newUserDocumentLD
 
     // Initialization
     private val locationApi = LocationApi(context)
@@ -56,16 +55,13 @@ class MapViewModel(val context: Context) : ViewModel() {
         }
     }
 
-    fun addOrUpdateUser(firestoreDAO: FirestoreUserDAO) {
+    fun addNewUser(firestoreDAO: FirestoreUserDAO) {
         // Check if user is already added in firestore
         // If not added , add new user, otherwise update existing user
-        CoroutineScope(Dispatchers.IO).launch {
-            val currentDocumentId = firestoreApi.findUserDocument(firestoreDAO.userName!!)
-            if(currentDocumentId == null) {
-                firestoreApi.addNewUser(firestoreDAO)
-            }else{
-                updateUser(firestoreDAO,currentDocumentId)
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            firestoreApi.addNewUser(firestoreDAO).observe(lifecycleOwner, Observer {
+                _newUserDocumentLD.value = it
+            })
         }
     }
 
@@ -89,7 +85,9 @@ class MapViewModel(val context: Context) : ViewModel() {
 
     fun findUserDocument(userName: String) {
         CoroutineScope(Dispatchers.Main).launch {
-            _currentUserDocumentLD.value = firestoreApi.findUserDocument(userName)
+            firestoreApi.findUserDocument(userName).observe(lifecycleOwner, Observer {
+                _currentUserDocumentLD.value = it
+            })
         }
     }
 

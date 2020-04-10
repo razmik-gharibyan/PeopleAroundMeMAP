@@ -18,12 +18,19 @@
         <TextView
             android:id="@+id/header_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"/>
 
         <Button
             android:id="@+id/visibility_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:background="#B363E7"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
