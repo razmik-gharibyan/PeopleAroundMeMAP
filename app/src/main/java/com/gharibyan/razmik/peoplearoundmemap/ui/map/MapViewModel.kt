@@ -3,10 +3,12 @@ package com.gharibyan.razmik.peoplearoundmemap.ui.map
 import android.content.Context
 import android.location.Location
 import androidx.lifecycle.*
+import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.BoundProcessor
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.firestore.FirestoreApi
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.location.LocationApi
+import com.google.android.gms.maps.GoogleMap
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,11 +19,13 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     // LiveData
     private var _locationLD = MutableLiveData<Location>()
     private var _allUsersLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
+    private var _inBoundUsersLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _currentUserLD = MutableLiveData<FirestoreUserDAO>()
     private var _currentUserDocumentLD = MutableLiveData<String>()
     private var _newUserDocumentLD = MutableLiveData<String>()
     var locationUpdates: LiveData<Location> = _locationLD
     var allUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _allUsersLD
+    var inBoundUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _inBoundUsersLD
     var currentUser: LiveData<FirestoreUserDAO> = _currentUserLD
     var currentUserDocument: LiveData<String> = _currentUserDocumentLD
     var newUserDocumentId: LiveData<String> = _newUserDocumentLD
@@ -36,6 +40,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
         }
     }
 
+    // Models
     private var instagramUserDAO = Singletons.instagramUserDAO
     private var firestoreUserDAO = Singletons.firestoreUserDAO
 
@@ -71,9 +76,9 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
         }
     }
 
-    fun findAllUsers() {
+    fun findAllUsersInBounds(map: GoogleMap) {
         CoroutineScope(Dispatchers.Main).launch {
-            _allUsersLD.value = firestoreApi.findAllUsers()
+            _inBoundUsersLD.value = firestoreApi.findAllUsersInBounds(map)
         }
     }
 

@@ -6,13 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.get
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.gharibyan.razmik.peoplearoundmemap.R
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.SupportMapFragment
+import kotlinx.android.synthetic.main.fragment_map.view.*
 
 class MapFragment : Fragment() {
 
@@ -24,13 +35,18 @@ class MapFragment : Fragment() {
     private lateinit var customViewModelFactory: CustomViewModelFactory
 
     // Views
+    private lateinit var headerLayout: LinearLayout
     private lateinit var headerTextView: TextView
     private lateinit var visibilityButton: Button
+    private lateinit var mapView: MapView
 
     // Vars global
     private var firestoreUserDAO = Singletons.firestoreUserDAO
     private var userVisibility: Boolean = false
     private var userDocumentId: String? = null
+    private var map: GoogleMap? = null
+
+    private lateinit var usersInBoundList: ArrayList<FirestoreUserDAO>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
@@ -39,10 +55,21 @@ class MapFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
         // Views
+        headerLayout = view.findViewById(R.id.header_layout)
         headerTextView = view.findViewById(R.id.header_text)
         visibilityButton = view.findViewById(R.id.visibility_button)
+        mapView = view.findViewById(R.id.map)
+        mapView.onCreate(savedInstanceState)
+        try {
+            MapsInitializer.initialize(activity)
+        }catch (e: GooglePlayServicesNotAvailableException) {
+            e.printStackTrace()
+        }
 
+        // Initialize model classes with values
         mapViewModel.initModels()
+        // Initialize map
+        initMap()
         firestoreUserDAO.isVisible = userVisibility
         mainOperations()
 
@@ -58,11 +85,18 @@ class MapFragment : Fragment() {
         // Start location updates
         mapViewModel.startLocationUpdates()
         listenToLocationUpdates()
+        // Users list operations
+        mapViewModel.findAllUsersInBounds(map!!)
+        listenToUsersInBounds()
         //Buttons
         listenVisibleButtonChanges()
-
     }
 
+    private fun initMap() {
+        mapView.getMapAsync {
+            if(map == null) map = it
+        }
+    }
 
     private fun listenToLocationUpdates() {
         mapViewModel.locationUpdates.observe(viewLifecycleOwner, Observer {
@@ -97,6 +131,12 @@ class MapFragment : Fragment() {
         })
     }
 
+    private fun listenToUsersInBounds() {
+        mapViewModel.inBoundUsersList.observe(viewLifecycleOwner, Observer {
+            usersInBoundList = it
+        })
+    }
+
     private fun visibilityChanger(visible: Boolean) {
         if(visible) {
             headerTextView.text = "You are now in visible mode, other people can see you on map"
@@ -109,6 +149,8 @@ class MapFragment : Fragment() {
             userVisibility = false
             firestoreUserDAO.isVisible = false
         }
+
+        if(!headerLayout.isVisible) headerLayout.visibility = View.VISIBLE
     }
 
     private fun listenVisibleButtonChanges() {
@@ -119,5 +161,20 @@ class MapFragment : Fragment() {
                 visibilityChanger(true)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 }

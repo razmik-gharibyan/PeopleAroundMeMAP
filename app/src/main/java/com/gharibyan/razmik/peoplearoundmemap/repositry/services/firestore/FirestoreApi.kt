@@ -3,8 +3,10 @@ package com.gharibyan.razmik.peoplearoundmemap.repositry.services.firestore
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.BoundProcessor
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
+import com.google.android.gms.maps.GoogleMap
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -17,6 +19,9 @@ class FirestoreApi: FirestoreInter {
 
     // Initialization
     private val db = Firebase.firestore
+    private val boundProcessor = BoundProcessor()
+
+    // Models
     private var firestoreUserDAO = Singletons.firestoreUserDAO
 
     // LiveData
@@ -27,6 +32,7 @@ class FirestoreApi: FirestoreInter {
 
     // Variables
     private lateinit var documentList: ArrayList<FirestoreUserDAO>
+    private lateinit var usersInBoundsList: ArrayList<FirestoreUserDAO>
 
     override suspend fun addNewUser(firestoreDAO: FirestoreUserDAO): LiveData<String> {
         db.collection(collectionName)
@@ -78,6 +84,21 @@ class FirestoreApi: FirestoreInter {
         }
         // Return null if userName not found in collection
         return null
+    }
+
+    override suspend fun findAllUsersInBounds(map: GoogleMap): ArrayList<FirestoreUserDAO> {
+        db.collection(collectionName)
+            .get()
+            .addOnSuccessListener {
+                for(document in it) {
+                    val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
+                    if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) usersInBoundsList.add(firestoreUserDAO)
+                }
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "Error reading documents", it)
+            }
+        return usersInBoundsList
     }
 
     override suspend fun findUserDocument(userName: String): LiveData<String> {
