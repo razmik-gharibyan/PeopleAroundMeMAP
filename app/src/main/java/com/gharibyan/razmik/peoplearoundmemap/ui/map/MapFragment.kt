@@ -85,9 +85,6 @@ class MapFragment : Fragment() {
         // Start location updates
         mapViewModel.startLocationUpdates()
         listenToLocationUpdates()
-        // Users list operations
-        mapViewModel.findAllUsersInBounds(map!!)
-        listenToUsersInBounds()
         //Buttons
         listenVisibleButtonChanges()
     }
@@ -95,6 +92,9 @@ class MapFragment : Fragment() {
     private fun initMap() {
         mapView.getMapAsync {
             if(map == null) map = it
+            // Users list operations
+            mapViewModel.findAllUsersInBounds(map!!)
+            listenToUsersInBounds()
         }
     }
 
@@ -131,9 +131,11 @@ class MapFragment : Fragment() {
         })
     }
 
+    // This function should return users that are in bounds every 3 seconds
     private fun listenToUsersInBounds() {
         mapViewModel.inBoundUsersList.observe(viewLifecycleOwner, Observer {
             usersInBoundList = it
+            Log.d(TAG, "Showing + ${it.size} new users in map")
         })
     }
 

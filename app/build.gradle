@@ -58,6 +58,7 @@ dependencies {
     // -- Plat Services
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:1.0.2'
     // -- Multidex
     implementation 'com.android.support:multidex:1.0.3'
     // -- Firebase

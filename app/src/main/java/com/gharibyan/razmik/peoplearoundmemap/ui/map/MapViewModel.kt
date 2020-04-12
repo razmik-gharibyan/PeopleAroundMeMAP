@@ -78,7 +78,10 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     fun findAllUsersInBounds(map: GoogleMap) {
         CoroutineScope(Dispatchers.Main).launch {
-            _inBoundUsersLD.value = firestoreApi.findAllUsersInBounds(map)
+            firestoreApi.findAllUsersInBounds(map)
+            firestoreApi.usersInBoundsList.observe(lifecycleOwner, Observer {
+                _inBoundUsersLD.value = it
+            })
         }
     }
 

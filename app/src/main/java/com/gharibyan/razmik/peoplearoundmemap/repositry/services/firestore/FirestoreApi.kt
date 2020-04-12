@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.repositry.services.firestore
 
+import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,10 +17,12 @@ class FirestoreApi: FirestoreInter {
     // Constants
     private val TAG: String = javaClass.name
     private val collectionName: String = "users"
+    private val MARKER_UPDATE_INTERVAL: Long = 2000
 
     // Initialization
     private val db = Firebase.firestore
     private val boundProcessor = BoundProcessor()
+    private val handler = Handler()
 
     // Models
     private var firestoreUserDAO = Singletons.firestoreUserDAO
@@ -27,12 +30,14 @@ class FirestoreApi: FirestoreInter {
     // LiveData
     private var _currentDocumentIDLD = MutableLiveData<String>()
     private var _newDocumentIDLD = MutableLiveData<String>()
+    private var _usersInBoundsLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     var currentDocumentId: LiveData<String> = _currentDocumentIDLD
     var newDocumentId: LiveData<String> = _newDocumentIDLD
+    var usersInBoundsList: LiveData<ArrayList<FirestoreUserDAO>> = _usersInBoundsLD
 
     // Variables
     private lateinit var documentList: ArrayList<FirestoreUserDAO>
-    private lateinit var usersInBoundsList: ArrayList<FirestoreUserDAO>
+    private var usersInBoundsArrayList: ArrayList<FirestoreUserDAO> = ArrayList()
 
     override suspend fun addNewUser(firestoreDAO: FirestoreUserDAO): LiveData<String> {
         db.collection(collectionName)
@@ -51,7 +56,7 @@ class FirestoreApi: FirestoreInter {
         db.collection(collectionName).document(documentName)
             .set(firestoreDAO)
             .addOnSuccessListener {
-                Log.d(TAG, "Document with id: $it successfully updated")
+                Log.d(TAG, "Document with id: $documentName successfully updated")
             }
             .addOnFailureListener {
                 Log.d(TAG, "Error updating document", it)
@@ -86,19 +91,25 @@ class FirestoreApi: FirestoreInter {
         return null
     }
 
-    override suspend fun findAllUsersInBounds(map: GoogleMap): ArrayList<FirestoreUserDAO> {
-        db.collection(collectionName)
-            .get()
-            .addOnSuccessListener {
-                for(document in it) {
-                    val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
-                    if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) usersInBoundsList.add(firestoreUserDAO)
-                }
+    override suspend fun findAllUsersInBounds(map: GoogleMap) {
+        val runnable = object: Runnable {
+            override fun run() {
+                db.collection(collectionName)
+                    .get()
+                    .addOnSuccessListener {
+                        for(document in it) {
+                            val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
+                            if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) usersInBoundsArrayList.add(firestoreUserDAO)
+                        }
+                        _usersInBoundsLD.value = usersInBoundsArrayList
+                    }
+                    .addOnFailureListener {
+                        Log.d(TAG, "Error reading documents", it)
+                    }
+                handler.postDelayed(this,MARKER_UPDATE_INTERVAL)
             }
-            .addOnFailureListener {
-                Log.d(TAG, "Error reading documents", it)
-            }
-        return usersInBoundsList
+        }
+        handler.post(runnable)
     }
 
     override suspend fun findUserDocument(userName: String): LiveData<String> {

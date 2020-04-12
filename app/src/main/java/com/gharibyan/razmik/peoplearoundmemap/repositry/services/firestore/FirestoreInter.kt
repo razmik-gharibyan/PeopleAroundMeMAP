@@ -16,6 +16,6 @@ interface FirestoreInter {
 
     suspend fun findAllUsers(): ArrayList<FirestoreUserDAO>
 
-    suspend fun findAllUsersInBounds(map: GoogleMap): ArrayList<FirestoreUserDAO>
+    suspend fun findAllUsersInBounds(map: GoogleMap)
 
 }
