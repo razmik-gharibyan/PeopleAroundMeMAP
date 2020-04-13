@@ -2,7 +2,7 @@ package com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore
 
 import com.google.firebase.firestore.GeoPoint
 
-class FirestoreUserDAO{
+class CurrentFirestoreUserDAO {
     var token: String? = null
     var userName: String? = null
     var followers: Long? = null

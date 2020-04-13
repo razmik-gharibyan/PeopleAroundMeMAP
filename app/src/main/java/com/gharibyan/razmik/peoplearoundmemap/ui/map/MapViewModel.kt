@@ -4,10 +4,13 @@ import android.content.Context
 import android.location.Location
 import androidx.lifecycle.*
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.BoundProcessor
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.CurrentFirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.firestore.FirestoreApi
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.location.LocationApi
+import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.MarkerApi
 import com.google.android.gms.maps.GoogleMap
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.CoroutineScope
@@ -23,16 +26,19 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     private var _currentUserLD = MutableLiveData<FirestoreUserDAO>()
     private var _currentUserDocumentLD = MutableLiveData<String>()
     private var _newUserDocumentLD = MutableLiveData<String>()
+    private var _markersLD = MutableLiveData<ArrayList<MarkerDAO>>()
     var locationUpdates: LiveData<Location> = _locationLD
     var allUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _allUsersLD
     var inBoundUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _inBoundUsersLD
     var currentUser: LiveData<FirestoreUserDAO> = _currentUserLD
     var currentUserDocument: LiveData<String> = _currentUserDocumentLD
     var newUserDocumentId: LiveData<String> = _newUserDocumentLD
+    var markersList: LiveData<ArrayList<MarkerDAO>> = _markersLD
 
     // Initialization
     private val locationApi = LocationApi(context)
     private val firestoreApi = FirestoreApi()
+    private val markerApi = MarkerApi()
     private val observer = object: Observer<Location>{
         override fun onChanged(location: Location?) {
             firestoreUserDAO.location = GeoPoint(location!!.latitude,location.longitude)
@@ -43,14 +49,15 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     // Models
     private var instagramUserDAO = Singletons.instagramUserDAO
     private var firestoreUserDAO = Singletons.firestoreUserDAO
+    private var currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
 
     fun initModels() {
-        firestoreUserDAO.userName = instagramUserDAO.userName
-        firestoreUserDAO.picture = instagramUserDAO.picture
-        firestoreUserDAO.followers = instagramUserDAO.followers
-        firestoreUserDAO.token = instagramUserDAO.token
-        firestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
-        firestoreUserDAO.isVerified = instagramUserDAO.isVerified
+        currentFirestoreUserDAO.userName = instagramUserDAO.userName
+        currentFirestoreUserDAO.picture = instagramUserDAO.picture
+        currentFirestoreUserDAO.followers = instagramUserDAO.followers
+        currentFirestoreUserDAO.token = instagramUserDAO.token
+        currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
+        currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
     }
 
     fun startLocationUpdates() {
@@ -60,19 +67,19 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
         }
     }
 
-    fun addNewUser(firestoreDAO: FirestoreUserDAO) {
+    fun addNewUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO) {
         // Check if user is already added in firestore
         // If not added , add new user, otherwise update existing user
         CoroutineScope(Dispatchers.Main).launch {
-            firestoreApi.addNewUser(firestoreDAO).observe(lifecycleOwner, Observer {
+            firestoreApi.addNewUser(currentFirestoreUserDAO).observe(lifecycleOwner, Observer {
                 _newUserDocumentLD.value = it
             })
         }
     }
 
-    fun updateUser(firestoreDAO: FirestoreUserDAO, documentName: String) {
+    fun updateUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO) {
         CoroutineScope(Dispatchers.IO).launch {
-            firestoreApi.updateUser(firestoreDAO, documentName)
+            firestoreApi.updateUser(currentFirestoreUserDAO)
         }
     }
 
@@ -97,6 +104,23 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                 _currentUserDocumentLD.value = it
             })
         }
+    }
+
+    fun markerOperations() {
+        inBoundUsersList.observe(lifecycleOwner, Observer {
+            if(it.isNotEmpty()) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val markerList: ArrayList<MarkerDAO> = ArrayList()
+                    for (firestoreUserDAO in it) {
+                        if(firestoreUserDAO.isVisible!!) {
+                            val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
+                            markerList.add(markerApi.addMarker(firestoreUserDAO,moveCamera)!!)
+                        }
+                    }
+                    _markersLD.value = markerList
+                }
+            }
+        })
     }
 
     override fun onCleared() {

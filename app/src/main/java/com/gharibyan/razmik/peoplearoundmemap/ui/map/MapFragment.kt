@@ -16,13 +16,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerWithDocumentId
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.fragment_map.view.*
 
 class MapFragment : Fragment() {
@@ -42,9 +42,11 @@ class MapFragment : Fragment() {
 
     // Vars global
     private var firestoreUserDAO = Singletons.firestoreUserDAO
+    private var currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
     private var userVisibility: Boolean = false
     private var userDocumentId: String? = null
     private var map: GoogleMap? = null
+    private var markerList = ArrayList<MarkerWithDocumentId>()
 
     private lateinit var usersInBoundList: ArrayList<FirestoreUserDAO>
 
@@ -70,7 +72,7 @@ class MapFragment : Fragment() {
         mapViewModel.initModels()
         // Initialize map
         initMap()
-        firestoreUserDAO.isVisible = userVisibility
+        currentFirestoreUserDAO.isVisible = userVisibility
         mainOperations()
 
 
@@ -79,7 +81,7 @@ class MapFragment : Fragment() {
 
     private fun mainOperations() {
         // Check user is existing in firestore or not
-        mapViewModel.findUserDocument(firestoreUserDAO.userName!!)
+        mapViewModel.findUserDocument(currentFirestoreUserDAO.userName!!)
         listenIfUserIsAdded()
         listenToNewAddedUser()
         // Start location updates
@@ -94,14 +96,16 @@ class MapFragment : Fragment() {
             if(map == null) map = it
             // Users list operations
             mapViewModel.findAllUsersInBounds(map!!)
-            listenToUsersInBounds()
+            //listenToUsersInBounds()
+            mapViewModel.markerOperations()
+            listenToMarkersChanges()
         }
     }
 
     private fun listenToLocationUpdates() {
         mapViewModel.locationUpdates.observe(viewLifecycleOwner, Observer {
             if(it != null && userDocumentId != null) {
-                mapViewModel.updateUser(firestoreUserDAO,userDocumentId!!)
+                mapViewModel.updateUser(currentFirestoreUserDAO)
             }
         })
     }
@@ -109,17 +113,18 @@ class MapFragment : Fragment() {
     private fun listenIfUserIsAdded() {
         mapViewModel.currentUserDocument.observe(viewLifecycleOwner, Observer {
             userDocumentId = it
-            if(it == null || !firestoreUserDAO.isVisible!!) {
+            firestoreUserDAO.documentId = it
+            if(it == null || !currentFirestoreUserDAO.isVisible!!) {
                 // Enter this case if users isVisible is on false, or user is logged first time , then by default visibility is false
                 if(it == null) {
-                    mapViewModel.addNewUser(firestoreUserDAO)
+                    mapViewModel.addNewUser(currentFirestoreUserDAO)
                 }else{
-                    mapViewModel.updateUser(firestoreUserDAO,it)
+                    mapViewModel.updateUser(currentFirestoreUserDAO)
                 }
                 visibilityChanger(false)
             }else{
                 // Enter this case if user is visible
-                mapViewModel.updateUser(firestoreUserDAO,it)
+                mapViewModel.updateUser(currentFirestoreUserDAO)
                 visibilityChanger(true)
             }
         })
@@ -144,12 +149,12 @@ class MapFragment : Fragment() {
             headerTextView.text = "You are now in visible mode, other people can see you on map"
             visibilityButton.text = "CHANGE TO INVISIBLE"
             userVisibility = true
-            firestoreUserDAO.isVisible = true
+            currentFirestoreUserDAO.isVisible = true
         }else{
             headerTextView.text = "You are now in invisible mode, other people can't see you on map."
             visibilityButton.text = "CHANGE TO VISIBLE"
             userVisibility = false
-            firestoreUserDAO.isVisible = false
+            currentFirestoreUserDAO.isVisible = false
         }
 
         if(!headerLayout.isVisible) headerLayout.visibility = View.VISIBLE
@@ -162,6 +167,76 @@ class MapFragment : Fragment() {
             }else{
                 visibilityChanger(true)
             }
+        }
+    }
+
+    private fun listenToMarkersChanges() {
+        mapViewModel.markersList.observe(viewLifecycleOwner, Observer {
+            for(markerDAO in it) {
+                if(markerList.isNotEmpty()) {
+                    markerList.forEachIndexed { index, currentMarker ->
+                        if(markerDAO.documentId.equals(currentMarker.documentId)) {
+                            if(!currentMarker.markerOptions!!.equals(markerDAO.markerOptions)) {
+                                // If marker is still in bounds but changed it's location or personal info (update marker)
+                                currentMarker.marker!!.remove()
+                                markerList.remove(currentMarker)
+                                addMarkerToMap(markerDAO)
+                                return@forEachIndexed // Break for each loop if found equal marker with same document id
+                            }
+                        }else{
+                            if(index == markerList.size - 1) {
+                                // If loop is finished and there were no marker on map with this document id, then add marker
+                                addMarkerToMap(markerDAO)
+                            }
+                        }
+                    }
+                }else{
+                    // Add marker if there is no marker on map
+                    addMarkerToMap(markerDAO)
+                }
+            }
+            if(markerList.isNotEmpty()) {
+                val markerListCopy = markerList // Use copy of markerList to remove white iterating
+                for(currentMarker in markerList) {
+                    if(it.isEmpty()) {
+                        // If there are no markers in bounds received from inBoundUsers LiveData
+                        // but there are active markers on map, then remove all active markers from map
+                        currentMarker.marker!!.remove()
+                        markerListCopy.remove(currentMarker)
+                    }else{
+                        it.forEachIndexed { index, markerDAO ->
+                            if(currentMarker.documentId.equals(markerDAO.documentId)) {
+                               return@forEachIndexed
+                            }else{
+                                if(index == it.size - 1) {
+                                    // If the marker that is active on map is out of bounds or become
+                                    // invisible , then remove that marker from map
+                                    currentMarker.marker!!.remove()
+                                    markerListCopy.remove(currentMarker)
+                                }
+                            }
+                        }
+                    }
+                }
+                markerList = markerListCopy // Rewrite new data into original markerList
+            }
+        })
+    }
+
+    private fun addMarkerToMap(markerDAO: MarkerDAO) {
+        val marker = map!!.addMarker(markerDAO.markerOptions)
+        val markerWithDocumentId = MarkerWithDocumentId()
+        markerWithDocumentId.documentId = markerDAO.documentId
+        markerWithDocumentId.marker = marker
+        markerWithDocumentId.markerOptions = markerDAO.markerOptions
+        markerList.add(markerWithDocumentId)
+        if (markerDAO.moveCamera!!) {
+            map!!.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    markerDAO.latLng,
+                    19F
+                )
+            )
         }
     }
 

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.BoundProcessor
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.CurrentFirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.google.android.gms.maps.GoogleMap
@@ -39,9 +40,9 @@ class FirestoreApi: FirestoreInter {
     private lateinit var documentList: ArrayList<FirestoreUserDAO>
     private var usersInBoundsArrayList: ArrayList<FirestoreUserDAO> = ArrayList()
 
-    override suspend fun addNewUser(firestoreDAO: FirestoreUserDAO): LiveData<String> {
+    override suspend fun addNewUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO): LiveData<String> {
         db.collection(collectionName)
-            .add(firestoreDAO)
+            .add(currentFirestoreUserDAO)
             .addOnSuccessListener {
                 _newDocumentIDLD.value = it.id
                 Log.d(TAG,"Document with id: $it successfully created")
@@ -52,11 +53,11 @@ class FirestoreApi: FirestoreInter {
         return currentDocumentId
     }
 
-    override suspend fun updateUser(firestoreDAO: FirestoreUserDAO, documentName: String) {
-        db.collection(collectionName).document(documentName)
-            .set(firestoreDAO)
+    override suspend fun updateUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO) {
+        db.collection(collectionName).document(currentFirestoreUserDAO.documentId!!)
+            .set(currentFirestoreUserDAO)
             .addOnSuccessListener {
-                Log.d(TAG, "Document with id: $documentName successfully updated")
+                Log.d(TAG, "Document with id: ${currentFirestoreUserDAO.documentId} successfully updated")
             }
             .addOnFailureListener {
                 Log.d(TAG, "Error updating document", it)
@@ -68,7 +69,9 @@ class FirestoreApi: FirestoreInter {
             .get()
             .addOnSuccessListener {
                 for(document in it) {
-                    documentList.add(document.toObject())
+                    val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
+                    firestoreUserDAO.documentId = document.id
+                    documentList.add(firestoreUserDAO)
                 }
             }
             .addOnFailureListener {
@@ -99,6 +102,7 @@ class FirestoreApi: FirestoreInter {
                     .addOnSuccessListener {
                         for(document in it) {
                             val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
+                            firestoreUserDAO.documentId = document.id
                             if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) usersInBoundsArrayList.add(firestoreUserDAO)
                         }
                         _usersInBoundsLD.value = usersInBoundsArrayList

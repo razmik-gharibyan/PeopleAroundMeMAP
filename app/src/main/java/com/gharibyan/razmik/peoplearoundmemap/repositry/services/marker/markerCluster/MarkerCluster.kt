@@ -1,4 +1,4 @@
-package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker
+package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster
 
 import android.content.Context
 import com.google.android.gms.maps.GoogleMap
