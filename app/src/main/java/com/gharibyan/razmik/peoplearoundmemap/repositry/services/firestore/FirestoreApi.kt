@@ -38,7 +38,6 @@ class FirestoreApi: FirestoreInter {
 
     // Variables
     private lateinit var documentList: ArrayList<FirestoreUserDAO>
-    private var usersInBoundsArrayList: ArrayList<FirestoreUserDAO> = ArrayList()
 
     override suspend fun addNewUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO): LiveData<String> {
         db.collection(collectionName)
@@ -50,7 +49,7 @@ class FirestoreApi: FirestoreInter {
             .addOnFailureListener {
                 Log.d(TAG, "Error adding document", it)
             }
-        return currentDocumentId
+        return newDocumentId
     }
 
     override suspend fun updateUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO) {
@@ -100,10 +99,13 @@ class FirestoreApi: FirestoreInter {
                 db.collection(collectionName)
                     .get()
                     .addOnSuccessListener {
+                        val usersInBoundsArrayList: ArrayList<FirestoreUserDAO> = ArrayList()
                         for(document in it) {
                             val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
                             firestoreUserDAO.documentId = document.id
-                            if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) usersInBoundsArrayList.add(firestoreUserDAO)
+                            if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) {
+                                usersInBoundsArrayList.add(firestoreUserDAO)
+                            }
                         }
                         _usersInBoundsLD.value = usersInBoundsArrayList
                     }

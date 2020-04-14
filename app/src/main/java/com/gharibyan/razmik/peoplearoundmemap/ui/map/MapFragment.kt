@@ -23,6 +23,7 @@ import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Marker
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.fragment_map.view.*
 
 class MapFragment : Fragment() {
@@ -104,8 +105,11 @@ class MapFragment : Fragment() {
 
     private fun listenToLocationUpdates() {
         mapViewModel.locationUpdates.observe(viewLifecycleOwner, Observer {
-            if(it != null && userDocumentId != null) {
-                mapViewModel.updateUser(currentFirestoreUserDAO)
+            if(it != null) {
+                currentFirestoreUserDAO.location = GeoPoint(it.latitude,it.longitude)
+                if(userDocumentId != null) {
+                    mapViewModel.updateUser(currentFirestoreUserDAO)
+                }
             }
         })
     }
@@ -113,7 +117,7 @@ class MapFragment : Fragment() {
     private fun listenIfUserIsAdded() {
         mapViewModel.currentUserDocument.observe(viewLifecycleOwner, Observer {
             userDocumentId = it
-            firestoreUserDAO.documentId = it
+            currentFirestoreUserDAO.documentId = it
             if(it == null || !currentFirestoreUserDAO.isVisible!!) {
                 // Enter this case if users isVisible is on false, or user is logged first time , then by default visibility is false
                 if(it == null) {
@@ -133,6 +137,8 @@ class MapFragment : Fragment() {
     private fun listenToNewAddedUser() {
         mapViewModel.newUserDocumentId.observe(viewLifecycleOwner, Observer {
             userDocumentId = it
+            currentFirestoreUserDAO.documentId = it
+            mapViewModel.updateUser(currentFirestoreUserDAO)
         })
     }
 
@@ -172,6 +178,7 @@ class MapFragment : Fragment() {
 
     private fun listenToMarkersChanges() {
         mapViewModel.markersList.observe(viewLifecycleOwner, Observer {
+            val markerListCopy = markerList // Use copy of markerList to remove white iterating
             for(markerDAO in it) {
                 if(markerList.isNotEmpty()) {
                     markerList.forEachIndexed { index, currentMarker ->
@@ -179,7 +186,7 @@ class MapFragment : Fragment() {
                             if(!currentMarker.markerOptions!!.equals(markerDAO.markerOptions)) {
                                 // If marker is still in bounds but changed it's location or personal info (update marker)
                                 currentMarker.marker!!.remove()
-                                markerList.remove(currentMarker)
+                                markerListCopy.remove(currentMarker)
                                 addMarkerToMap(markerDAO)
                                 return@forEachIndexed // Break for each loop if found equal marker with same document id
                             }
@@ -195,8 +202,8 @@ class MapFragment : Fragment() {
                     addMarkerToMap(markerDAO)
                 }
             }
+            markerList = markerListCopy // Rewrite new data into original markerList
             if(markerList.isNotEmpty()) {
-                val markerListCopy = markerList // Use copy of markerList to remove white iterating
                 for(currentMarker in markerList) {
                     if(it.isEmpty()) {
                         // If there are no markers in bounds received from inBoundUsers LiveData
