@@ -178,7 +178,10 @@ class MapFragment : Fragment() {
 
     private fun listenToMarkersChanges() {
         mapViewModel.markersList.observe(viewLifecycleOwner, Observer {
-            val markerListCopy = markerList // Use copy of markerList to remove white iterating
+            val markerListCopy = ArrayList<MarkerWithDocumentId>()
+            if(markerList.isNotEmpty()) {
+                markerListCopy.addAll(markerList)
+            }
             for(markerDAO in it) {
                 if(markerList.isNotEmpty()) {
                     markerList.forEachIndexed { index, currentMarker ->
@@ -187,22 +190,23 @@ class MapFragment : Fragment() {
                                 // If marker is still in bounds but changed it's location or personal info (update marker)
                                 markerListCopy.get(index).marker!!.remove()
                                 markerListCopy.removeAt(index)
-                                addMarkerToMap(markerDAO)
+                                addMarkerToMap(markerDAO,markerListCopy)
                                 return@forEachIndexed // Break for each loop if found equal marker with same document id
                             }
                         }else{
                             if(index == markerList.size - 1) {
                                 // If loop is finished and there were no marker on map with this document id, then add marker
-                                addMarkerToMap(markerDAO)
+                                addMarkerToMap(markerDAO,markerListCopy)
                             }
                         }
                     }
                 }else{
                     // Add marker if there is no marker on map
-                    addMarkerToMap(markerDAO)
+                    addMarkerToMap(markerDAO,markerListCopy)
                 }
             }
-            markerList = markerListCopy // Rewrite new data into original markerList
+            markerList.clear()
+            markerList.addAll(markerListCopy) // Rewrite new data into original markerList
             if(markerList.isNotEmpty()) {
                 markerList.forEachIndexed { index, markerWithDocumentId ->
                     if(it.isEmpty()) {
@@ -225,18 +229,19 @@ class MapFragment : Fragment() {
                         }
                     }
                 }
-                markerList = markerListCopy // Rewrite new data into original markerList
+                markerList.clear()
+                markerList.addAll(markerListCopy) // Rewrite new data into original markerList
             }
         })
     }
 
-    private fun addMarkerToMap(markerDAO: MarkerDAO) {
+    private fun addMarkerToMap(markerDAO: MarkerDAO, markerListCopy: ArrayList<MarkerWithDocumentId>) {
         val marker = map!!.addMarker(markerDAO.markerOptions)
         val markerWithDocumentId = MarkerWithDocumentId()
         markerWithDocumentId.documentId = markerDAO.documentId
         markerWithDocumentId.marker = marker
         markerWithDocumentId.markerOptions = markerDAO.markerOptions
-        markerList.add(markerWithDocumentId)
+        markerListCopy.add(markerWithDocumentId)
         if (markerDAO.moveCamera!!) {
             map!!.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
