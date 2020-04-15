@@ -185,8 +185,8 @@ class MapFragment : Fragment() {
                         if(markerDAO.documentId.equals(currentMarker.documentId)) {
                             if(!currentMarker.markerOptions!!.equals(markerDAO.markerOptions)) {
                                 // If marker is still in bounds but changed it's location or personal info (update marker)
-                                currentMarker.marker!!.remove()
-                                markerListCopy.remove(currentMarker)
+                                markerListCopy.get(index).marker!!.remove()
+                                markerListCopy.removeAt(index)
                                 addMarkerToMap(markerDAO)
                                 return@forEachIndexed // Break for each loop if found equal marker with same document id
                             }
@@ -204,22 +204,22 @@ class MapFragment : Fragment() {
             }
             markerList = markerListCopy // Rewrite new data into original markerList
             if(markerList.isNotEmpty()) {
-                for(currentMarker in markerList) {
+                markerList.forEachIndexed { index, markerWithDocumentId ->
                     if(it.isEmpty()) {
                         // If there are no markers in bounds received from inBoundUsers LiveData
                         // but there are active markers on map, then remove all active markers from map
-                        currentMarker.marker!!.remove()
-                        markerListCopy.remove(currentMarker)
+                        markerListCopy.get(index).marker!!.remove()
+                        markerListCopy.removeAt(index)
                     }else{
-                        it.forEachIndexed { index, markerDAO ->
-                            if(currentMarker.documentId.equals(markerDAO.documentId)) {
-                               return@forEachIndexed
+                        it.forEachIndexed lit@{ smallIndex, markerDAO ->
+                            if(markerWithDocumentId.documentId.equals(markerDAO.documentId)) {
+                                return@lit
                             }else{
-                                if(index == it.size - 1) {
+                                if(smallIndex == it.size - 1) {
                                     // If the marker that is active on map is out of bounds or become
                                     // invisible , then remove that marker from map
-                                    currentMarker.marker!!.remove()
-                                    markerListCopy.remove(currentMarker)
+                                    markerListCopy.get(index).marker!!.remove()
+                                    markerListCopy.removeAt(index)
                                 }
                             }
                         }

@@ -108,9 +108,9 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     fun markerOperations() {
         inBoundUsersList.observe(lifecycleOwner, Observer {
+            val markerList: ArrayList<MarkerDAO> = ArrayList()
             if(it.isNotEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    val markerList: ArrayList<MarkerDAO> = ArrayList()
                     for (firestoreUserDAO in it) {
                         if(firestoreUserDAO.isVisible!!) {
                             val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
@@ -119,6 +119,8 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                     }
                     _markersLD.value = markerList
                 }
+            }else{
+                _markersLD.value = markerList
             }
         })
     }
