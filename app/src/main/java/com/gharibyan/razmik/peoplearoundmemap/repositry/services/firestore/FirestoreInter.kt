@@ -13,7 +13,7 @@ interface FirestoreInter {
 
     suspend fun findUser(userName: String): FirestoreUserDAO?
 
-    suspend fun findUserDocument(userName: String): LiveData<String>
+    suspend fun findUserDocument(userName: String): LiveData<FirestoreUserDAO>
 
     suspend fun findAllUsers(): ArrayList<FirestoreUserDAO>
 

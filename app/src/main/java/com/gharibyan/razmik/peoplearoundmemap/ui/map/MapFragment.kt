@@ -74,6 +74,7 @@ class MapFragment : Fragment() {
         // Initialize map
         initMap()
         currentFirestoreUserDAO.isVisible = userVisibility
+        currentFirestoreUserDAO.isUserMarkerOnMap = false
         mainOperations()
 
 
@@ -116,8 +117,10 @@ class MapFragment : Fragment() {
 
     private fun listenIfUserIsAdded() {
         mapViewModel.currentUserDocument.observe(viewLifecycleOwner, Observer {
-            userDocumentId = it
-            currentFirestoreUserDAO.documentId = it
+            userDocumentId = it.documentId
+            currentFirestoreUserDAO.documentId = it.documentId
+            currentFirestoreUserDAO.isVisible = it.isVisible
+            userVisibility = isVisible
             if(it == null || !currentFirestoreUserDAO.isVisible!!) {
                 // Enter this case if users isVisible is on false, or user is logged first time , then by default visibility is false
                 if(it == null) {
@@ -181,22 +184,33 @@ class MapFragment : Fragment() {
             val markerListCopy = ArrayList<MarkerWithDocumentId>()
             if(markerList.isNotEmpty()) {
                 markerListCopy.addAll(markerList)
+                markerList.forEachIndexed { index, markerWithDocumentId ->
+                    if(markerWithDocumentId.documentId == currentFirestoreUserDAO.documentId) {
+                        currentFirestoreUserDAO.isUserMarkerOnMap = true
+                        return@forEachIndexed
+                    }
+                    if(index == markerList.size - 1) {
+                        currentFirestoreUserDAO.isUserMarkerOnMap = false
+                    }
+                }
             }
             for(markerDAO in it) {
                 if(markerList.isNotEmpty()) {
-                    markerList.forEachIndexed { index, currentMarker ->
-                        if(markerDAO.documentId.equals(currentMarker.documentId)) {
-                            if(!currentMarker.markerOptions!!.equals(markerDAO.markerOptions)) {
-                                // If marker is still in bounds but changed it's location or personal info (update marker)
-                                markerListCopy.get(index).marker!!.remove()
-                                markerListCopy.removeAt(index)
-                                addMarkerToMap(markerDAO,markerListCopy)
-                                return@forEachIndexed // Break for each loop if found equal marker with same document id
-                            }
-                        }else{
-                            if(index == markerList.size - 1) {
-                                // If loop is finished and there were no marker on map with this document id, then add marker
-                                addMarkerToMap(markerDAO,markerListCopy)
+                    kotlin.run loop@{
+                        markerList.forEachIndexed { index, currentMarker ->
+                            if(markerDAO.documentId.equals(currentMarker.documentId)) {
+                                if(!currentMarker.firestoreUserDAO!!.equals(markerDAO.firestoreUserDAO)) {
+                                    // If marker is still in bounds but changed it's location or personal info (update marker)
+                                    markerListCopy.get(index).marker!!.remove()
+                                    markerListCopy.removeAt(index)
+                                    addMarkerToMap(markerDAO,markerListCopy)
+                                    return@loop // Break for each loop if found equal marker with same document id
+                                }
+                            }else{
+                                if(index == markerList.size - 1) {
+                                    // If loop is finished and there were no marker on map with this document id, then add marker
+                                    addMarkerToMap(markerDAO,markerListCopy)
+                                }
                             }
                         }
                     }
@@ -215,15 +229,17 @@ class MapFragment : Fragment() {
                         markerListCopy.get(index).marker!!.remove()
                         markerListCopy.removeAt(index)
                     }else{
-                        it.forEachIndexed lit@{ smallIndex, markerDAO ->
-                            if(markerWithDocumentId.documentId.equals(markerDAO.documentId)) {
-                                return@lit
-                            }else{
-                                if(smallIndex == it.size - 1) {
-                                    // If the marker that is active on map is out of bounds or become
-                                    // invisible , then remove that marker from map
-                                    markerListCopy.get(index).marker!!.remove()
-                                    markerListCopy.removeAt(index)
+                        kotlin.run lit@{
+                            it.forEachIndexed { smallIndex, markerDAO ->
+                                if(markerWithDocumentId.documentId.equals(markerDAO.documentId)) {
+                                    return@lit
+                                }else{
+                                    if(smallIndex == it.size - 1) {
+                                        // If the marker that is active on map is out of bounds or become
+                                        // invisible , then remove that marker from map
+                                        markerListCopy.get(index).marker!!.remove()
+                                        markerListCopy.removeAt(index)
+                                    }
                                 }
                             }
                         }
@@ -241,6 +257,7 @@ class MapFragment : Fragment() {
         markerWithDocumentId.documentId = markerDAO.documentId
         markerWithDocumentId.marker = marker
         markerWithDocumentId.markerOptions = markerDAO.markerOptions
+        markerWithDocumentId.firestoreUserDAO = markerDAO.firestoreUserDAO
         markerListCopy.add(markerWithDocumentId)
         if (markerDAO.moveCamera!!) {
             map!!.moveCamera(

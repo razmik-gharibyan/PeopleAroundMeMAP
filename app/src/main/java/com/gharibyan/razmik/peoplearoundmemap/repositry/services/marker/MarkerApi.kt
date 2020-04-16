@@ -46,6 +46,7 @@ class MarkerApi: MarkerInter {
                 markerDAO.latLng = latLng
                 markerDAO.moveCamera = moveCamera
                 markerDAO.markerOptions = markerOptions
+                markerDAO.firestoreUserDAO = firestoreUserDAO
                 return markerDAO
             }catch (e: Exception) {
                 e.printStackTrace()

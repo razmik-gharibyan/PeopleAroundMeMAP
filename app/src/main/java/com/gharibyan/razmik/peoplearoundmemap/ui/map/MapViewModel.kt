@@ -24,14 +24,14 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     private var _allUsersLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _inBoundUsersLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _currentUserLD = MutableLiveData<FirestoreUserDAO>()
-    private var _currentUserDocumentLD = MutableLiveData<String>()
+    private var _currentUserDocumentLD = MutableLiveData<FirestoreUserDAO>()
     private var _newUserDocumentLD = MutableLiveData<String>()
     private var _markersLD = MutableLiveData<ArrayList<MarkerDAO>>()
     var locationUpdates: LiveData<Location> = _locationLD
     var allUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _allUsersLD
     var inBoundUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _inBoundUsersLD
     var currentUser: LiveData<FirestoreUserDAO> = _currentUserLD
-    var currentUserDocument: LiveData<String> = _currentUserDocumentLD
+    var currentUserDocument: LiveData<FirestoreUserDAO> = _currentUserDocumentLD
     var newUserDocumentId: LiveData<String> = _newUserDocumentLD
     var markersList: LiveData<ArrayList<MarkerDAO>> = _markersLD
 
@@ -113,7 +113,8 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                 CoroutineScope(Dispatchers.Main).launch {
                     for (firestoreUserDAO in it) {
                         if(firestoreUserDAO.isVisible!!) {
-                            val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
+                            val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId) &&
+                                    !currentFirestoreUserDAO.isUserMarkerOnMap!!
                             markerList.add(markerApi.addMarker(firestoreUserDAO,moveCamera)!!)
                         }
                     }

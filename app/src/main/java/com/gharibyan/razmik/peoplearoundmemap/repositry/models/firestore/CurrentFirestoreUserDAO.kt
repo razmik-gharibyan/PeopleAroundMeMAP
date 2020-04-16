@@ -3,6 +3,7 @@ package com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore
 import com.google.firebase.firestore.GeoPoint
 
 class CurrentFirestoreUserDAO {
+
     var token: String? = null
     var userName: String? = null
     var followers: Long? = null
@@ -12,6 +13,7 @@ class CurrentFirestoreUserDAO {
     var isPrivate: Boolean? = null
     var isVerified: Boolean? = null
     var documentId: String? = null
+    var isUserMarkerOnMap: Boolean? = null
 
     companion object{
 

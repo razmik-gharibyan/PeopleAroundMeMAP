@@ -29,10 +29,10 @@ class FirestoreApi: FirestoreInter {
     private var firestoreUserDAO = Singletons.firestoreUserDAO
 
     // LiveData
-    private var _currentDocumentIDLD = MutableLiveData<String>()
+    private var _currentDocumentIDLD = MutableLiveData<FirestoreUserDAO>()
     private var _newDocumentIDLD = MutableLiveData<String>()
     private var _usersInBoundsLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
-    var currentDocumentId: LiveData<String> = _currentDocumentIDLD
+    var currentDocumentId: LiveData<FirestoreUserDAO> = _currentDocumentIDLD
     var newDocumentId: LiveData<String> = _newDocumentIDLD
     var usersInBoundsList: LiveData<ArrayList<FirestoreUserDAO>> = _usersInBoundsLD
 
@@ -118,15 +118,15 @@ class FirestoreApi: FirestoreInter {
         handler.post(runnable)
     }
 
-    override suspend fun findUserDocument(userName: String): LiveData<String> {
-        var currentDocumentID: String? = null
+    override suspend fun findUserDocument(userName: String): LiveData<FirestoreUserDAO> {
+        var currentDocumentID: FirestoreUserDAO? = null
         db.collection(collectionName)
             .get()
             .addOnSuccessListener {
                 for(document in it) {
                     val currentUserDocument = document.toObject<FirestoreUserDAO>()
                     if(currentUserDocument.userName.equals(userName)) {
-                        currentDocumentID = document.id
+                        currentDocumentID = currentUserDocument
                     }
                 }
                 _currentDocumentIDLD.value = currentDocumentID
