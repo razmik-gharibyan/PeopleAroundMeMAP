@@ -1,6 +1,9 @@
 package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.core.graphics.createBitmap
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -23,5 +26,19 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         markerOptions!!.icon(item.bitmapDescriptor)
         markerOptions.title(item.myTitle)
         markerOptions.snippet(item.snippet)
+    }
+
+    override fun onBeforeClusterRendered(cluster: Cluster<T>?, markerOptions: MarkerOptions?) {
+        // Find user with highest followers number
+        var max: Long = 0
+        var userName: String? = null
+        for(item in cluster!!.items) {
+            if(item.followers >= max) {
+                max = item.followers
+                userName = item.userName
+            }
+        }
+        markerOptions!!.title("Highest number of followers in this group have $userName")
+        super.onBeforeClusterRendered(cluster, markerOptions)
     }
 }

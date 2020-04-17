@@ -269,7 +269,8 @@ class MapFragment : Fragment() {
 
     private fun addMarkerToCluster(markerDAO: MarkerDAO, markerListCopy: ArrayList<MarkerWithDocumentId>) {
         val markerItem = MarkerItem(markerDAO.latLng!!,"REDIRECT TO USER PROFILE",
-            markerDAO.markerOptions!!.title,markerDAO.markerOptions!!.icon)
+            markerDAO.markerOptions!!.title,markerDAO.markerOptions!!.icon, markerDAO.firestoreUserDAO!!.followers!!,
+            markerDAO.firestoreUserDAO!!.userName!!)
         clusterManager.addItem(markerItem)
         val markerWithDocumentId = MarkerWithDocumentId()
         markerWithDocumentId.markerItem = markerItem
