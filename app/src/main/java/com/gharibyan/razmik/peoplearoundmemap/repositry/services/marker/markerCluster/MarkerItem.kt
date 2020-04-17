@@ -1,9 +1,11 @@
 package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster
 
+import android.graphics.Bitmap
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
-class MarkerItem(val myPosition: LatLng, val mySnippet: String, val myTitle: String): ClusterItem {
+class MarkerItem(val myPosition: LatLng, val mySnippet: String, val myTitle: String, val bitmapDescriptor: BitmapDescriptor): ClusterItem {
 
     override fun getSnippet(): String {
        return mySnippet
