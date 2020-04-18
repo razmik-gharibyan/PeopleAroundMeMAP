@@ -7,7 +7,7 @@ import com.google.firebase.firestore.GeoPoint
 class BoundProcessor {
 
     fun isUserInBounds(map: GoogleMap, userLocation: GeoPoint): Boolean {
-        val bounds: LatLngBounds = map.getProjection().getVisibleRegion().latLngBounds
+        val bounds: LatLngBounds = map.projection.visibleRegion.latLngBounds
 
         val neLongitude = bounds.northeast.longitude
         val neLatitude = bounds.northeast.latitude

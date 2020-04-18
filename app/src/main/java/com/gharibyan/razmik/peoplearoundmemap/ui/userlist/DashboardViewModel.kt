@@ -1,4 +1,4 @@
-package com.gharibyan.razmik.peoplearoundmemap.ui.dashboard
+package com.gharibyan.razmik.peoplearoundmemap.ui.userlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
