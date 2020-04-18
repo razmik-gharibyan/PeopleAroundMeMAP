@@ -7,6 +7,8 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.BoundProcessor
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.CurrentFirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.UsersDatabase
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.firestore.FirestoreApi
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.location.LocationApi
@@ -36,15 +38,18 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     var markersList: LiveData<ArrayList<MarkerDAO>> = _markersLD
 
     // Initialization
+    // -- Location
     private val locationApi = LocationApi(context)
-    private val firestoreApi = FirestoreApi()
-    private val markerApi = MarkerApi()
     private val observer = object: Observer<Location>{
         override fun onChanged(location: Location?) {
             firestoreUserDAO.location = GeoPoint(location!!.latitude,location.longitude)
             _locationLD.value = location
         }
     }
+    // -- Firebase
+    private val firestoreApi = FirestoreApi()
+    private val markerApi = MarkerApi()
+
 
     // Models
     private var instagramUserDAO = Singletons.instagramUserDAO
