@@ -32,9 +32,11 @@ class FirestoreApi: FirestoreInter {
     private var _currentDocumentIDLD = MutableLiveData<FirestoreUserDAO>()
     private var _newDocumentIDLD = MutableLiveData<String>()
     private var _usersInBoundsLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
+    private var _usersFoundBySearchLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     var currentDocumentId: LiveData<FirestoreUserDAO> = _currentDocumentIDLD
     var newDocumentId: LiveData<String> = _newDocumentIDLD
     var usersInBoundsList: LiveData<ArrayList<FirestoreUserDAO>> = _usersInBoundsLD
+    var usersFoundBySearch: LiveData<ArrayList<FirestoreUserDAO>> = _usersFoundBySearchLD
 
     // Variables
     private lateinit var documentList: ArrayList<FirestoreUserDAO>
@@ -137,4 +139,20 @@ class FirestoreApi: FirestoreInter {
         return currentDocumentId
     }
 
+    override suspend fun findAllUsersMatchingSearch(nameText: String): LiveData<ArrayList<FirestoreUserDAO>> {
+       db.collection(collectionName)
+           .whereEqualTo("userName",nameText)
+           .get()
+           .addOnSuccessListener {
+               val searchedUserList = ArrayList<FirestoreUserDAO>()
+               if(it != null && !it.isEmpty) {
+                   for(document in it) {
+                       val currentUserDocument = document.toObject<FirestoreUserDAO>()
+                       searchedUserList.add(currentUserDocument)
+                   }
+               }
+               _usersFoundBySearchLD.value = searchedUserList
+           }
+        return usersFoundBySearch
+    }
 }

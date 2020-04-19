@@ -19,4 +19,6 @@ interface FirestoreInter {
 
     suspend fun findAllUsersInBounds(map: GoogleMap)
 
+    suspend fun findAllUsersMatchingSearch(nameText: String): LiveData<ArrayList<FirestoreUserDAO>>
+
 }

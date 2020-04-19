@@ -37,7 +37,6 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
     }
 
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
-
         CoroutineScope(Dispatchers.Main).launch {
             val tempBitmap = imageUrlProcessing.processImage(userlist.get(position).picture!!)
             val resizedBitmap = imageProcessing.getResizedBitmapForUserListFragment(tempBitmap)
@@ -59,6 +58,24 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
     // Get number of users in list
     override fun getItemCount(): Int {
         return userlist.size
+    }
+
+    fun updateAdapterList(newUserList: ArrayList<FirestoreUserDAO>) {
+        userlist.clear()
+        val roomUser = RoomUser()
+        for(user in newUserList) {
+            roomUser.documentid = user.documentId
+            roomUser.username = user.userName
+            roomUser.picture = user.picture
+            roomUser.followers = user.followers
+            roomUser.longitude = user.location!!.longitude
+            roomUser.latitude = user.location!!.latitude
+            roomUser.token = user.token
+            roomUser.private = user.isPrivate
+            roomUser.visible = user.isVisible
+            roomUser.verified = user.isVerified
+            userlist.add(roomUser)
+        }
     }
 
 }

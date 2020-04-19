@@ -176,14 +176,6 @@ class MapFragment : Fragment() {
         })
     }
 
-    // This function should return users that are in bounds every 3 seconds
-    private fun listenToUsersInBounds() {
-        mapViewModel.inBoundUsersList.observe(viewLifecycleOwner, Observer {
-            usersInBoundList = it
-            Log.d(TAG, "Showing + ${it.size} new users in map")
-        })
-    }
-
     private fun visibilityChanger(visible: Boolean) {
         if(visible) {
             headerTextView.text = "You are now in visible mode, other people can see you on map"
@@ -236,9 +228,9 @@ class MapFragment : Fragment() {
                                     markerListCopy.removeAt(index)
                                     addMarkerToCluster(markerDAO,markerListCopy)
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        val roomUserId = roomUserDao.findUserByDocumentId(markerDAO.documentId!!).id
+                                        val roomUserDocumentId = roomUserDao.findUserByDocumentId(markerDAO.documentId!!).id
                                         val roomUser = changeFireStoreUserToRoomUser(markerDAO.firestoreUserDAO!!)
-                                        roomUser.id = roomUserId
+                                        roomUser.id = roomUserDocumentId
                                         roomUserDao.updateUser(roomUser)
                                     }
                                 }
