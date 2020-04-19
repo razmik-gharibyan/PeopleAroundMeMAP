@@ -20,6 +20,7 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.Firesto
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerWithDocumentId
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUserDao
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.UsersDatabase
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster.MarkerClusterRenderer
@@ -44,9 +45,8 @@ class MapFragment : Fragment() {
     // Initialization
     private lateinit var mapViewModel: MapViewModel
     private lateinit var customViewModelFactory: CustomViewModelFactory
-    // -- Local database
-    private val userDatabase = UsersDatabase.getInstance(context!!.applicationContext)
-    private val roomUserDao = userDatabase.userDao()
+
+    private lateinit var roomUserDao: RoomUserDao
 
     // MarkerCluster
     private lateinit var markerClusterRenderer: MarkerClusterRenderer<MarkerItem>
@@ -67,6 +67,16 @@ class MapFragment : Fragment() {
     private var markerList = ArrayList<MarkerWithDocumentId>()
 
     private lateinit var usersInBoundList: ArrayList<FirestoreUserDAO>
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        // -- Local database
+        val userDatabase = UsersDatabase.getInstance(activity!!.applicationContext)
+        roomUserDao = userDatabase.userDao()
+        CoroutineScope(Dispatchers.IO).launch {
+            roomUserDao.deleteAll()
+        }
+        super.onActivityCreated(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
@@ -313,16 +323,17 @@ class MapFragment : Fragment() {
     }
 
     fun changeFireStoreUserToRoomUser(firestoreUserDAO: FirestoreUserDAO): RoomUser {
-        val roomUser = RoomUser(firestoreUserDAO.documentId,
-            firestoreUserDAO.picture,
-            firestoreUserDAO.userName,
-            firestoreUserDAO.followers,
-            firestoreUserDAO.location!!.longitude,
-            firestoreUserDAO.location!!.latitude,
-            firestoreUserDAO.token,
-            firestoreUserDAO.isVisible,
-            firestoreUserDAO.isPrivate,
-            firestoreUserDAO.isVerified)
+        val roomUser = RoomUser()
+        roomUser.documentid = firestoreUserDAO.documentId
+        roomUser.username = firestoreUserDAO.userName
+        roomUser.picture = firestoreUserDAO.picture
+        roomUser.followers = firestoreUserDAO.followers
+        roomUser.latitude = firestoreUserDAO.location!!.latitude
+        roomUser.longitude = firestoreUserDAO.location!!.longitude
+        roomUser.token = firestoreUserDAO.token
+        roomUser.private = firestoreUserDAO.isPrivate
+        roomUser.visible = firestoreUserDAO.isVisible
+        roomUser.verified = firestoreUserDAO.isVerified
         return roomUser
     }
 

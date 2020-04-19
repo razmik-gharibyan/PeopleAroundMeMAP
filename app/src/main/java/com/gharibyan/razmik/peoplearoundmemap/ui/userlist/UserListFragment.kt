@@ -12,21 +12,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUserDao
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.UsersDatabase
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
 import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserListAdapter
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserListFragment : Fragment() {
 
     // Initialization
     private lateinit var mapViewModel: MapViewModel
+    private lateinit var roomUserDao: RoomUserDao
 
     // Views
     private lateinit var recyclerView: RecyclerView
 
     // Variables
-    private var uselist = ArrayList<FirestoreUserDAO>()
+    private var userlist = ArrayList<RoomUser>()
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        val userDatabase = UsersDatabase.getInstance(activity!!.applicationContext)
+        roomUserDao = userDatabase.userDao()
+        super.onActivityCreated(savedInstanceState)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -40,17 +53,12 @@ class UserListFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.user_list_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        recyclerView.adapter = UserListAdapter(this.context!!,uselist)
 
-        getInBoundUsers()
+        CoroutineScope(Dispatchers.Main).launch {
+            userlist = roomUserDao.getAll() as ArrayList<RoomUser>
+            recyclerView.adapter = UserListAdapter(context!!,userlist)
+        }
 
         return view
-    }
-
-    private fun getInBoundUsers() {
-        mapViewModel.inBoundUsersList.observe(viewLifecycleOwner, Observer {
-            uselist = it
-            recyclerView.adapter!!.notifyDataSetChanged()
-        })
     }
 }

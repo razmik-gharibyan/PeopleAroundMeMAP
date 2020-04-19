@@ -35,7 +35,7 @@ class ImageProcessing(followerProcessing: FollowerProcessing) {
         fun stringToBitmap(string: String?): Bitmap? {
             return try {
                 val encodeByte =
-                    Base64.decode(string, Base64.DEFAULT)
+                    Base64.decode(string, Base64.URL_SAFE)
                 BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
             } catch (e: Exception) {
                 e.message

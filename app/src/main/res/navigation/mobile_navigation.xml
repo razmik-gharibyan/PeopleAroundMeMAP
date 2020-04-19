@@ -9,19 +9,13 @@
         android:id="@+id/navigation_home"
         android:name="com.gharibyan.razmik.peoplearoundmemap.ui.map.MapFragment"
         android:label="Map"
-        tools:layout="@layout/fragment_map" >
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
-    </fragment>
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.gharibyan.razmik.peoplearoundmemap.ui.userlist.UserListFragment"
         android:label="UserList"
-        tools:layout="@layout/fragment_userlist" >
-        <argument android:name="inBoundUserList" />
-    </fragment>
+        tools:layout="@layout/fragment_userlist" />
 
     <fragment
         android:id="@+id/navigation_notifications"
