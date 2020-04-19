@@ -236,7 +236,10 @@ class MapFragment : Fragment() {
                                     markerListCopy.removeAt(index)
                                     addMarkerToCluster(markerDAO,markerListCopy)
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        roomUserDao.updateUser(changeFireStoreUserToRoomUser(markerDAO.firestoreUserDAO!!))
+                                        val roomUserId = roomUserDao.findUserByDocumentId(markerDAO.documentId!!).id
+                                        val roomUser = changeFireStoreUserToRoomUser(markerDAO.firestoreUserDAO!!)
+                                        roomUser.id = roomUserId
+                                        roomUserDao.updateUser(roomUser)
                                     }
                                 }
                                 return@loop // Break for each loop if found equal marker with same document id
@@ -285,7 +288,7 @@ class MapFragment : Fragment() {
                                             clusterManager.removeItem(markerWithDocumentId.markerItem)
                                             markerListCopy.removeAt(index)
                                             CoroutineScope(Dispatchers.IO).launch {
-                                                roomUserDao.deleteUser(changeFireStoreUserToRoomUser(markerWithDocumentId.firestoreUserDAO!!))
+                                                roomUserDao.deleteUserByDocumentId(markerWithDocumentId.documentId!!)
                                             }
                                         }
                                     }

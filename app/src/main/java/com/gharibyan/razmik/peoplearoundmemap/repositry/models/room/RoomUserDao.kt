@@ -17,6 +17,9 @@ interface RoomUserDao {
     @Query("SELECT * FROM users WHERE users.documentid LIKE :documentId")
     suspend fun findUserByDocumentId(documentId: String): RoomUser
 
+    @Query("DELETE FROM users WHERE users.documentid LIKE :documentId")
+    suspend fun deleteUserByDocumentId(documentId: String)
+
     @Delete
     suspend fun deleteUser(user: RoomUser)
 
