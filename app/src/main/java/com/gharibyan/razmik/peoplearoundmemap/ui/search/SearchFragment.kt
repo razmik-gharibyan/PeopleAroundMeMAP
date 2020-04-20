@@ -18,6 +18,7 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
 import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserListAdapter
+import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserSearchAdapter
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,14 +28,14 @@ class SearchFragment : Fragment() {
 
     // Initialization
     private lateinit var mapViewModel: MapViewModel
-    private lateinit var adapter: UserListAdapter
+    private lateinit var adapter: UserSearchAdapter
 
     // Views
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchEditText: TextInputEditText
 
     // Variables
-    private var userlist = ArrayList<RoomUser>()
+    private var userlist = ArrayList<FirestoreUserDAO>()
 
 
     override fun onCreateView(
@@ -52,10 +53,11 @@ class SearchFragment : Fragment() {
         searchEditText = view.findViewById(R.id.search_edit_text_view)
 
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        adapter = UserListAdapter(context!!,userlist)
+        adapter = UserSearchAdapter(userlist)
         recyclerView.adapter = adapter
 
         searchUser()
+        mapViewModel.getFoundUserBySearch()
         listenToUserSearchResult()
 
         return view
@@ -76,7 +78,11 @@ class SearchFragment : Fragment() {
 
     private fun listenToUserSearchResult() {
         mapViewModel.usersFoundBySearch.observe(viewLifecycleOwner, Observer {
-            adapter.updateAdapterList(it)
+            if(it.isNotEmpty()) {
+                userlist.addAll(it)
+            }else{
+                userlist.clear()
+            }
             adapter.notifyDataSetChanged()
         })
     }

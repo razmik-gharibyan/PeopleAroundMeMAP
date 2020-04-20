@@ -116,10 +116,13 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     fun findUsersBySearch(userName: String) {
         CoroutineScope(Dispatchers.Main).launch {
             firestoreApi.findAllUsersMatchingSearch(userName)
-            firestoreApi.usersFoundBySearch.observe(lifecycleOwner, Observer {
-                _usersFoundBySearchLD.value = it
-            })
         }
+    }
+
+    fun getFoundUserBySearch() {
+        firestoreApi.usersFoundBySearch.observe(lifecycleOwner, Observer {
+            _usersFoundBySearchLD.value = it
+        })
     }
 
     fun markerOperations() {
