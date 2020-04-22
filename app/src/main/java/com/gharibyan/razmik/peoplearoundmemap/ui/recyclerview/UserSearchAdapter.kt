@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,18 +23,21 @@ import kotlinx.coroutines.launch
 class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreUserDAO>):
     RecyclerView.Adapter<UserSearchAdapter.UserListViewHolder>() {
 
-    // Constants
-    private val TAG = javaClass.name
-
     // Initialization
     private val imageUrlProcessing = ImageUrlProcessing()
     private val imageProcessing = ImageProcessing(FollowerProcessing())
 
-    class UserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        class UserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.image_view
         val usernameView = itemView.username_view
         val followerView = itemView.follower_view
         val gotoProfileButton = itemView.goto_profile_button
+
+        fun clickOnUser(firestoreUserDAO: FirestoreUserDAO) {
+            itemView.setOnClickListener {
+                //TODO open map fragment with this user info and move camera there
+            }
+        }
     }
 
     override fun onCreateViewHolder(
@@ -59,6 +63,7 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                 holder.gotoProfileButton.setOnClickListener {
                     openInstagramApp(username!!)
                 }
+                holder.clickOnUser(userlist.get(position))
             }
         }
 
