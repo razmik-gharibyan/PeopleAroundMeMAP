@@ -1,6 +1,9 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -54,7 +57,7 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
             holder.usernameView.text = username
             holder.followerView.text = followers
             holder.gotoProfileButton.setOnClickListener {
-                //TODO Open user profile on instagram
+                openInstagramApp(username!!)
             }
         }
 
@@ -63,6 +66,24 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
     // Get number of users in list
     override fun getItemCount(): Int {
         return userlist.size
+    }
+
+    private fun openInstagramApp(username: String) {
+        val uri: Uri = Uri.parse("http://instagram.com/_u/$username")
+        val likeIng = Intent(Intent.ACTION_VIEW, uri)
+        likeIng.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        likeIng.setPackage("com.instagram.android")
+
+        try {
+            context.startActivity(likeIng)
+        } catch (e: ActivityNotFoundException) {
+            context.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://instagram.com/$username")
+                ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
     }
 
 }

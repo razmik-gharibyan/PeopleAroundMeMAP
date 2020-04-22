@@ -127,7 +127,9 @@ class MapFragment : Fragment() {
             mapViewModel.findAllUsersInBounds(map!!)
             //listenToUsersInBounds()
             mapViewModel.markerOperations()
-            listenToMarkersChanges()
+            CoroutineScope(Dispatchers.Main).launch {
+                listenToMarkersChanges()
+            }
             // Marker Cluster Initialization
             clusterManager = ClusterManager(this.context,map)
             markerClusterRenderer = MarkerClusterRenderer(this.context!!,map,clusterManager)
@@ -202,7 +204,7 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun listenToMarkersChanges() {
+    private suspend fun listenToMarkersChanges() {
         mapViewModel.markersList.observe(viewLifecycleOwner, Observer {
             val markerListCopy = ArrayList<MarkerWithDocumentId>()
             if(markerList.isNotEmpty()) {

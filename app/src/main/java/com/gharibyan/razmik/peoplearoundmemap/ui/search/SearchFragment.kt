@@ -3,10 +3,10 @@ package com.gharibyan.razmik.peoplearoundmemap.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,15 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
-import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
-import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserListAdapter
 import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserSearchAdapter
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 class SearchFragment : Fragment() {
 
@@ -53,7 +49,7 @@ class SearchFragment : Fragment() {
         searchEditText = view.findViewById(R.id.search_edit_text_view)
 
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        adapter = UserSearchAdapter(userlist)
+        adapter = UserSearchAdapter(this.activity!!.applicationContext,userlist)
         recyclerView.adapter = adapter
 
         searchUser()
