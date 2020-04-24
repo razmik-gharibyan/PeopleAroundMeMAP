@@ -260,6 +260,7 @@ class MapFragment : Fragment() {
             markerList.addAll(markerListCopy) // Rewrite new data into original markerList
             if(markerList.isNotEmpty()) {
                 kotlin.run markerList@{
+                    var counter = 0
                     markerList.forEachIndexed { index, markerWithDocumentId ->
                         if(it.isEmpty()) {
                             // If there are no markers in bounds received from inBoundUsers LiveData
@@ -280,7 +281,8 @@ class MapFragment : Fragment() {
                                             // If the marker that is active on map is out of bounds or become
                                             // invisible , then remove that marker from map
                                             clusterManager.removeItem(markerWithDocumentId.markerItem)
-                                            markerListCopy.removeAt(index)
+                                            markerListCopy.removeAt(index - counter)
+                                            counter++
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 roomUserDao.deleteUserByDocumentId(markerWithDocumentId.documentId!!)
                                             }
