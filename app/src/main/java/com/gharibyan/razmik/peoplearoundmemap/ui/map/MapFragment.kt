@@ -28,6 +28,7 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCl
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.clustering.ClusterItem
@@ -38,9 +39,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MapFragment : Fragment() {
-
-    // Constants
-    private val TAG: String = javaClass.name
 
     // Initialization
     private lateinit var mapViewModel: MapViewModel
@@ -81,7 +79,7 @@ class MapFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
         mapViewModel =
-                ViewModelProviders.of(this,customViewModelFactory).get(MapViewModel::class.java)
+                ViewModelProviders.of(activity!!,customViewModelFactory).get(MapViewModel::class.java)
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
         // Views
@@ -118,6 +116,7 @@ class MapFragment : Fragment() {
         listenToLocationUpdates()
         //Buttons
         listenVisibleButtonChanges()
+        listenToSearchFragmentFoundUser()
     }
 
     private fun initMap() {
@@ -319,7 +318,7 @@ class MapFragment : Fragment() {
         }
     }
 
-    fun changeFireStoreUserToRoomUser(firestoreUserDAO: FirestoreUserDAO): RoomUser {
+    private fun changeFireStoreUserToRoomUser(firestoreUserDAO: FirestoreUserDAO): RoomUser {
         val roomUser = RoomUser()
         roomUser.documentid = firestoreUserDAO.documentId
         roomUser.username = firestoreUserDAO.userName
@@ -332,6 +331,17 @@ class MapFragment : Fragment() {
         roomUser.visible = firestoreUserDAO.isVisible
         roomUser.verified = firestoreUserDAO.isVerified
         return roomUser
+    }
+
+    private fun listenToSearchFragmentFoundUser() {
+        mapViewModel.searchedUserToMap.observe(viewLifecycleOwner, Observer {
+            map!!.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude),
+                    19F
+                )
+            )
+        })
     }
 
     override fun onResume() {

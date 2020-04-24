@@ -30,6 +30,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     private var _newUserDocumentLD = MutableLiveData<String>()
     private var _markersLD = MutableLiveData<ArrayList<MarkerDAO>>()
     private var _usersFoundBySearchLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
+    private var _searchedUserToMapLD = MutableLiveData<FirestoreUserDAO>()
     var locationUpdates: LiveData<Location> = _locationLD
     var allUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _allUsersLD
     var inBoundUsersList: LiveData<ArrayList<FirestoreUserDAO>> = _inBoundUsersLD
@@ -38,6 +39,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     var newUserDocumentId: LiveData<String> = _newUserDocumentLD
     var markersList: LiveData<ArrayList<MarkerDAO>> = _markersLD
     var usersFoundBySearch: LiveData<ArrayList<FirestoreUserDAO>> = _usersFoundBySearchLD
+    var searchedUserToMap: LiveData<FirestoreUserDAO> = _searchedUserToMapLD
 
     // Initialization
     // -- Location
@@ -143,6 +145,10 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                 _markersLD.value = markerList
             }
         })
+    }
+
+    fun sendSearchedUserToMap(firestoreUserDAO: FirestoreUserDAO) {
+        _searchedUserToMapLD.value = firestoreUserDAO
     }
 
     override fun onCleared() {

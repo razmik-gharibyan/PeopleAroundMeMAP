@@ -18,6 +18,9 @@ import com.gharibyan.razmik.peoplearoundmemap.MainActivity
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.api.instagram.InstagramPlaceHolderApi
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.instagram.InstagramApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Exception
@@ -61,7 +64,7 @@ class InstagramLoaderFragment: Fragment() {
         instagramPlaceHolderApi = retrofit.create(InstagramPlaceHolderApi::class.java)
         instagramApi = InstagramApi(instagramPlaceHolderApi)
 
-        var webSettings: WebSettings = webView.settings
+        val webSettings: WebSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webView.webViewClient = object: WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -69,7 +72,9 @@ class InstagramLoaderFragment: Fragment() {
                     val index = url.lastIndexOf(redirectBeforeCode) + redirectBeforeCode.length
                     val hashTagIndex = url.lastIndexOf(redirectAfterCode)
                     code = url.substring(index,hashTagIndex)
-                    instagramApi.getProfileInfo(code)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        instagramApi.getProfileInfo(code)
+                    }
                 }
                 return false
             }

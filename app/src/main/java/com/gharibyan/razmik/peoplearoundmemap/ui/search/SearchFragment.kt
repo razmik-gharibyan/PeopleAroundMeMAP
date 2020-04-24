@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ class SearchFragment : Fragment() {
     // Initialization
     private lateinit var mapViewModel: MapViewModel
     private lateinit var adapter: UserSearchAdapter
+    private lateinit var manager: FragmentManager
 
     // Views
     private lateinit var recyclerView: RecyclerView
@@ -41,15 +43,17 @@ class SearchFragment : Fragment() {
     ): View? {
         val customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
         mapViewModel =
-            ViewModelProviders.of(this,customViewModelFactory).get(MapViewModel::class.java)
+            ViewModelProviders.of(activity!!,customViewModelFactory).get(MapViewModel::class.java)
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
         // Views
         recyclerView = view.findViewById(R.id.search_user_list_recycler_view)
         searchEditText = view.findViewById(R.id.search_edit_text_view)
 
+        manager = parentFragmentManager
+
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        adapter = UserSearchAdapter(this.activity!!.applicationContext,userlist)
+        adapter = UserSearchAdapter(this.activity!!.applicationContext,userlist,mapViewModel,manager)
         recyclerView.adapter = adapter
 
         searchUser()

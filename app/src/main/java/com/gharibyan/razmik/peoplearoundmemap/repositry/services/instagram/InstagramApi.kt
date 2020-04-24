@@ -9,6 +9,8 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.instagram.UserTok
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.instagram.UserTokenLong
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.instagram.personal.ObjectResponse
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,8 +28,11 @@ class InstagramApi(val instagramPlaceHolderApi: InstagramPlaceHolderApi) {
     // Initialization
     private var instagramUserDAO = Singletons.instagramUserDAO
 
-    fun getProfileInfo(code: String) {
-        getTokenByCode(code)
+    suspend fun getProfileInfo(code: String) {
+        withContext(Dispatchers.IO) {
+            getTokenByCode(code)
+        }
+
     }
 
     private fun getTokenByCode(code: String) {

@@ -8,34 +8,44 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.FollowerProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageUrlProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
+import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapFragment
+import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
+import com.gharibyan.razmik.peoplearoundmemap.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.userlist_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreUserDAO>):
+class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreUserDAO>, val mapViewModel: MapViewModel,
+                        val manager: FragmentManager):
     RecyclerView.Adapter<UserSearchAdapter.UserListViewHolder>() {
 
     // Initialization
     private val imageUrlProcessing = ImageUrlProcessing()
     private val imageProcessing = ImageProcessing(FollowerProcessing())
 
-        class UserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    class UserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.image_view
         val usernameView = itemView.username_view
         val followerView = itemView.follower_view
         val gotoProfileButton = itemView.goto_profile_button
 
-        fun clickOnUser(firestoreUserDAO: FirestoreUserDAO) {
+        private val mapFragment = MapFragment()
+        private val searchFragment = SearchFragment()
+
+        fun clickOnUser(firestoreUserDAO: FirestoreUserDAO,mapViewModel: MapViewModel,manager: FragmentManager) {
             itemView.setOnClickListener {
-                //TODO open map fragment with this user info and move camera there
+                mapViewModel.sendSearchedUserToMap(firestoreUserDAO)
+                manager.beginTransaction().hide(searchFragment).show(mapFragment).commit()
             }
         }
     }
@@ -63,7 +73,7 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                 holder.gotoProfileButton.setOnClickListener {
                     openInstagramApp(username!!)
                 }
-                holder.clickOnUser(userlist.get(position))
+                holder.clickOnUser(userlist.get(position),mapViewModel,manager)
             }
         }
 
