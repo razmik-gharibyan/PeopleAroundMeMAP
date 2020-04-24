@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.fragment_map.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MapFragment : Fragment() {
 

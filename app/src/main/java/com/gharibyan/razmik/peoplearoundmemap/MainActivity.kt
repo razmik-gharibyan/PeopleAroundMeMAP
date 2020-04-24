@@ -72,4 +72,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun hideSearchShowMap() {
+        navView.selectedItemId = R.id.navigation_map
+    }
+
 }

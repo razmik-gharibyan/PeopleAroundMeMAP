@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gharibyan.razmik.peoplearoundmemap.MainActivity
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.FollowerProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageProcessing
@@ -25,7 +27,7 @@ import kotlinx.coroutines.launch
 
 
 class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreUserDAO>, val mapViewModel: MapViewModel,
-                        val manager: FragmentManager):
+                        val activity: MainActivity):
     RecyclerView.Adapter<UserSearchAdapter.UserListViewHolder>() {
 
     // Initialization
@@ -39,13 +41,10 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
         val followerView = itemView.follower_view
         val gotoProfileButton = itemView.goto_profile_button
 
-        private val mapFragment = MapFragment()
-        private val searchFragment = SearchFragment()
-
-        fun clickOnUser(firestoreUserDAO: FirestoreUserDAO,mapViewModel: MapViewModel,manager: FragmentManager) {
+        fun clickOnUser(firestoreUserDAO: FirestoreUserDAO,mapViewModel: MapViewModel,activity: MainActivity) {
             itemView.setOnClickListener {
                 mapViewModel.sendSearchedUserToMap(firestoreUserDAO)
-                manager.beginTransaction().hide(searchFragment).show(mapFragment).commit()
+                activity.hideSearchShowMap()
             }
         }
     }
@@ -73,7 +72,7 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                 holder.gotoProfileButton.setOnClickListener {
                     openInstagramApp(username!!)
                 }
-                holder.clickOnUser(userlist.get(position),mapViewModel,manager)
+                holder.clickOnUser(userlist.get(position),mapViewModel,activity)
             }
         }
 

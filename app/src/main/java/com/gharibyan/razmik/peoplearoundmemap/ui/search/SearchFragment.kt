@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gharibyan.razmik.peoplearoundmemap.MainActivity
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
@@ -53,7 +54,9 @@ class SearchFragment : Fragment() {
         manager = parentFragmentManager
 
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-        adapter = UserSearchAdapter(this.activity!!.applicationContext,userlist,mapViewModel,manager)
+        if(activity is MainActivity) adapter = UserSearchAdapter(this.activity!!.applicationContext,userlist,mapViewModel,
+            activity!! as MainActivity
+        )
         recyclerView.adapter = adapter
 
         searchUser()
