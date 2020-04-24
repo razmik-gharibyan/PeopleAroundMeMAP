@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.userlist
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.gharibyan.razmik.peoplearoundmemap.MainActivity
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
@@ -46,9 +48,6 @@ class UserListFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
-        mapViewModel =
-            ViewModelProviders.of(this,customViewModelFactory).get(MapViewModel::class.java)
         val view = inflater.inflate(R.layout.fragment_userlist, container, false)
 
         recyclerView = view.findViewById(R.id.user_list_recycler_view)
@@ -60,5 +59,10 @@ class UserListFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        mapViewModel = (activity as MainActivity).mapViewModel
     }
 }

@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.search
 
+import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,6 +21,7 @@ import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
 import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserSearchAdapter
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.android.synthetic.main.fragment_map.*
 
 
 class SearchFragment : Fragment() {
@@ -42,9 +44,6 @@ class SearchFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
-        mapViewModel =
-            ViewModelProviders.of(activity!!,customViewModelFactory).get(MapViewModel::class.java)
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
         // Views
@@ -88,5 +87,10 @@ class SearchFragment : Fragment() {
             }
             adapter.notifyDataSetChanged()
         })
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        mapViewModel = (activity as MainActivity).mapViewModel
     }
 }

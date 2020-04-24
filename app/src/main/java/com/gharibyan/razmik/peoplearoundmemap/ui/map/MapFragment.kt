@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.map
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.room.Room
+import com.gharibyan.razmik.peoplearoundmemap.MainActivity
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
@@ -43,8 +45,6 @@ class MapFragment : Fragment() {
 
     // Initialization
     private lateinit var mapViewModel: MapViewModel
-    private lateinit var customViewModelFactory: CustomViewModelFactory
-
     private lateinit var roomUserDao: RoomUserDao
 
     // MarkerCluster
@@ -78,9 +78,7 @@ class MapFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
-        mapViewModel =
-                ViewModelProviders.of(activity!!,customViewModelFactory).get(MapViewModel::class.java)
+
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
         // Views
@@ -340,11 +338,16 @@ class MapFragment : Fragment() {
         mapViewModel.searchedUserToMap.observe(viewLifecycleOwner, Observer {
             map!!.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
-                    LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude),
+                    LatLng(it.location!!.latitude,it.location!!.longitude),
                     19F
                 )
             )
         })
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        mapViewModel = (activity as MainActivity).mapViewModel
     }
 
     override fun onResume() {
