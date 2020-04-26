@@ -22,6 +22,9 @@ import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
 import com.gharibyan.razmik.peoplearoundmemap.ui.recyclerview.UserSearchAdapter
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class SearchFragment : Fragment() {
@@ -71,7 +74,12 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString()
-                mapViewModel.findUsersBySearch(searchText)
+                if(searchText.isNotEmpty()) {
+                    mapViewModel.findUsersBySearch(searchText)
+                }else{
+                    userlist.clear()
+                    adapter.notifyDataSetChanged()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -81,6 +89,7 @@ class SearchFragment : Fragment() {
     private fun listenToUserSearchResult() {
         mapViewModel.usersFoundBySearch.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
+                userlist.clear()
                 userlist.addAll(it)
             }else{
                 userlist.clear()

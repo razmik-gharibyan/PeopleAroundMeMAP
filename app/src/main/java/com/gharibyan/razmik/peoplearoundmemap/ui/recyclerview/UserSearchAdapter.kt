@@ -30,6 +30,9 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                         val activity: MainActivity):
     RecyclerView.Adapter<UserSearchAdapter.UserListViewHolder>() {
 
+    // Constants
+    private val TAG = javaClass.name
+
     // Initialization
     private val imageUrlProcessing = ImageUrlProcessing()
     private val imageProcessing = ImageProcessing(FollowerProcessing())
@@ -59,6 +62,7 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
         CoroutineScope(Dispatchers.Main).launch {
             if(userlist.isNotEmpty()) {
+                Log.d(TAG,"userList size is ${userlist.size}")
                 val tempBitmap = imageUrlProcessing.processImage(userlist.get(position).picture!!)
                 val resizedBitmap = imageProcessing.getResizedBitmapForUserListFragment(tempBitmap)
                 val croppedBitmap = imageProcessing.getCroppedBitmap(resizedBitmap)

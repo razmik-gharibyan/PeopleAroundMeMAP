@@ -141,7 +141,10 @@ class FirestoreApi: FirestoreInter {
 
     override suspend fun findAllUsersMatchingSearch(nameText: String): LiveData<ArrayList<FirestoreUserDAO>> {
        db.collection(collectionName)
-           .whereEqualTo("userName",nameText)
+           //.whereEqualTo("userName",nameText)
+           .orderBy("userName")
+           .startAt(nameText)
+           .endAt(nameText + "\uf8ff")
            .get()
            .addOnSuccessListener {
                val searchedUserList = ArrayList<FirestoreUserDAO>()
