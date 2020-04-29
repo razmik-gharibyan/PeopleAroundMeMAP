@@ -9,6 +9,8 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.Current
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -98,16 +100,23 @@ class FirestoreApi: FirestoreInter {
     override suspend fun findAllUsersInBounds(map: GoogleMap) {
         val runnable = object: Runnable {
             override fun run() {
+                val bounds: LatLngBounds = map.projection.visibleRegion.latLngBounds
+                val neLongitude = bounds.northeast.longitude
+                val neLatitude = bounds.northeast.latitude
+                val swLongitude = bounds.southwest.longitude
+                val swLatitude = bounds.southwest.latitude
+                val lowGeoPoint = GeoPoint(swLatitude,swLongitude)
+                val highGeoPoint = GeoPoint(neLatitude,neLongitude)
                 db.collection(collectionName)
+                    .whereGreaterThanOrEqualTo("location",lowGeoPoint)
+                    .whereLessThanOrEqualTo("location",highGeoPoint)
                     .get()
                     .addOnSuccessListener {
                         val usersInBoundsArrayList: ArrayList<FirestoreUserDAO> = ArrayList()
                         for(document in it) {
                             val firestoreUserDAO = document.toObject(FirestoreUserDAO::class.java)
                             firestoreUserDAO.documentId = document.id
-                            if(boundProcessor.isUserInBounds(map,firestoreUserDAO.location!!)) {
-                                usersInBoundsArrayList.add(firestoreUserDAO)
-                            }
+                            usersInBoundsArrayList.add(firestoreUserDAO)
                         }
                         _usersInBoundsLD.value = usersInBoundsArrayList
                     }
@@ -123,13 +132,12 @@ class FirestoreApi: FirestoreInter {
     override suspend fun findUserDocument(userName: String): LiveData<FirestoreUserDAO> {
         var currentDocumentID: FirestoreUserDAO? = null
         db.collection(collectionName)
+            .whereEqualTo("userName", userName)
             .get()
             .addOnSuccessListener {
                 for(document in it) {
                     val currentUserDocument = document.toObject<FirestoreUserDAO>()
-                    if(currentUserDocument.userName.equals(userName)) {
-                        currentDocumentID = currentUserDocument
-                    }
+                    currentDocumentID = currentUserDocument
                 }
                 _currentDocumentIDLD.value = currentDocumentID
             }

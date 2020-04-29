@@ -1,6 +1,9 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.map
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -132,6 +135,7 @@ class MapFragment : Fragment() {
             clusterManager = ClusterManager(this.context,map)
             markerClusterRenderer = MarkerClusterRenderer(this.context!!,map,clusterManager)
             clusterManager.renderer = markerClusterRenderer
+            listenToMarkerClick()
         }
     }
 
@@ -299,7 +303,7 @@ class MapFragment : Fragment() {
     }
 
     private fun addMarkerToCluster(markerDAO: MarkerDAO, markerListCopy: ArrayList<MarkerWithDocumentId>) {
-        val markerItem = MarkerItem(markerDAO.latLng!!,"REDIRECT TO USER PROFILE",
+        val markerItem = MarkerItem(markerDAO.latLng!!,"Open Profile",
             markerDAO.markerOptions!!.title,markerDAO.markerOptions!!.icon, markerDAO.firestoreUserDAO!!.followers!!,
             markerDAO.firestoreUserDAO!!.userName!!)
         clusterManager.addItem(markerItem)
@@ -343,6 +347,31 @@ class MapFragment : Fragment() {
                 )
             )
         })
+    }
+
+    private fun listenToMarkerClick() {
+        clusterManager.setOnClusterItemInfoWindowClickListener {
+            val endpoint = it.title.indexOf(" :")
+            openInstagramApp(it.title.substring(0,endpoint))
+        }
+    }
+
+    private fun openInstagramApp(username: String) {
+        val uri: Uri = Uri.parse("http://instagram.com/_u/$username")
+        val likeIng = Intent(Intent.ACTION_VIEW, uri)
+        likeIng.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        likeIng.setPackage("com.instagram.android")
+
+        try {
+            startActivity(likeIng)
+        } catch (e: ActivityNotFoundException) {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("http://instagram.com/$username")
+                ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
     }
 
     override fun onAttach(activity: Activity) {
