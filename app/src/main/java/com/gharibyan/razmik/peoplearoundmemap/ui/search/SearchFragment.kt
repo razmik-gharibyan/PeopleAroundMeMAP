@@ -2,6 +2,7 @@ package com.gharibyan.razmik.peoplearoundmemap.ui.search
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -70,19 +71,25 @@ class SearchFragment : Fragment() {
 
     private fun searchUser() {
         searchEditText.addTextChangedListener(object: TextWatcher{
+            val handler = Handler()
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val searchText = s.toString()
-                if(searchText.isNotEmpty()) {
-                    mapViewModel.findUsersBySearch(searchText)
-                }else{
-                    userlist.clear()
-                    adapter.notifyDataSetChanged()
-                }
+                handler.removeCallbacksAndMessages(null)
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                handler.postDelayed({
+                    val searchText = s.toString()
+                    if(searchText.isNotEmpty()) {
+                        mapViewModel.findUsersBySearch(searchText)
+                    }else{
+                        userlist.clear()
+                        adapter.notifyDataSetChanged()
+                    }
+                },500)
+            }
         })
     }
 
