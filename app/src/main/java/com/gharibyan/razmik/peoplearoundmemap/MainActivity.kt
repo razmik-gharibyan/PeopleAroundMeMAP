@@ -1,6 +1,7 @@
 package com.gharibyan.razmik.peoplearoundmemap
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,10 +26,10 @@ class MainActivity : AppCompatActivity() {
 
     // Views
     private lateinit var navView: BottomNavigationView
-    private val mapFragment = MapFragment()
-    private val listFragment = UserListFragment()
-    private val searchFragment = SearchFragment()
-    private var active: Fragment = mapFragment
+    private lateinit var mapFragment: Fragment
+    private lateinit var listFragment: Fragment
+    private lateinit var searchFragment: Fragment
+    private lateinit var active: Fragment
     private val fragmentManager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,11 @@ class MainActivity : AppCompatActivity() {
         customViewModelFactory = CustomViewModelFactory(baseContext,this)
         mapViewModel =
             ViewModelProviders.of(this,customViewModelFactory).get(MapViewModel::class.java)
+
+        mapFragment = MapFragment()
+        listFragment = UserListFragment()
+        searchFragment = SearchFragment()
+        active = mapFragment
 
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment,mapFragment).commit()
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment,searchFragment).hide(searchFragment).commit()
@@ -88,4 +94,7 @@ class MainActivity : AppCompatActivity() {
         navView.selectedItemId = R.id.navigation_map
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }

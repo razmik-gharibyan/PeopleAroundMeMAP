@@ -1,24 +1,18 @@
 package com.gharibyan.razmik.peoplearoundmemap.ui.map
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import androidx.room.Room
 import com.gharibyan.razmik.peoplearoundmemap.MainActivity
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
@@ -30,19 +24,14 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.UsersDatabas
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster.MarkerClusterRenderer
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster.MarkerItem
-import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.firebase.firestore.GeoPoint
-import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.ClusterManager
-import kotlinx.android.synthetic.main.fragment_map.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MapFragment : Fragment() {
 
@@ -61,14 +50,12 @@ class MapFragment : Fragment() {
     private lateinit var mapView: MapView
 
     // Vars global
-    private var firestoreUserDAO = Singletons.firestoreUserDAO
     private var currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
     private var userVisibility: Boolean = false
     private var userDocumentId: String? = null
     private var map: GoogleMap? = null
     private var markerList = ArrayList<MarkerWithDocumentId>()
-
-    private lateinit var usersInBoundList: ArrayList<FirestoreUserDAO>
+    private var firstTimeCameraMove = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         // -- Local database
@@ -83,6 +70,8 @@ class MapFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_map, container, false)
+
+        mapViewModel = (activity as MainActivity).mapViewModel
 
         // Views
         headerLayout = view.findViewById(R.id.header_layout)
@@ -101,9 +90,7 @@ class MapFragment : Fragment() {
         // Initialize map
         initMap()
         currentFirestoreUserDAO.isVisible = userVisibility
-        currentFirestoreUserDAO.isUserMarkerOnMap = false
         mainOperations()
-
 
         return view
     }
@@ -126,7 +113,6 @@ class MapFragment : Fragment() {
             if(map == null) map = it
             // Users list operations
             mapViewModel.findAllUsersInBounds(map!!)
-            //listenToUsersInBounds()
             mapViewModel.markerOperations()
             CoroutineScope(Dispatchers.Main).launch {
                 listenToMarkersChanges()
@@ -211,15 +197,6 @@ class MapFragment : Fragment() {
             val markerListCopy = ArrayList<MarkerWithDocumentId>()
             if(markerList.isNotEmpty()) {
                 markerListCopy.addAll(markerList)
-                markerList.forEachIndexed { index, markerWithDocumentId ->
-                    if(markerWithDocumentId.documentId == currentFirestoreUserDAO.documentId) {
-                        currentFirestoreUserDAO.isUserMarkerOnMap = true
-                        return@forEachIndexed
-                    }
-                    if(index == markerList.size - 1) {
-                        currentFirestoreUserDAO.isUserMarkerOnMap = false
-                    }
-                }
             }
             for(markerDAO in it) {
                 if(markerList.isNotEmpty()) {
@@ -313,15 +290,17 @@ class MapFragment : Fragment() {
         markerWithDocumentId.markerOptions = markerDAO.markerOptions
         markerWithDocumentId.firestoreUserDAO = markerDAO.firestoreUserDAO
         markerListCopy.add(markerWithDocumentId)
-        if (markerDAO.moveCamera!!) {
-            map!!.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    markerDAO.latLng,
-                    19F
+        if (markerDAO.moveCamera!! && !firstTimeCameraMove) {
+                map!!.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        markerDAO.latLng,
+                        19F
+                    )
                 )
-            )
-        }
+                firstTimeCameraMove = true
+            }
     }
+
 
     private fun changeFireStoreUserToRoomUser(firestoreUserDAO: FirestoreUserDAO): RoomUser {
         val roomUser = RoomUser()
@@ -372,11 +351,6 @@ class MapFragment : Fragment() {
                 ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             )
         }
-    }
-
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        mapViewModel = (activity as MainActivity).mapViewModel
     }
 
     override fun onResume() {
