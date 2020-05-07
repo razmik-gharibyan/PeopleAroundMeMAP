@@ -130,6 +130,7 @@ class FirestoreApi: FirestoreInter {
                 val swLatitude = bounds.southwest.latitude
                 val lowGeoPoint = GeoPoint(swLatitude,swLongitude)
                 val highGeoPoint = GeoPoint(neLatitude,neLongitude)
+
                 db.collection(collectionName)
                     .whereGreaterThanOrEqualTo("location",lowGeoPoint)
                     .whereLessThanOrEqualTo("location",highGeoPoint)

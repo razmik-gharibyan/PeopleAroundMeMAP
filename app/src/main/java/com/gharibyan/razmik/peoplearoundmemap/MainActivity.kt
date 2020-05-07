@@ -1,10 +1,14 @@
 package com.gharibyan.razmik.peoplearoundmemap
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View.inflate
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -14,12 +18,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapFragment
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
 import com.gharibyan.razmik.peoplearoundmemap.ui.search.SearchFragment
 import com.gharibyan.razmik.peoplearoundmemap.ui.userlist.UserListFragment
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
@@ -69,6 +75,26 @@ class MainActivity : AppCompatActivity() {
 
          */
         //navView.setupWithNavController(navController)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.settings_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.findMe_item) {
+            val firestoreUserDao = FirestoreUserDAO()
+            firestoreUserDao.location = currentFirestoreUserDAO.location
+            mapViewModel.sendSearchedUserToMap(firestoreUserDao)
+            hideSearchShowMap()
+        }else if(item.itemId == R.id.signOut_item) {
+            // Sign Out user, and redirect to instagram fragment
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this,ConnectionActivity::class.java)
+            startActivity(intent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun listenToNavViewChanges() {
