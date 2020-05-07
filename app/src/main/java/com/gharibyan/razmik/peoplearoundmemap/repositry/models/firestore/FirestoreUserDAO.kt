@@ -12,6 +12,7 @@ class FirestoreUserDAO{
     var isPrivate: Boolean? = null
     var isVerified: Boolean? = null
     var documentId: String? = null
+    var isActive: Boolean? = null
 
     companion object{
 
@@ -39,7 +40,8 @@ class FirestoreUserDAO{
             token == other.token &&
             isVisible == other.isVisible &&
             isPrivate == other.isPrivate &&
-            isVerified == other.isVerified) return true
+            isVerified == other.isVerified &&
+            isActive == other.isActive) return true
         return false
     }
 
@@ -53,6 +55,7 @@ class FirestoreUserDAO{
         result = 31 * result + (isPrivate?.hashCode() ?: 0)
         result = 31 * result + (isVerified?.hashCode() ?: 0)
         result = 31 * result + (documentId?.hashCode() ?: 0)
+        result = 31 * result + (isActive?.hashCode() ?: 0)
         return result
     }
 }

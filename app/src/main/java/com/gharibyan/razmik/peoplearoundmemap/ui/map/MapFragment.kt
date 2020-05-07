@@ -141,6 +141,7 @@ class MapFragment : Fragment() {
             userDocumentId = it.documentId
             currentFirestoreUserDAO.documentId = it.documentId
             currentFirestoreUserDAO.isVisible = it.isVisible
+            currentFirestoreUserDAO.isActive = it.isActive
             userVisibility = isVisible
             if(it == null || !currentFirestoreUserDAO.isVisible!!) {
                 // Enter this case if users isVisible is on false, or user is logged first time , then by default visibility is false

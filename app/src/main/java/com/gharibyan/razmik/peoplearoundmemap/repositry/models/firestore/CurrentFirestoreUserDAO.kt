@@ -13,7 +13,7 @@ class CurrentFirestoreUserDAO {
     var isPrivate: Boolean? = null
     var isVerified: Boolean? = null
     var documentId: String? = null
-    var isUserMarkerOnMap: Boolean? = null
+    var isActive: Boolean? = null
 
     companion object{
 

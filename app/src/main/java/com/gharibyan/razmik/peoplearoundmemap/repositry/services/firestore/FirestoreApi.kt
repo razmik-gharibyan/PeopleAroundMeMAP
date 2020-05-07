@@ -24,7 +24,6 @@ class FirestoreApi: FirestoreInter {
 
     // Initialization
     private val db = Firebase.firestore
-    private val boundProcessor = BoundProcessor()
     private val handler = Handler()
 
     // Models
@@ -54,6 +53,17 @@ class FirestoreApi: FirestoreInter {
                 Log.d(TAG, "Error adding document", it)
             }
         return newDocumentId
+    }
+
+    override suspend fun addNewUserWithUID(currentFirestoreUserDAO: CurrentFirestoreUserDAO, uid: String) {
+        db.collection(collectionName)
+            .document(uid)
+            .set(currentFirestoreUserDAO)
+            .addOnCompleteListener {
+                if(it.isSuccessful) {
+                    Log.d(TAG, "Added new document with current uid to firestore")
+                }
+            }
     }
 
     override suspend fun updateUser(currentFirestoreUserDAO: CurrentFirestoreUserDAO) {
@@ -95,6 +105,19 @@ class FirestoreApi: FirestoreInter {
         }
         // Return null if userName not found in collection
         return null
+    }
+
+    override suspend fun findUserWithDocumentId(documentId: String): LiveData<FirestoreUserDAO> {
+        db.collection(collectionName).document(documentId)
+            .get()
+            .addOnSuccessListener {
+                val currentUserDocument = it.toObject<FirestoreUserDAO>()
+                _currentDocumentIDLD.value = currentUserDocument
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "Error loading user")
+            }
+        return currentDocumentId
     }
 
     override suspend fun findAllUsersInBounds(map: GoogleMap) {

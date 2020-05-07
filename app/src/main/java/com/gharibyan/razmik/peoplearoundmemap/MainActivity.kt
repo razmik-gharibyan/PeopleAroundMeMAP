@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import com.gharibyan.razmik.peoplearoundmemap.ui.CustomViewModelFactory
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapFragment
 import com.gharibyan.razmik.peoplearoundmemap.ui.map.MapViewModel
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     // Initialization
     private lateinit var customViewModelFactory: CustomViewModelFactory
     lateinit var mapViewModel: MapViewModel
+
+    // Variables
+    private val currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
 
     // Views
     private lateinit var navView: BottomNavigationView
@@ -98,7 +102,15 @@ class MainActivity : AppCompatActivity() {
         navView.selectedItemId = R.id.navigation_map
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
+        currentFirestoreUserDAO.isActive = false
+        mapViewModel.updateUser(currentFirestoreUserDAO)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        currentFirestoreUserDAO.isActive = true
+        mapViewModel.updateUser(currentFirestoreUserDAO)
     }
 }
