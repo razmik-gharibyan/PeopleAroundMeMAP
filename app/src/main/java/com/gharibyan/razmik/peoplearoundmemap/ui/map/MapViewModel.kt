@@ -133,7 +133,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
             if(it.isNotEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
                     for (firestoreUserDAO in it) {
-                        if(firestoreUserDAO.isVisible!!) {
+                        if(firestoreUserDAO.isVisible!! && firestoreUserDAO.isActive!!) {
                             val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
                             markerList.add(markerApi.addMarker(firestoreUserDAO,moveCamera)!!)
                         }
