@@ -367,4 +367,5 @@ class MapFragment : Fragment() {
         super.onLowMemory()
         mapView.onLowMemory()
     }
+
 }

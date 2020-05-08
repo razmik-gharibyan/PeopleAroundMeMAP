@@ -139,4 +139,8 @@ class MainActivity : AppCompatActivity() {
         currentFirestoreUserDAO.isActive = true
         mapViewModel.updateUser(currentFirestoreUserDAO)
     }
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+    }
 }
