@@ -170,7 +170,8 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                                 // If there is marker on map , but no actual user in bound with that markers document id
                                 // then remove that marker from map
                                 markerList.forEachIndexed { index, markerDAO ->
-                                    if(markerDAO.documentId == firestoreUserDAO.documentId) {
+                                    if(markerDAO.documentId == firestoreUserDAO.documentId &&
+                                            markerDAO.firestoreUserDAO!!.location == firestoreUserDAO.location) {
                                         // Enter here if marker and in bound user are matching, that means do not delete
                                         // this marker from map. Add current marker to temporary list , then replace main in bound user list
                                         // with this list
