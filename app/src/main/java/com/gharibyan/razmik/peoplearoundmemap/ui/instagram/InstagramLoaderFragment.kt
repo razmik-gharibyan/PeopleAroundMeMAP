@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -56,6 +58,7 @@ class InstagramLoaderFragment: Fragment() {
 
     // Views
     private lateinit var webView: WebView
+    private lateinit var splashTextView: TextView
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -70,6 +73,7 @@ class InstagramLoaderFragment: Fragment() {
         auth = FirebaseAuth.getInstance()
 
         webView = view.findViewById(R.id.web_view)
+        splashTextView = view.findViewById(R.id.splash_text)
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.instagram.com/")
@@ -87,6 +91,7 @@ class InstagramLoaderFragment: Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun openWebView() {
+        splashTextView.visibility = View.GONE
         val webSettings: WebSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webView.webViewClient = object: WebViewClient() {
