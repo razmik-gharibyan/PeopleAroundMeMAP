@@ -6,33 +6,43 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageUrlProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerIconWithDocument
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import java.lang.Exception
 
 class MarkerApi: MarkerInter {
+    var iconList = ArrayList<MarkerIconWithDocument>()
 
     override suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO, moveCamera: Boolean): MarkerDAO? {
         if(firestoreUserDAO.isVisible!!) {
             val followerProcessing = FollowerProcessing()
             val imageProcessing = ImageProcessing(followerProcessing)
             val imageUrlProcessing = ImageUrlProcessing()
+            var bitmap: Bitmap? = null
             try {
+                /*
+                var iconWithDocument = MarkerIconWithDocument()
+                for(document in iconList) {
+                    if(document.documentId == firestoreUserDAO.documentId){
+                        bitmap = document.icon
+                        break
+                    }
+                }
+                if(bitmap == null) {
+                    bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
+                    iconWithDocument.icon = bitmap
+                    iconWithDocument.documentId = firestoreUserDAO.documentId
+                    iconList.add(iconWithDocument)
+                }
+                 */
+                bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
                 val markerOptions = MarkerOptions()
-                val bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
                 val roundBitMap: Bitmap
                 val resizedBitMap: Bitmap
-                val userListFragmentBitmap: Bitmap
                 resizedBitMap = imageProcessing.getResizedBitmap(bitmap, firestoreUserDAO.followers!!) // Resize bitmap
                 roundBitMap = imageProcessing.getCroppedBitmap(resizedBitMap) // Make current bitmap to round type
-                userListFragmentBitmap = imageProcessing.getCroppedBitmap(
-                    imageProcessing.getResizedBitmapForUserListFragment(bitmap)
-                ) // Make current bitmap for userlist fragment type
-                val userPictureString: String =
-                    imageProcessing.bitmapToString(userListFragmentBitmap) //Convert bitmap to String to send to fragment as param
-                val fullPictureString: String = imageProcessing.bitmapToString(bitmap!!)
-
                 val latLng = LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude)
                 markerOptions.position(latLng)
                 markerOptions.visible(true)

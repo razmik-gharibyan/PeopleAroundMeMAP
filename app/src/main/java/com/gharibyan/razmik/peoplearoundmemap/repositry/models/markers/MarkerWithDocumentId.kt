@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class MarkerWithDocumentId {
 
-    //var marker: Marker? = null
     var markerItem: MarkerItem? = null
     var documentId: String? = null
     var markerOptions: MarkerOptions? = null
