@@ -14,14 +14,5 @@ class ConnectionActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connection)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        if (!isTaskRoot)
-        {
-            val intent = intent;
-            val intentAction = intent.action;
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
-                finish();
-                return;
-            }
-        }
     }
 }
