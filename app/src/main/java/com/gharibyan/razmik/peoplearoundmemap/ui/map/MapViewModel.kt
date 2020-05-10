@@ -2,6 +2,7 @@ package com.gharibyan.razmik.peoplearoundmemap.ui.map
 
 import android.content.Context
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.*
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.BoundProcessor
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.CurrentFirestoreUserDAO
@@ -22,6 +23,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : ViewModel() {
+
+    // Constants
+    private var TAG = javaClass.name
 
     // LiveData
     private var _locationLD = MutableLiveData<Location>()
@@ -45,7 +49,6 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     // Initialization
     // -- Location
-    private var markersOnMapList = ArrayList<MarkerWithDocumentId>()
     private val locationApi = LocationApi(context)
     private val observer = object: Observer<Location>{
         override fun onChanged(location: Location?) {
@@ -151,10 +154,6 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO,moveCamera: Boolean): MarkerDAO? {
         return markerApi.addMarker(firestoreUserDAO,moveCamera)
-    }
-
-    fun refreshList(temporaryList: ArrayList<MarkerWithDocumentId>) {
-        markersOnMapList = temporaryList
     }
 
     fun sendSearchedUserToMap(firestoreUserDAO: FirestoreUserDAO) {

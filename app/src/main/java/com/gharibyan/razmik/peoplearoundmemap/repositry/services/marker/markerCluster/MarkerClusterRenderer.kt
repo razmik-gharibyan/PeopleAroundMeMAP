@@ -46,7 +46,7 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         super.onBeforeClusterRendered(cluster, markerOptions)
     }
 
-    fun updateMarker(markerItem: MarkerItem, newPosition: LatLng) {
+    fun updateMarker(markerItem: MarkerItem?, newPosition: LatLng) {
         getMarker(markerItem as T).position = newPosition
     }
 }
