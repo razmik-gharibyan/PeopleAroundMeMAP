@@ -44,9 +44,6 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     // Initialization
     // -- Location
-    private var inBoundMarkerList = ArrayList<MarkerWithDocumentId>()
-    private val markerList = ArrayList<MarkerDAO>()
-    private var markerListCopy = ArrayList<MarkerDAO>()
     private val locationApi = LocationApi(context)
     private val observer = object: Observer<Location>{
         override fun onChanged(location: Location?) {
@@ -133,58 +130,17 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     fun markerOperations() {
         inBoundUsersList.observe(lifecycleOwner, Observer {
+            val markerList = ArrayList<MarkerDAO>()
             if(it.isNotEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
                     for (firestoreUserDAO in it) {
                         // Check if user is active and visible
-                        if(firestoreUserDAO.isVisible!! && firestoreUserDAO.isActive!!) {
-                            if(inBoundMarkerList.isNotEmpty()) {
-                                // Enter here if there is already markers on map right now
-                                kotlin.run customLoop@{
-                                    inBoundMarkerList.forEachIndexed { index, markerWithDocumentId ->
-                                        if (markerWithDocumentId.documentId == firestoreUserDAO.documentId &&
-                                            markerWithDocumentId.firestoreUserDAO!!.location == firestoreUserDAO.location) {
-                                            // Enter here if user with same marker icon and location is not changed
-                                            return@customLoop
-                                        }else if(markerWithDocumentId.documentId == firestoreUserDAO.documentId &&
-                                            markerWithDocumentId.firestoreUserDAO!!.location != firestoreUserDAO.location){
-                                            // Enter here if user location changed on map, that means need to recreate bitmap
-                                            val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
-                                            markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
-                                        }else{
-                                            if(index == inBoundMarkerList.size - 1) {
-                                                // Enter here if new user should be added to map
-                                                val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
-                                                markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
-                                            }
-                                        }
-                                    }
-                                }
-                            }else{
-                                // Enter here if there is no markers on map, so that every in bound user will be added to map
-                                val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
-                                markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
-                            }
-                            kotlin.run markerRemoverLoop@{
-                                // Check markers in map and users in bounds
-                                // If there is marker on map , but no actual user in bound with that markers document id
-                                // then remove that marker from map
-                                markerList.forEachIndexed { index, markerDAO ->
-                                    if(markerDAO.documentId == firestoreUserDAO.documentId &&
-                                            markerDAO.firestoreUserDAO!!.location == firestoreUserDAO.location) {
-                                        // Enter here if marker and in bound user are matching, that means do not delete
-                                        // this marker from map. Add current marker to temporary list , then replace main in bound user list
-                                        // with this list
-                                        markerListCopy.add(markerDAO)
-                                        return@markerRemoverLoop
-                                    }
-                                }
-                            }
+                        if (firestoreUserDAO.isVisible!! && firestoreUserDAO.isActive!!) {
+                            val moveCamera =
+                                firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
+                            markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
                         }
                     }
-                    markerList.clear()
-                    markerList.addAll(markerListCopy)
-                    markerListCopy.clear()
                     _markersLD.value = markerList
                 }
             }else{
@@ -195,10 +151,6 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     fun sendSearchedUserToMap(firestoreUserDAO: FirestoreUserDAO) {
         _searchedUserToMapLD.value = firestoreUserDAO
-    }
-
-    fun refreshMarkerList(markerList: ArrayList<MarkerWithDocumentId>) {
-        inBoundMarkerList = markerList
     }
 
     override fun onCleared() {

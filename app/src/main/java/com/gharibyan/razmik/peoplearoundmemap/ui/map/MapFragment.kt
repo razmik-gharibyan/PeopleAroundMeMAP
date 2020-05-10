@@ -275,7 +275,6 @@ class MapFragment : Fragment() {
                 markerList.clear()
                 markerList.addAll(markerListCopy) // Rewrite new data into original markerList
                 clusterManager.cluster()
-                mapViewModel.refreshMarkerList(markerList)
             }
         })
     }

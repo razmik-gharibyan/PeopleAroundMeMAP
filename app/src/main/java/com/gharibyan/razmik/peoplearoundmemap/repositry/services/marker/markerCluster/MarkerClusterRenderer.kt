@@ -3,6 +3,7 @@ package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerC
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.widget.ImageView
 import androidx.core.graphics.createBitmap
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -12,11 +13,18 @@ import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
+import com.google.maps.android.ui.IconGenerator
 
 class MarkerClusterRenderer<T: MarkerItem>(context: Context,
                                     map: GoogleMap?,
                                     clusterManager: ClusterManager<T>?
 ): DefaultClusterRenderer<T>(context, map, clusterManager) {
+
+    private var iconGenerator = IconGenerator(context.applicationContext)
+    private var imageView = ImageView(context.applicationContext)
+    private var markerWidth = 0
+    private var markerHeight = 0
+
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
         return cluster!!.size >= 2

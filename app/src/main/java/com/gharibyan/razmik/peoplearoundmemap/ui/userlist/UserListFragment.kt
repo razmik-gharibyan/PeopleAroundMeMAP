@@ -33,6 +33,7 @@ class UserListFragment : Fragment() {
 
     // Views
     private lateinit var recyclerView: RecyclerView
+    private lateinit var textView: TextView
 
     // Variables
     private var userlist = ArrayList<RoomUser>()
@@ -51,10 +52,14 @@ class UserListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_userlist, container, false)
 
         recyclerView = view.findViewById(R.id.user_list_recycler_view)
+        textView = view.findViewById(R.id.noone_here_text_view)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
         CoroutineScope(Dispatchers.Main).launch {
             userlist = roomUserDao.getAll() as ArrayList<RoomUser>
+            if(userlist.isEmpty()) {
+                textView.visibility = View.VISIBLE
+            }
             recyclerView.adapter = UserListAdapter(context!!,userlist)
         }
 

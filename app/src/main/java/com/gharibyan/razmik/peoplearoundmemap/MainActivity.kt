@@ -109,9 +109,12 @@ class MainActivity : AppCompatActivity() {
                 active = mapFragment
                 return@setOnNavigationItemSelectedListener true
             }else if(it.itemId == R.id.navigation_list) {
-                fragmentManager.beginTransaction().hide(active).add(R.id.nav_host_fragment,listFragment).commit()
-                active = listFragment
-                return@setOnNavigationItemSelectedListener true
+                if(active != listFragment) {
+                    fragmentManager.beginTransaction().hide(active)
+                        .add(R.id.nav_host_fragment, listFragment).commit()
+                    active = listFragment
+                    return@setOnNavigationItemSelectedListener true
+                }
             }else if(it.itemId == R.id.navigation_search) {
                 if(active == listFragment) {
                     fragmentManager.beginTransaction().remove(listFragment).commit()
