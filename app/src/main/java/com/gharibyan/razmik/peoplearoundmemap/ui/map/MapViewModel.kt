@@ -44,6 +44,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     // Initialization
     // -- Location
+    private var markersOnMapList = ArrayList<MarkerWithDocumentId>()
     private val locationApi = LocationApi(context)
     private val observer = object: Observer<Location>{
         override fun onChanged(location: Location?) {
@@ -136,9 +137,18 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                     for (firestoreUserDAO in it) {
                         // Check if user is active and visible
                         if (firestoreUserDAO.isVisible!! && firestoreUserDAO.isActive!!) {
-                            val moveCamera =
-                                firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
-                            markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
+                            if(markersOnMapList.isNotEmpty()) {
+                                for (marker in markersOnMapList) {
+                                    if (firestoreUserDAO.documentId == marker.firestoreUserDAO!!.documentId &&
+                                        firestoreUserDAO.location != marker.firestoreUserDAO!!.location) {
+                                        val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
+                                        markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
+                                    }
+                                }
+                            }else{
+                                val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
+                                markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
+                            }
                         }
                     }
                     _markersLD.value = markerList
@@ -147,6 +157,10 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                 _markersLD.value = markerList
             }
         })
+    }
+
+    fun refreshList(temporaryList: ArrayList<MarkerWithDocumentId>) {
+        markersOnMapList = temporaryList
     }
 
     fun sendSearchedUserToMap(firestoreUserDAO: FirestoreUserDAO) {
