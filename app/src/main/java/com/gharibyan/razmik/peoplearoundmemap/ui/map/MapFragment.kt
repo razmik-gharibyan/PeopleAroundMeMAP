@@ -20,11 +20,13 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUserDao
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.UsersDatabase
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
+import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.MarkerApi
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster.MarkerClusterRenderer
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster.MarkerItem
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.clustering.ClusterManager
@@ -55,6 +57,7 @@ class MapFragment : Fragment() {
     private var map: GoogleMap? = null
     private var markerList = ArrayList<MarkerWithDocumentId>()
     private var firstTimeCameraMove = false
+    private var clusterManagerListCopy = ArrayList<MarkerItem>()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         // -- Local database
@@ -198,19 +201,26 @@ class MapFragment : Fragment() {
             if(markerList.isNotEmpty()) {
                 markerListCopy.addAll(markerList)
             }
-            for(markerDAO in it) {
+            for(firestoreUserDAO in it) {
                 if(markerList.isNotEmpty()) {
                     kotlin.run loop@{
                         markerList.forEachIndexed { index, currentMarker ->
-                            if(markerDAO.documentId.equals(currentMarker.documentId)) {
-                                if(!currentMarker.firestoreUserDAO!!.equals(markerDAO.firestoreUserDAO)) {
+                            if(firestoreUserDAO.documentId.equals(currentMarker.documentId)) {
+                                if(!currentMarker.firestoreUserDAO!!.equals(firestoreUserDAO)) {
                                     // If marker is still in bounds but changed it's location or personal info (update marker)
-                                    clusterManager.removeItem(currentMarker.markerItem)
-                                    markerListCopy.removeAt(index)
-                                    addMarkerToCluster(markerDAO,markerListCopy)
+                                    //clusterManager.removeItem(currentMarker.markerItem)
+                                    //markerListCopy.removeAt(index)
+                                    //addMarkerToCluster(firestoreUserDAO,markerListCopy)
+                                    for( marker in clusterManagerListCopy) {
+                                        if(firestoreUserDAO.documentId == marker.documentId) {
+                                            val newPosition = LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude)
+                                            markerClusterRenderer.updateMarker(marker,newPosition)
+                                            break
+                                        }
+                                    }
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        val roomUserDocumentId = roomUserDao.findUserByDocumentId(markerDAO.documentId!!).id
-                                        val roomUser = changeFireStoreUserToRoomUser(markerDAO.firestoreUserDAO!!)
+                                        val roomUserDocumentId = roomUserDao.findUserByDocumentId(firestoreUserDAO.documentId!!).id
+                                        val roomUser = changeFireStoreUserToRoomUser(firestoreUserDAO)
                                         roomUser.id = roomUserDocumentId
                                         roomUserDao.updateUser(roomUser)
                                     }
@@ -219,9 +229,10 @@ class MapFragment : Fragment() {
                             }else{
                                 if(index == markerList.size - 1) {
                                     // If loop is finished and there were no marker on map with this document id, then add marker
-                                    addMarkerToCluster(markerDAO,markerListCopy)
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        roomUserDao.insertUser(changeFireStoreUserToRoomUser(markerDAO.firestoreUserDAO!!))
+                                        val marker = mapViewModel.addMarker(firestoreUserDAO,false)
+                                        addMarkerToCluster(marker!!,markerListCopy)
+                                        roomUserDao.insertUser(changeFireStoreUserToRoomUser(firestoreUserDAO))
                                     }
                                 }
                             }
@@ -229,9 +240,10 @@ class MapFragment : Fragment() {
                     }
                 }else{
                     // Add marker if there is no marker on map
-                    addMarkerToCluster(markerDAO,markerListCopy)
                     CoroutineScope(Dispatchers.IO).launch {
-                        roomUserDao.insertUser(changeFireStoreUserToRoomUser(markerDAO.firestoreUserDAO!!))
+                        val marker = mapViewModel.addMarker(firestoreUserDAO,false)
+                        addMarkerToCluster(marker!!,markerListCopy)
+                        roomUserDao.insertUser(changeFireStoreUserToRoomUser(firestoreUserDAO))
                     }
                 }
             }
@@ -245,6 +257,7 @@ class MapFragment : Fragment() {
                             // If there are no markers in bounds received from inBoundUsers LiveData
                             // but there are active markers on map, then remove all active markers from map
                             clusterManager.clearItems()
+                            clusterManagerListCopy.clear()
                             markerListCopy.clear()
                             CoroutineScope(Dispatchers.IO).launch {
                                 roomUserDao.deleteAll()
@@ -261,6 +274,7 @@ class MapFragment : Fragment() {
                                             // invisible , then remove that marker from map
                                             clusterManager.removeItem(markerWithDocumentId.markerItem)
                                             markerListCopy.removeAt(index - counter)
+                                            clusterManagerListCopy.remove(markerWithDocumentId.markerItem)
                                             counter++
                                             CoroutineScope(Dispatchers.IO).launch {
                                                 roomUserDao.deleteUserByDocumentId(markerWithDocumentId.documentId!!)
@@ -282,8 +296,9 @@ class MapFragment : Fragment() {
     private fun addMarkerToCluster(markerDAO: MarkerDAO, markerListCopy: ArrayList<MarkerWithDocumentId>) {
         val markerItem = MarkerItem(markerDAO.latLng!!,"Open Profile",
             markerDAO.markerOptions!!.title,markerDAO.markerOptions!!.icon, markerDAO.firestoreUserDAO!!.followers!!,
-            markerDAO.firestoreUserDAO!!.userName!!)
+            markerDAO.firestoreUserDAO!!.userName!!,markerDAO.documentId!!)
         clusterManager.addItem(markerItem)
+        clusterManagerListCopy.add(markerItem)
         val markerWithDocumentId = MarkerWithDocumentId()
         markerWithDocumentId.markerItem = markerItem
         markerWithDocumentId.documentId = markerDAO.documentId

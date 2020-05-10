@@ -5,9 +5,11 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.core.graphics.createBitmap
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterItem
@@ -19,12 +21,6 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
                                     map: GoogleMap?,
                                     clusterManager: ClusterManager<T>?
 ): DefaultClusterRenderer<T>(context, map, clusterManager) {
-
-    private var iconGenerator = IconGenerator(context.applicationContext)
-    private var imageView = ImageView(context.applicationContext)
-    private var markerWidth = 0
-    private var markerHeight = 0
-
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
         return cluster!!.size >= 2
@@ -48,5 +44,9 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         }
         markerOptions!!.title("Highest number of followers in this group have $userName")
         super.onBeforeClusterRendered(cluster, markerOptions)
+    }
+
+    fun updateMarker(markerItem: MarkerItem, newPosition: LatLng) {
+        getMarker(markerItem as T).position = newPosition
     }
 }

@@ -29,7 +29,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     private var _currentUserLD = MutableLiveData<FirestoreUserDAO>()
     private var _currentUserDocumentLD = MutableLiveData<FirestoreUserDAO>()
     private var _newUserDocumentLD = MutableLiveData<String>()
-    private var _markersLD = MutableLiveData<ArrayList<MarkerDAO>>()
+    private var _markersLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _usersFoundBySearchLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _searchedUserToMapLD = MutableLiveData<FirestoreUserDAO>()
     var locationUpdates: LiveData<Location> = _locationLD
@@ -38,7 +38,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     var currentUser: LiveData<FirestoreUserDAO> = _currentUserLD
     var currentUserDocument: LiveData<FirestoreUserDAO> = _currentUserDocumentLD
     var newUserDocumentId: LiveData<String> = _newUserDocumentLD
-    var markersList: LiveData<ArrayList<MarkerDAO>> = _markersLD
+    var markersList: LiveData<ArrayList<FirestoreUserDAO>> = _markersLD
     var usersFoundBySearch: LiveData<ArrayList<FirestoreUserDAO>> = _usersFoundBySearchLD
     var searchedUserToMap: LiveData<FirestoreUserDAO> = _searchedUserToMapLD
 
@@ -131,24 +131,13 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
 
     fun markerOperations() {
         inBoundUsersList.observe(lifecycleOwner, Observer {
-            val markerList = ArrayList<MarkerDAO>()
+            val markerList = ArrayList<FirestoreUserDAO>()
             if(it.isNotEmpty()) {
                 CoroutineScope(Dispatchers.Main).launch {
                     for (firestoreUserDAO in it) {
                         // Check if user is active and visible
                         if (firestoreUserDAO.isVisible!! && firestoreUserDAO.isActive!!) {
-                            if(markersOnMapList.isNotEmpty()) {
-                                for (marker in markersOnMapList) {
-                                    if (firestoreUserDAO.documentId == marker.firestoreUserDAO!!.documentId &&
-                                        firestoreUserDAO.location != marker.firestoreUserDAO!!.location) {
-                                        val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
-                                        markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
-                                    }
-                                }
-                            }else{
-                                val moveCamera = firestoreUserDAO.documentId.equals(currentFirestoreUserDAO.documentId)
-                                markerList.add(markerApi.addMarker(firestoreUserDAO, moveCamera)!!)
-                            }
+                            markerList.add(firestoreUserDAO)
                         }
                     }
                     _markersLD.value = markerList
@@ -157,6 +146,10 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
                 _markersLD.value = markerList
             }
         })
+    }
+
+    suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO,moveCamera: Boolean): MarkerDAO? {
+        return markerApi.addMarker(firestoreUserDAO,moveCamera)
     }
 
     fun refreshList(temporaryList: ArrayList<MarkerWithDocumentId>) {
