@@ -2,21 +2,18 @@ package com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore
 
 import com.google.firebase.firestore.GeoPoint
 
-class FirestoreUserDAO{
-    var token: String? = null
-    var userName: String? = null
-    var followers: Long? = null
-    var picture: String? = null
-    var location: GeoPoint? = null
-    var isVisible: Boolean? = null
-    var isPrivate: Boolean? = null
-    var isVerified: Boolean? = null
-    var documentId: String? = null
+data class FirestoreUserDAO (
+    var token: String? = null,
+    var userName: String? = null,
+    var followers: Long? = null,
+    var picture: String? = null,
+    var location: GeoPoint? = null,
+    var isVisible: Boolean? = null,
+    var isPrivate: Boolean? = null,
+    var isVerified: Boolean? = null,
+    var documentId: String? = null,
     var isActive: Boolean? = null
-
-    companion object{
-
-    }
+) {
 
     override fun equals(other: Any?): Boolean {
         other as FirestoreUserDAO
@@ -58,4 +55,19 @@ class FirestoreUserDAO{
         result = 31 * result + (isActive?.hashCode() ?: 0)
         return result
     }
+}
+
+fun FirestoreUserDAO.clone() = with(this) {
+    FirestoreUserDAO(
+        token = token,
+        userName = userName,
+        followers = followers,
+        picture = picture,
+        location = location?.run { GeoPoint(latitude, longitude) },
+        isVisible = isVisible,
+        isPrivate = isPrivate,
+        isVerified = isVerified,
+        documentId = documentId,
+        isActive = isActive
+    )
 }

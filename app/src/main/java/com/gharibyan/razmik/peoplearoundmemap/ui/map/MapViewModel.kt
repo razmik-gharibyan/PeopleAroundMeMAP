@@ -19,6 +19,7 @@ import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : ViewModel() {
 

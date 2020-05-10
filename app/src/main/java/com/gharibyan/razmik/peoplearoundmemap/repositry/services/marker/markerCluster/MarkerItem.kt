@@ -19,3 +19,15 @@ class MarkerItem(val myPosition: LatLng, val mySnippet: String, val myTitle: Str
         return myPosition
     }
 }
+
+fun MarkerItem.clone() = with(this) {
+    MarkerItem(
+        myPosition = LatLng(myPosition.latitude, myPosition.longitude),
+        mySnippet = mySnippet,
+        myTitle = myTitle,
+        bitmapDescriptor = bitmapDescriptor,
+        followers = followers,
+        userName = userName,
+        documentId = documentId
+    )
+}
