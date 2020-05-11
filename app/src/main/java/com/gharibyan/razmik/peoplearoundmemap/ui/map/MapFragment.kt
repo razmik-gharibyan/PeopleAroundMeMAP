@@ -234,7 +234,8 @@ class MapFragment : Fragment() {
                                         } else {
                                             if (index == markerList.size - 1) {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
-                                                val marker = mapViewModel.addMarker(firestoreUserDAO, false)
+                                                val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
+                                                val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
                                                 withContext(Dispatchers.Main) { addMarkerToCluster(marker!!, markerListCopy) }
                                                 roomUserDao.insertUser(changeFireStoreUserToRoomUser(firestoreUserDAO))
                                             }
@@ -243,7 +244,8 @@ class MapFragment : Fragment() {
                                 }
                             } else {
                                 // Add marker if there is no marker on map
-                                val marker = mapViewModel.addMarker(firestoreUserDAO, false)
+                                val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
+                                val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
                                 withContext(Dispatchers.Main) { addMarkerToCluster(marker!!, markerListCopy) }
                                 roomUserDao.insertUser(changeFireStoreUserToRoomUser(firestoreUserDAO))
                             }
@@ -279,10 +281,10 @@ class MapFragment : Fragment() {
                                     if (smallIndex == initialList.size - 1) {
                                         // If the marker that is active on map is out of bounds or become
                                         // invisible , then remove that marker from map
-                                        var result = false
-                                        withContext(Dispatchers.Main) {result = clusterManager.removeItem(clusterManagerListCopy[index])}
+                                        withContext(Dispatchers.Main) {
+                                            clusterManager.removeItem(clusterManagerListCopy[index - counter])}
                                         markerListCopy.removeAt(index - counter)
-                                        clusterManagerListCopy.removeAt(index)
+                                        clusterManagerListCopy.removeAt(index - counter)
                                         counter++
                                         roomUserDao.deleteUserByDocumentId(markerWithDocumentId.documentId!!)
                                     }
