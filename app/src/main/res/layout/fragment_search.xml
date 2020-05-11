@@ -6,13 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".ui.search.SearchFragment">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/search_edit_text_view"
+    <LinearLayout
+        android:id="@+id/search_header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/search_user_list_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/search_icon_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_search_purple_38dp"
+            android:contentDescription="Search" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_edit_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColorHint="#B363E7"
+            android:hint="Enter username"/>
+
+    </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_user_list_recycler_view"
@@ -20,6 +43,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_edit_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/search_header_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
