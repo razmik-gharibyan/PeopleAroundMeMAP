@@ -12,7 +12,8 @@ data class FirestoreUserDAO (
     var isPrivate: Boolean? = null,
     var isVerified: Boolean? = null,
     var documentId: String? = null,
-    var isActive: Boolean? = null
+    var isActive: Boolean? = null,
+    var instagram_id: Long? = null
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -38,7 +39,8 @@ data class FirestoreUserDAO (
             isVisible == other.isVisible &&
             isPrivate == other.isPrivate &&
             isVerified == other.isVerified &&
-            isActive == other.isActive) return true
+            isActive == other.isActive &&
+            instagram_id == other.instagram_id) return true
         return false
     }
 
@@ -53,6 +55,7 @@ data class FirestoreUserDAO (
         result = 31 * result + (isVerified?.hashCode() ?: 0)
         result = 31 * result + (documentId?.hashCode() ?: 0)
         result = 31 * result + (isActive?.hashCode() ?: 0)
+        result = 31 * result + (instagram_id?.hashCode() ?: 0)
         return result
     }
 }
@@ -68,6 +71,7 @@ fun FirestoreUserDAO.clone() = with(this) {
         isPrivate = isPrivate,
         isVerified = isVerified,
         documentId = documentId,
-        isActive = isActive
+        isActive = isActive,
+        instagram_id = instagram_id
     )
 }

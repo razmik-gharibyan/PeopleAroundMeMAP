@@ -14,6 +14,7 @@ class CurrentFirestoreUserDAO {
     var isVerified: Boolean? = null
     var documentId: String? = null
     var isActive: Boolean? = null
+    var instagram_id: Long? = null
 
     companion object{
 

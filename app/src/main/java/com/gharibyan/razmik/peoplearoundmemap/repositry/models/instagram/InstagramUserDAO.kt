@@ -9,6 +9,7 @@ class InstagramUserDAO {
     var isPrivate: Boolean? = null
     var isVerified: Boolean? = null
     var isActive: Boolean? = null
+    var instagram_id: Long? = null
 
     companion object {
     }

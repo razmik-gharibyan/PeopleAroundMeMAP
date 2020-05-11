@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.repositry.services.instagram
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gharibyan.razmik.peoplearoundmemap.api.instagram.InstagramPlaceHolderApi
@@ -11,15 +12,22 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.models.instagram.persona
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.singletons.Singletons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class InstagramApi(val instagramPlaceHolderApi: InstagramPlaceHolderApi) {
 
+    // Constants
+    private val TAG = javaClass.name
+    private val OAUTH_ERROR_MESSAGE = "Invalid OAuth access token."
+
     // LiveData
     private var _infoSuccessLD = MutableLiveData<Boolean>()
+    private var _oAuthErrorLD = MutableLiveData<Boolean>()
     var infoSuccess: LiveData<Boolean> = _infoSuccessLD
+    var oAuthError: LiveData<Boolean> = _oAuthErrorLD
 
     // Variables
     private var userId: Long? = null
@@ -79,6 +87,7 @@ class InstagramApi(val instagramPlaceHolderApi: InstagramPlaceHolderApi) {
                     longToken = userTokenLong.access_token
                 }
                 instagramUserDAO.token = userTokenLong?.access_token
+                instagramUserDAO.instagram_id = userId
                 getUserInfo(userId, userTokenLong?.access_token!!)
             }
 
@@ -92,11 +101,19 @@ class InstagramApi(val instagramPlaceHolderApi: InstagramPlaceHolderApi) {
             access_token
         )
         call.enqueue(object: Callback<UserInfo> {
-            override fun onFailure(call: Call<UserInfo>, t: Throwable) {}
+            override fun onFailure(call: Call<UserInfo>, t: Throwable) {
+                t.printStackTrace()
+            }
 
             override fun onResponse(call: Call<UserInfo>, response: Response<UserInfo>) {
                 if(!response.isSuccessful) {
-                    return
+                    val jsonObject = JSONObject(response.errorBody()!!.string())
+                    val errorJsonObject = JSONObject(jsonObject.getString("error"))
+                    val errorMassage = errorJsonObject.getString("message")
+                    if(errorMassage == OAUTH_ERROR_MESSAGE) {
+                        _oAuthErrorLD.value = true
+                        return
+                    }
                 }
                 val userInfo = response.body()
                 instagramUserDAO.userName = userInfo?.username

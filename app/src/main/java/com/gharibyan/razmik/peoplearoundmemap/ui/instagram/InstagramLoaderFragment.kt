@@ -50,6 +50,7 @@ class InstagramLoaderFragment: Fragment() {
     private lateinit var auth: FirebaseAuth
     private var instagramUserDAO = Singletons.instagramUserDAO
     private var currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
+    private var checkToken = false
 
     // Classes
     private lateinit var instagramPlaceHolderApi: InstagramPlaceHolderApi
@@ -85,6 +86,8 @@ class InstagramLoaderFragment: Fragment() {
 
         checkIfUserSignedIn()
         listenToCurrentUser()
+        listenToInstagramLoginSuccess()
+        oAuthErrorListener()
 
         return view
     }
@@ -107,14 +110,19 @@ class InstagramLoaderFragment: Fragment() {
                 return false
             }
         }
-
         webView.loadUrl(authorizeUrl)
 
+        listenToInstagramLoginSuccess()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun listenToInstagramLoginSuccess() {
         instagramApi.infoSuccess.observe(viewLifecycleOwner, Observer {
             if(it) {
+                // Enter here if successfully recieved user information from instagram
                 val email = encryptEmail(instagramUserDAO.userName!!)
                 val password = encryptPassword(instagramUserDAO.userName!!)
-                signInUser(email,password)
+                signInUser(email, password)
             }else{
                 throw Exception("Error loading user instagram data")
             }
@@ -147,17 +155,39 @@ class InstagramLoaderFragment: Fragment() {
     private fun listenToCurrentUser() {
         firestoreApi.currentDocumentId.observe(viewLifecycleOwner, Observer {
             if(it == null) {
+                // Enter here if there is no user logged in
                 auth.currentUser!!.delete()
                 openWebView()
             }else {
-                instagramUserDAO.userName = it.userName
-                instagramUserDAO.followers = it.followers
-                instagramUserDAO.picture = it.picture
-                instagramUserDAO.token = it.token
-                instagramUserDAO.isPrivate = it.isPrivate
-                instagramUserDAO.isVerified = it.isVerified
-                instagramUserDAO.isActive = true
-                openMapActivity()
+                // Enter here if user is logged in, get firebase document for it
+                // then check if token for that user is expired or not
+                instagramUserDAO.documentId = it.documentId
+                if(!checkToken) {
+                    instagramUserDAO.userName = it.userName
+                    instagramUserDAO.followers = it.followers
+                    instagramUserDAO.picture = it.picture
+                    instagramUserDAO.token = it.token
+                    instagramUserDAO.isPrivate = it.isPrivate
+                    instagramUserDAO.isVerified = it.isVerified
+                    instagramUserDAO.instagram_id = it.instagram_id
+                    instagramUserDAO.isActive = true
+
+                    instagramApi.getUserInfo(instagramUserDAO.instagram_id!!, instagramUserDAO.token!!)
+                    checkToken = true
+                }else{
+                    // Enter here if token is still valid and not expired, open map after this step
+                    currentFirestoreUserDAO.documentId = instagramUserDAO.documentId
+                    currentFirestoreUserDAO.userName = instagramUserDAO.userName
+                    currentFirestoreUserDAO.followers = instagramUserDAO.followers
+                    currentFirestoreUserDAO.picture = instagramUserDAO.picture
+                    currentFirestoreUserDAO.token = instagramUserDAO.token
+                    currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
+                    currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
+                    currentFirestoreUserDAO.isVisible = false
+                    currentFirestoreUserDAO.isActive = true
+                    currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
+                    openMapActivity()
+                }
             }
         })
     }
@@ -189,6 +219,7 @@ class InstagramLoaderFragment: Fragment() {
                                 currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
                                 currentFirestoreUserDAO.isVisible = false
                                 currentFirestoreUserDAO.isActive = true
+                                currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
                                 CoroutineScope(Dispatchers.Main).launch {
                                     firestoreApi.addNewUserWithUID(currentFirestoreUserDAO,currentUser)
                                     openMapActivity()
@@ -197,6 +228,16 @@ class InstagramLoaderFragment: Fragment() {
                         }
                 }
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun oAuthErrorListener() {
+        instagramApi.oAuthError.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                // Enter here if user token is expired, so redirect user to get new token
+                openWebView()
+            }
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
