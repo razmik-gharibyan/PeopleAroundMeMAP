@@ -34,6 +34,7 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
         val usernameView = itemView.username_view
         val followerView = itemView.follower_view
         val gotoProfileButton = itemView.goto_profile_button
+        val onlineView = itemView.online_view
     }
 
     override fun onCreateViewHolder(
@@ -56,6 +57,7 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
             holder.imageView.setImageBitmap(croppedBitmap)
             holder.usernameView.text = username
             holder.followerView.text = followers
+            holder.onlineView.setImageResource(R.drawable.ic_account_online_24dp)
             holder.gotoProfileButton.setOnClickListener {
                 openInstagramApp(username!!)
             }

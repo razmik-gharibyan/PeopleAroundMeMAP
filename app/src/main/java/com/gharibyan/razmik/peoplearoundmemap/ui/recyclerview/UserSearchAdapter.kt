@@ -43,6 +43,7 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
         val usernameView = itemView.username_view
         val followerView = itemView.follower_view
         val gotoProfileButton = itemView.goto_profile_button
+        val onlineView = itemView.online_view
 
         fun clickOnUser(firestoreUserDAO: FirestoreUserDAO,mapViewModel: MapViewModel,activity: MainActivity) {
             itemView.setOnClickListener {
@@ -73,6 +74,11 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                 holder.imageView.setImageBitmap(croppedBitmap)
                 holder.usernameView.text = username
                 holder.followerView.text = followers
+                if(userlist.get(position).isActive!!) {
+                    holder.onlineView.setImageResource(R.drawable.ic_account_online_24dp)
+                }else{
+                    holder.onlineView.setImageResource(R.drawable.ic_account_offline_24dp)
+                }
                 holder.gotoProfileButton.setOnClickListener {
                     openInstagramApp(username!!)
                 }

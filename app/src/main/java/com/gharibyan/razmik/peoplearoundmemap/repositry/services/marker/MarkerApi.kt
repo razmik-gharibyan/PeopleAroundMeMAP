@@ -1,6 +1,7 @@
 package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker
 
 import android.graphics.Bitmap
+import androidx.core.graphics.toColorInt
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.FollowerProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageUrlProcessing

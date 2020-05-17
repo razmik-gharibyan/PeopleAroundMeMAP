@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_gravity="center_horizontal"
-        android:foregroundGravity="center_horizontal"
+        android:layout_gravity="center"
         android:layout_weight="10"/>
 
     <TextView
@@ -33,6 +32,15 @@
         android:textAlignment="center"
         android:gravity="center_horizontal"
         android:layout_weight="25" />
+
+    <ImageView
+        android:id="@+id/online_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:contentDescription="online" />
 
     <Button
         android:id="@+id/goto_profile_button"
