@@ -76,13 +76,13 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                 holder.followerView.text = followers
                 if(userlist.get(position).isActive!!) {
                     holder.onlineView.setImageResource(R.drawable.ic_account_online_24dp)
+                    holder.clickOnUser(userlist.get(position),mapViewModel,activity)
                 }else{
                     holder.onlineView.setImageResource(R.drawable.ic_account_offline_24dp)
                 }
                 holder.gotoProfileButton.setOnClickListener {
                     openInstagramApp(username!!)
                 }
-                holder.clickOnUser(userlist.get(position),mapViewModel,activity)
             }
         }
 
