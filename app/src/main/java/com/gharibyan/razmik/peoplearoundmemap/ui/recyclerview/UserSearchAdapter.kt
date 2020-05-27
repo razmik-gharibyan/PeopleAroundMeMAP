@@ -35,7 +35,8 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
 
     // Initialization
     private val imageUrlProcessing = ImageUrlProcessing()
-    private val imageProcessing = ImageProcessing(FollowerProcessing())
+    private val followerProcessing = FollowerProcessing()
+    private val imageProcessing = ImageProcessing(followerProcessing)
 
 
     class UserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -69,7 +70,7 @@ class UserSearchAdapter(val context: Context, val userlist: ArrayList<FirestoreU
                 val croppedBitmap = imageProcessing.getCroppedBitmap(resizedBitmap)
 
                 val username = userlist.get(position).userName
-                val followers = userlist.get(position).followers.toString()
+                val followers = followerProcessing.instagramFollowersType(userlist.get(position).followers!!)
 
                 holder.imageView.setImageBitmap(croppedBitmap)
                 holder.usernameView.text = username

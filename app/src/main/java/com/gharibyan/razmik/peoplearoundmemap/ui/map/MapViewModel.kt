@@ -153,7 +153,7 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     }
 
     suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO,moveCamera: Boolean): MarkerDAO? {
-        return markerApi.addMarker(firestoreUserDAO,moveCamera)
+        return markerApi.addMarker(firestoreUserDAO,moveCamera, context)
     }
 
     fun sendSearchedUserToMap(firestoreUserDAO: FirestoreUserDAO) {

@@ -1,5 +1,6 @@
 package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.core.graphics.toColorInt
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.FollowerProcessing
@@ -16,7 +17,7 @@ import java.lang.Exception
 class MarkerApi: MarkerInter {
     var iconList = ArrayList<MarkerIconWithDocument>()
 
-    override suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO, moveCamera: Boolean): MarkerDAO? {
+    override suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO, moveCamera: Boolean, context: Context): MarkerDAO? {
         if(firestoreUserDAO.isVisible!!) {
             val followerProcessing = FollowerProcessing()
             val imageProcessing = ImageProcessing(followerProcessing)
@@ -41,8 +42,8 @@ class MarkerApi: MarkerInter {
                 bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
                 val markerOptions = MarkerOptions()
                 val roundBitMap: Bitmap
-                val resizedBitMap: Bitmap
-                resizedBitMap = imageProcessing.getResizedBitmap(bitmap, firestoreUserDAO.followers!!) // Resize bitmap
+                val resizedBitMap: Bitmap =
+                    imageProcessing.getResizedBitmap(bitmap, firestoreUserDAO.followers!!,context) // Resize bitmap
                 roundBitMap = imageProcessing.getCroppedBitmap(resizedBitMap) // Make current bitmap to round type
                 val latLng = LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude)
                 markerOptions.position(latLng)

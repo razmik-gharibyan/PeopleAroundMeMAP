@@ -27,7 +27,8 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
     private val TAG = javaClass.name
 
     private val imageUrlProcessing = ImageUrlProcessing()
-    private val imageProcessing = ImageProcessing(FollowerProcessing())
+    private val followerProcessing = FollowerProcessing()
+    private val imageProcessing = ImageProcessing(followerProcessing)
 
     class UserListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView.image_view
@@ -52,8 +53,7 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
             val croppedBitmap = imageProcessing.getCroppedBitmap(resizedBitmap)
 
             val username = userlist.get(position).username
-            val followers = userlist.get(position).followers.toString()
-
+            val followers = followerProcessing.instagramFollowersType(userlist.get(position).followers!!)
             holder.imageView.setImageBitmap(croppedBitmap)
             holder.usernameView.text = username
             holder.followerView.text = followers
