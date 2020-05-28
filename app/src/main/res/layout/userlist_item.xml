@@ -1,52 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center">
+    android:background="#e8eaed"
+    android:elevation="10dp"
+    android:layout_marginBottom="1dp">
 
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp" />
-
-    <TextView
-        android:id="@+id/username_view"
-        android:layout_width="150dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="10sp" />
+        android:background="#e8eaed">
 
-    <TextView
-        android:id="@+id/follower_view"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:textSize="10sp" />
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_gravity="center"/>
 
-    <ImageView
-        android:id="@+id/online_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:contentDescription="online" />
+        <TextView
+            android:id="@+id/username_view"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="start"
+            android:layout_gravity="center"
+            android:textSize="12sp" />
 
-    <Button
-        android:id="@+id/goto_profile_button"
-        android:layout_width="65dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:background="#B363E7"
-        android:textColor="#FFFFFF"
-        android:text="OPEN PROFILE"
-        android:textSize="8sp" />
+        <TextView
+            android:id="@+id/follower_view"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="end"
+            android:layout_gravity="center"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/online_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_gravity="center"
+            android:contentDescription="online" />
+
+        <Button
+            android:id="@+id/goto_profile_button"
+            android:layout_width="85dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="#B363E7"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="center"
+            android:text="OPEN PROFILE"
+            android:textSize="8sp" />
+
+    </LinearLayout>
 
 </LinearLayout>

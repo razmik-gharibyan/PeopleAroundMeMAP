@@ -31,6 +31,7 @@
         android:backgroundTint="#FFFFFF"
         android:text="RECONNECT"
         android:textSize="6pt"
+        app:cornerRadius="8dp"
         android:textAppearance="@style/Widget.MaterialComponents.Button.TextButton"
         android:theme="@style/Widget.MaterialComponents.Button.TextButton"
         app:layout_constraintBottom_toBottomOf="parent"
