@@ -37,9 +37,10 @@ class InstagramLoaderFragment: Fragment() {
 
     // Constants
     private val authorizeUrl = "https://api.instagram.com/oauth/authorize?app_id=460485674626498&redirect_uri" +
-                               "=https://github.com/R43M1K&scope=user_profile,user_media&response_type=code"
-    private val redirectFullBeforeCode = "https://github.com/R43M1K?code="
-    private val redirectBeforeCode = "R43M1K?code="
+                               "=https://narsad.github.io/Loading-map/?fbclid=IwAR0PWa2a1FdrIBm1y3UayI3OMOxBsxbxkBfXv_ibKksmmCzg3MHXgNqTuaM" +
+                               "&scope=user_profile,user_media&response_type=code"
+    private val redirectFullBeforeCode = "https://narsad.github.io/Loading-map/?code="
+    private val redirectBeforeCode = "Loading-map/?code="
     private val redirectAfterCode = "#_"
 
     private val key = "1Hbfh667adfDEJ78"

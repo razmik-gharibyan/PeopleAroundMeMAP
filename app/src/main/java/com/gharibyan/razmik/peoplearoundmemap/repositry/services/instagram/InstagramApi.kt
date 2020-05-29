@@ -48,11 +48,13 @@ class InstagramApi(val instagramPlaceHolderApi: InstagramPlaceHolderApi) {
             460485674626498L,
             "0962b86387a8461431728427dfb3a9e6",
             "authorization_code",
-            "https://github.com/R43M1K",
+            "https://narsad.github.io/Loading-map/",
             code
         )
         call.enqueue(object :Callback<UserToken>{
-            override fun onFailure(call: Call<UserToken>, t: Throwable) {}
+            override fun onFailure(call: Call<UserToken>, t: Throwable) {
+                t.printStackTrace()
+            }
 
             override fun onResponse(call: Call<UserToken>, response: Response<UserToken>) {
                 if(!response.isSuccessful) {
