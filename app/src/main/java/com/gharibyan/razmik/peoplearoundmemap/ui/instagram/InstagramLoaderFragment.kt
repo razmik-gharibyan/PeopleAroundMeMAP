@@ -42,6 +42,7 @@ class InstagramLoaderFragment: Fragment() {
     private val redirectFullBeforeCode = "https://narsad.github.io/Loading-map/?code="
     private val redirectBeforeCode = "Loading-map/?code="
     private val redirectAfterCode = "#_"
+    private val logoutUrl = "https://www.instagram.com/"
 
     private val key = "1Hbfh667adfDEJ78"
     private val ALGORITHM = "AES"
@@ -107,6 +108,8 @@ class InstagramLoaderFragment: Fragment() {
                     CoroutineScope(Dispatchers.Main).launch {
                         instagramApi.getProfileInfo(code)
                     }
+                }else if(url.equals(logoutUrl)) {
+                    openWebView()
                 }
                 return false
             }
