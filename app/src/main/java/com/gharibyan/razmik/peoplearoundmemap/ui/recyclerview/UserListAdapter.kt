@@ -73,7 +73,7 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
     private fun openInstagramApp(username: String) {
         val uri: Uri = Uri.parse("http://instagram.com/_u/$username")
         val likeIng = Intent(Intent.ACTION_VIEW, uri)
-        likeIng.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        likeIng.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         likeIng.setPackage("com.instagram.android")
 
         try {
