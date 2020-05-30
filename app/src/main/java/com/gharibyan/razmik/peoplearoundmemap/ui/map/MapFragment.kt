@@ -27,6 +27,8 @@ import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCl
 import com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerCluster.MarkerItem
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.GeoPoint
 import com.google.maps.android.clustering.ClusterManager
@@ -42,7 +44,6 @@ class MapFragment : Fragment() {
 
     // Initialization
     private lateinit var mapViewModel: MapViewModel
-    private lateinit var roomUserDao: RoomUserDao
 
     // MarkerCluster
     private lateinit var markerClusterRenderer: MarkerClusterRenderer<MarkerItem>
@@ -61,16 +62,6 @@ class MapFragment : Fragment() {
     private var firstTimeCameraMove = false
     private var clusterManagerListCopy = ArrayList<MarkerItem>()
     private var fin = true
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        // -- Local database
-        val userDatabase = UsersDatabase.getInstance(activity!!.applicationContext)
-        roomUserDao = userDatabase.userDao()
-        CoroutineScope(Dispatchers.IO).launch {
-            roomUserDao.deleteAll()
-        }
-        super.onActivityCreated(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -220,10 +211,6 @@ class MapFragment : Fragment() {
                                                         break
                                                     }
                                                 }
-                                                val roomUserDocumentId = roomUserDao.findUserByDocumentId(firestoreUserDAO.documentId!!).id
-                                                val roomUser = changeFireStoreUserToRoomUser(firestoreUserDAO)
-                                                roomUser.id = roomUserDocumentId
-                                                roomUserDao.updateUser(roomUser)
                                             }
                                             return@loop // Break for each loop if found equal marker with same document id
                                         } else {
@@ -232,7 +219,6 @@ class MapFragment : Fragment() {
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
                                                 withContext(Dispatchers.Main) { addMarkerToCluster(marker!!, markerListCopy) }
-                                                roomUserDao.insertUser(changeFireStoreUserToRoomUser(firestoreUserDAO))
                                             }
                                         }
                                     }
@@ -242,7 +228,6 @@ class MapFragment : Fragment() {
                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
                                 withContext(Dispatchers.Main) { addMarkerToCluster(marker!!, markerListCopy) }
-                                roomUserDao.insertUser(changeFireStoreUserToRoomUser(firestoreUserDAO))
                             }
                         }
                     }
@@ -265,7 +250,7 @@ class MapFragment : Fragment() {
                         withContext(Dispatchers.Main) { clusterManager.clearItems() }
                         clusterManagerListCopy.clear()
                         markerListCopy.clear()
-                        roomUserDao.deleteAll()
+                        mapViewModel.inBoundArrayList.clear()
                         return@markerList
                     } else {
                         kotlin.run lit@{
@@ -280,8 +265,8 @@ class MapFragment : Fragment() {
                                             clusterManager.removeItem(clusterManagerListCopy[index - counter])}
                                         markerListCopy.removeAt(index - counter)
                                         clusterManagerListCopy.removeAt(index - counter)
+                                        mapViewModel.inBoundArrayList.removeAt(index - counter)
                                         counter++
-                                        roomUserDao.deleteUserByDocumentId(markerWithDocumentId.documentId!!)
                                     }
                                 }
                             }
@@ -300,6 +285,7 @@ class MapFragment : Fragment() {
         val markerItem = MarkerItem(markerDAO.latLng!!,"Tap to open profile",
             markerDAO.markerOptions!!.title,markerDAO.markerOptions!!.icon, markerDAO.firestoreUserDAO!!.followers!!,
             markerDAO.firestoreUserDAO!!.userName!!,markerDAO.documentId!!)
+        mapViewModel.inBoundArrayList.add(markerDAO)
         clusterManager.addItem(markerItem)
         clusterManagerListCopy.add(markerItem)
         val markerWithDocumentId = MarkerWithDocumentId()

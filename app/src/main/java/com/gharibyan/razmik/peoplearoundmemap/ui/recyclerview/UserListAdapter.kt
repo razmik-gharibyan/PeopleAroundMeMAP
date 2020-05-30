@@ -12,21 +12,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gharibyan.razmik.peoplearoundmemap.R
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.FollowerProcessing
 import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageProcessing
-import com.gharibyan.razmik.peoplearoundmemap.repositry.editor.ImageUrlProcessing
-import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
-import com.gharibyan.razmik.peoplearoundmemap.repositry.models.room.RoomUser
+import com.gharibyan.razmik.peoplearoundmemap.repositry.models.markers.MarkerDAO
 import kotlinx.android.synthetic.main.userlist_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.math.sign
 
-class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
+class UserListAdapter(val context: Context,val userlist: ArrayList<MarkerDAO>)
     : RecyclerView.Adapter<UserListAdapter.UserListViewHolder>() {
 
     private val TAG = javaClass.name
 
-    private val imageUrlProcessing = ImageUrlProcessing()
     private val followerProcessing = FollowerProcessing()
     private val imageProcessing = ImageProcessing(followerProcessing)
 
@@ -48,13 +44,12 @@ class UserListAdapter(val context: Context,val userlist: ArrayList<RoomUser>)
     override fun onBindViewHolder(holder: UserListViewHolder, position: Int) {
         CoroutineScope(Dispatchers.Main).launch {
             Log.d(TAG,"userlist size is ${userlist.size}")
-            val tempBitmap = imageUrlProcessing.processImage(userlist.get(position).picture!!)
+            val tempBitmap = userlist.get(position).markerBitmap
             val resizedBitmap = imageProcessing.getResizedBitmapForUserListFragment(tempBitmap)
-            val croppedBitmap = imageProcessing.getCroppedBitmap(resizedBitmap)
 
-            val username = userlist.get(position).username
-            val followers = followerProcessing.instagramFollowersType(userlist.get(position).followers!!)
-            holder.imageView.setImageBitmap(croppedBitmap)
+            val username = userlist.get(position).firestoreUserDAO!!.userName
+            val followers = followerProcessing.instagramFollowersType(userlist.get(position).firestoreUserDAO!!.followers!!)
+            holder.imageView.setImageBitmap(resizedBitmap)
             holder.usernameView.text = username
             holder.followerView.text = followers
             holder.onlineView.setImageResource(R.drawable.ic_account_online_24dp)

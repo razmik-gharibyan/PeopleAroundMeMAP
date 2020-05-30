@@ -60,11 +60,13 @@ class MapViewModel(val context: Context, val lifecycleOwner: LifecycleOwner) : V
     private val firestoreApi = FirestoreApi()
     private val markerApi = MarkerApi()
 
-
     // Models
     private var instagramUserDAO = Singletons.instagramUserDAO
     private var firestoreUserDAO = Singletons.firestoreUserDAO
     private var currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
+
+    // Var
+    var inBoundArrayList = ArrayList<MarkerDAO>()
 
     fun initModels() {
         currentFirestoreUserDAO.userName = instagramUserDAO.userName

@@ -42,10 +42,9 @@ class MarkerApi: MarkerInter {
                  */
                 bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
                 val markerOptions = MarkerOptions()
-                val roundBitMap: Bitmap
                 val resizedBitMap: Bitmap =
                     imageProcessing.getResizedBitmap(bitmap, firestoreUserDAO.followers!!,context) // Resize bitmap
-                roundBitMap = imageProcessing.getCroppedBitmap(resizedBitMap) // Make current bitmap to round type
+                val roundBitMap = imageProcessing.getCroppedBitmap(resizedBitMap) // Make current bitmap to round type
                 val latLng = LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude)
                 markerOptions.position(latLng)
                 markerOptions.visible(true)
@@ -60,6 +59,7 @@ class MarkerApi: MarkerInter {
                 markerDAO.moveCamera = moveCamera
                 markerDAO.markerOptions = markerOptions
                 markerDAO.firestoreUserDAO = firestoreUserDAO
+                markerDAO.markerBitmap = roundBitMap
                 return markerDAO
             }catch (e: Exception) {
                 e.printStackTrace()
