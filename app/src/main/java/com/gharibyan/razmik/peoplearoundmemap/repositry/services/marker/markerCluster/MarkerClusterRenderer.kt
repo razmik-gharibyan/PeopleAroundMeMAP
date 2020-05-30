@@ -3,6 +3,7 @@ package com.gharibyan.razmik.peoplearoundmemap.repositry.services.marker.markerC
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.graphics.createBitmap
 import com.gharibyan.razmik.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
@@ -16,11 +17,13 @@ import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ui.IconGenerator
+import java.lang.Exception
 
 class MarkerClusterRenderer<T: MarkerItem>(context: Context,
                                     map: GoogleMap?,
                                     clusterManager: ClusterManager<T>?
 ): DefaultClusterRenderer<T>(context, map, clusterManager) {
+    private val TAG = javaClass.name
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
         return cluster!!.size >= 2
@@ -47,6 +50,11 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
     }
 
     fun updateMarker(markerItem: MarkerItem?, newPosition: LatLng) {
-        getMarker(markerItem as T).position = newPosition
+        try {
+            getMarker(markerItem as T).position = newPosition
+        }catch (e: Exception) {
+            Log.d(TAG,"Exception is $e")
+        }
+
     }
 }
