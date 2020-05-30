@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -48,8 +49,6 @@ class MapFragment : Fragment() {
     private lateinit var clusterManager: ClusterManager<MarkerItem>
 
     // Views
-    private lateinit var headerLayout: LinearLayout
-    private lateinit var headerTextView: TextView
     private lateinit var visibilityButton: Button
     private lateinit var mapView: MapView
 
@@ -80,8 +79,6 @@ class MapFragment : Fragment() {
         mapViewModel = (activity as MainActivity).mapViewModel
 
         // Views
-        headerLayout = view.findViewById(R.id.header_layout)
-        headerTextView = view.findViewById(R.id.header_text)
         visibilityButton = view.findViewById(R.id.visibility_button)
         mapView = view.findViewById(R.id.map)
         mapView.onCreate(savedInstanceState)
@@ -175,18 +172,16 @@ class MapFragment : Fragment() {
 
     private fun visibilityChanger(visible: Boolean) {
         if(visible) {
-            headerTextView.text = "You are now in visible mode, other people can see you on map"
-            visibilityButton.text = "CHANGE TO INVISIBLE"
+            Toast.makeText(context,"You are now in visible mode, other people can see you on map",Toast.LENGTH_LONG).show()
+            visibilityButton.setBackgroundResource(R.drawable.ic_visibility_light_purple_24dp)
             userVisibility = true
             currentFirestoreUserDAO.isVisible = true
         }else{
-            headerTextView.text = "You are now in invisible mode, other people can't see you on map."
-            visibilityButton.text = "CHANGE TO VISIBLE"
+            Toast.makeText(context,"You are now in invisible mode, other people can't see you on map.",Toast.LENGTH_LONG).show()
+            visibilityButton.setBackgroundResource(R.drawable.ic_visibility_off_light_purple_24dp)
             userVisibility = false
             currentFirestoreUserDAO.isVisible = false
         }
-
-        if(!headerLayout.isVisible) headerLayout.visibility = View.VISIBLE
     }
 
     private fun listenVisibleButtonChanges() {
