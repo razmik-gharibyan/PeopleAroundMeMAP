@@ -29,36 +29,35 @@ class FollowerProcessing {
     }
 
     // RESIZE USER IMAGE DEPENDING ON AMOUNT OF INSTAGRAM FOLLOWERS
-    //TODO String.format
     fun picSizeViaFollower(followers: Long): IntArray {
-        val userPicWidthHeight = intArrayOf(110, 150)
+        val userPicWidthHeight = intArrayOf(100, 100)
         if (followers >= 1000) {
             userPicWidthHeight[0] = 150
-            userPicWidthHeight[1] = 230
+            userPicWidthHeight[1] = 150
             if (followers >= 10000) {
                 userPicWidthHeight[0] = 200
-                userPicWidthHeight[1] = 280
+                userPicWidthHeight[1] = 200
                 if (followers >= 50000) {
                     userPicWidthHeight[0] = 250
-                    userPicWidthHeight[1] = 330
+                    userPicWidthHeight[1] = 250
                     if (followers >= 100000) {
                         userPicWidthHeight[0] = 300
-                        userPicWidthHeight[1] = 380
+                        userPicWidthHeight[1] = 300
                         if (followers >= 500000) {
                             userPicWidthHeight[0] = 350
-                            userPicWidthHeight[1] = 430
+                            userPicWidthHeight[1] = 350
                             if (followers >= 1000000) {
-                                userPicWidthHeight[0] = 450
-                                userPicWidthHeight[1] = 530
+                                userPicWidthHeight[0] = 400
+                                userPicWidthHeight[1] = 400
                                 if (followers >= 15000000) {
-                                    userPicWidthHeight[0] = 520
-                                    userPicWidthHeight[1] = 600
+                                    userPicWidthHeight[0] = 450
+                                    userPicWidthHeight[1] = 450
                                     if (followers >= 50000000) {
-                                        userPicWidthHeight[0] = 570
-                                        userPicWidthHeight[1] = 650
+                                        userPicWidthHeight[0] = 500
+                                        userPicWidthHeight[1] = 500
                                         if (followers >= 100000000) {
-                                            userPicWidthHeight[0] = 650
-                                            userPicWidthHeight[1] = 730
+                                            userPicWidthHeight[0] = 550
+                                            userPicWidthHeight[1] = 550
                                         }
                                     }
                                 }

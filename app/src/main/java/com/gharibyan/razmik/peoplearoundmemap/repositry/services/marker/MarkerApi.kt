@@ -15,13 +15,14 @@ import com.google.android.gms.maps.model.MarkerOptions
 import java.lang.Exception
 
 class MarkerApi: MarkerInter {
+    private val followerProcessing = FollowerProcessing()
+    private val imageProcessing = ImageProcessing(followerProcessing)
+    private val imageUrlProcessing = ImageUrlProcessing()
     var iconList = ArrayList<MarkerIconWithDocument>()
 
     override suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO, moveCamera: Boolean, context: Context): MarkerDAO? {
         if(firestoreUserDAO.isVisible!!) {
-            val followerProcessing = FollowerProcessing()
-            val imageProcessing = ImageProcessing(followerProcessing)
-            val imageUrlProcessing = ImageUrlProcessing()
+
             var bitmap: Bitmap? = null
             try {
                 /*
