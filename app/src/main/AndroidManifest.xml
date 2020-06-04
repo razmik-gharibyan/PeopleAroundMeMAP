@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gharibyan.razmik.peoplearoundmemap">
+    package="com.studio29.gharibyan.peoplearoundmemap">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ConnectionActivity"
+            android:name="com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.studio29.gharibyan.peoplearoundmemap.MainActivity"
             android:label="Map">
         </activity>
         <meta-data
