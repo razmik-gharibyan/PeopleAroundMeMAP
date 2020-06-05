@@ -1,6 +1,7 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.loginform
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,13 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
 import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
 import com.studio29.gharibyan.peoplearoundmemap.repositry.models.singletons.Singletons
+import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
+import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import java.util.regex.Pattern
 
 class LoginFormLoader: Fragment() {
@@ -28,6 +32,8 @@ class LoginFormLoader: Fragment() {
 
     // Initialization
     private lateinit var auth: FirebaseAuth
+    private lateinit var connectionViewModel: ConnectionViewModel
+    private lateinit var customViewModelFactory: CustomViewModelFactory
 
     // Vars
     private var instagramUserDAO = Singletons.instagramUserDAO
@@ -45,6 +51,11 @@ class LoginFormLoader: Fragment() {
         forgotPasswordTextView = view.findViewById(R.id.forgot_password_textview)
         registerTextView = view.findViewById(R.id.register_textview)
 
+        // ViewModel
+        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
+        connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
+            ConnectionViewModel::class.java)
+
         auth = FirebaseAuth.getInstance()
 
         checkIfUserSignedIn()
@@ -60,6 +71,8 @@ class LoginFormLoader: Fragment() {
             // Enter here if user is logged in and open map after getting info from
             // its same uid document from firestore database
             instagramUserDAO.documentId = currentUser.uid
+            connectionViewModel.currentUserID = currentUser.uid
+            connectionViewModel.registerNewUser = false
             openInstagramLoaderFragment()
         }else{
             // Enter if user is not logged in, and open instagram panel
@@ -76,8 +89,11 @@ class LoginFormLoader: Fragment() {
                 if(checkIfEmailIsValid(email) && checkIfPasswordIsValid(password)) {
                     auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
                         if(it.isSuccessful) {
+                            connectionViewModel.currentUserID = it.result!!.user!!.uid
+                            connectionViewModel.registerNewUser = false
                             openInstagramLoaderFragment()
                         }else{
+                            Log.d(TAG,it.exception!!.message!!)
                             Toast.makeText(context,"Wrong email or password",Toast.LENGTH_LONG).show()
                         }
                     }

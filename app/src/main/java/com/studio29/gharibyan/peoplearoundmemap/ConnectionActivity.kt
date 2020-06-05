@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.studio29.gharibyan.peoplearoundmemap.ui.instagram.InstagramLoaderFragment
+import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ConfirmEmialFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ForgotPasswordFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.LoginFormLoader
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.RegisterNewUserFragment
@@ -19,6 +20,7 @@ class ConnectionActivity: AppCompatActivity() {
     private val forgotPasswordFragment = ForgotPasswordFragment()
     private val instagramLoaderFragment = InstagramLoaderFragment()
     private val registerNewUserFragment = RegisterNewUserFragment()
+    private val confirmEmailFragment = ConfirmEmialFragment()
 
     // Initialization
     private val manager = supportFragmentManager
@@ -39,11 +41,11 @@ class ConnectionActivity: AppCompatActivity() {
     }
 
     private fun initFragments() {
-        manager.beginTransaction().add(R.id.nav_host_fragment_connection,loginFormLoaderFragment).commit()
+        manager.beginTransaction().add(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack(null).commit()
     }
 
     fun openInstagramLoaderFragment() {
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,instagramLoaderFragment).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,instagramLoaderFragment).addToBackStack(null).commit()
     }
 
     fun openForgotPasswordFragment() {
@@ -55,7 +57,11 @@ class ConnectionActivity: AppCompatActivity() {
     }
 
     fun openRegisterFragment() {
-        manager.beginTransaction().remove(registerNewUserFragment).commit()
+        manager.beginTransaction().remove(registerNewUserFragment).addToBackStack(null).commit()
+    }
+
+    fun openConfirmEmailFragment() {
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,confirmEmailFragment).addToBackStack(null).commit()
     }
 
 }

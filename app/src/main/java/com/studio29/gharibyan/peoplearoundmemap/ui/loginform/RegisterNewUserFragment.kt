@@ -8,8 +8,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
+import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
+import com.studio29.gharibyan.peoplearoundmemap.repositry.models.singletons.Singletons
+import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
+import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 class RegisterNewUserFragment: Fragment() {
@@ -21,7 +29,9 @@ class RegisterNewUserFragment: Fragment() {
     private lateinit var registerButton: Button
 
     // Initialization
-    private lateinit var auth = FirebaseAuth
+    private lateinit var auth: FirebaseAuth
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +60,18 @@ class RegisterNewUserFragment: Fragment() {
             if(email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
                 if(checkIfEmailIsValid(email) && checkIfPasswordIsValid(password) && checkIfPasswordIsValid(confirmPassword)) {
                     if(password == confirmPassword) {
-                        auth.createUserWithEmailAndPassword(email,password)
+                        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
+                            if(it.isSuccessful) {
+                                val currentUser = it.result!!.user
+                                currentUser!!.sendEmailVerification().addOnCompleteListener {
+                                    if(it.isSuccessful) {
+                                        (activity as ConnectionActivity).openConfirmEmailFragment()
+                                    }else{
+                                        Toast.makeText(context,it.exception!!.message, Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
+                        }
                     }else{
                         Toast.makeText(context,"Password and Confirm password does not match", Toast.LENGTH_LONG).show()
                     }

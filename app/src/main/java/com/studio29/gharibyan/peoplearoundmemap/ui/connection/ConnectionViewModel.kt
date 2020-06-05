@@ -16,6 +16,7 @@ class ConnectionViewModel(private var context: Context): ViewModel() {
     private val checkConnections = CheckConnections(context)
     private val checkLocationPermissions = CheckLocationPermissions(context)
 
+    // Live Data
     private var _networkAccessLD = MutableLiveData<Boolean>()
     private var _gpsAccessLD = MutableLiveData<Boolean>()
     private var _permissionLD = MutableLiveData<Boolean>()
@@ -23,6 +24,10 @@ class ConnectionViewModel(private var context: Context): ViewModel() {
     var networkAccess: LiveData<Boolean> = _networkAccessLD
     var gpsAccess: LiveData<Boolean> = _gpsAccessLD
     var permissionAccess: LiveData<Boolean> = _permissionLD
+
+    // Vars
+    var currentUserID: String? = null
+    var registerNewUser: Boolean? = null
 
     fun checkNetworkStatus() {
         CoroutineScope(Dispatchers.Main).launch {
