@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.instagram.InstagramLoaderFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ConfirmEmialFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ForgotPasswordFragment
@@ -21,6 +22,7 @@ class ConnectionActivity: AppCompatActivity() {
     private val instagramLoaderFragment = InstagramLoaderFragment()
     private val registerNewUserFragment = RegisterNewUserFragment()
     private val confirmEmailFragment = ConfirmEmialFragment()
+    private var active: Fragment = loginFormLoaderFragment
 
     // Initialization
     private val manager = supportFragmentManager
@@ -36,32 +38,51 @@ class ConnectionActivity: AppCompatActivity() {
 
         androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler()
 
-        initFragments()
-
     }
 
-    private fun initFragments() {
-        manager.beginTransaction().add(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack(null).commit()
+    fun openLoginFragment() {
+        active = loginFormLoaderFragment
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack(null).commit()
     }
 
     fun openInstagramLoaderFragment() {
+        active = instagramLoaderFragment
         manager.beginTransaction().replace(R.id.nav_host_fragment_connection,instagramLoaderFragment).addToBackStack(null).commit()
     }
 
     fun openForgotPasswordFragment() {
-        manager.beginTransaction().add(R.id.nav_host_fragment_connection,forgotPasswordFragment).commit()
+        active = forgotPasswordFragment
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,forgotPasswordFragment).commit()
     }
 
     fun closeForgotPasswordFragment() {
-        manager.beginTransaction().remove(forgotPasswordFragment).commit()
+        active = loginFormLoaderFragment
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).commit()
     }
 
     fun openRegisterFragment() {
-        manager.beginTransaction().remove(registerNewUserFragment).addToBackStack(null).commit()
+        active = registerNewUserFragment
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,registerNewUserFragment).addToBackStack(null).commit()
     }
 
     fun openConfirmEmailFragment() {
+        active = confirmEmailFragment
         manager.beginTransaction().replace(R.id.nav_host_fragment_connection,confirmEmailFragment).addToBackStack(null).commit()
     }
 
+    override fun onBackPressed() {
+        val count = supportFragmentManager.backStackEntryCount
+
+        if(active == forgotPasswordFragment) {
+            openLoginFragment()
+        }else if(active == loginFormLoaderFragment) {
+            super.onBackPressed()
+        }else if(active == registerNewUserFragment) {
+            openLoginFragment()
+        }else if(active == confirmEmailFragment) {
+            openRegisterFragment()
+        }else if(active == instagramLoaderFragment) {
+            openLoginFragment()
+        }
+    }
 }

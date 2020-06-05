@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             mapViewModel.sendSearchedUserToMap(firestoreUserDao)
             hideSearchShowMap()
         }else if(item.itemId == R.id.signOut_item) {
-            // Sign Out user, and redirect to instagram fragment
+            // Sign Out user, and redirect to login fragment
             FirebaseAuth.getInstance().signOut()
             val intent = Intent(this,ConnectionActivity::class.java)
             startActivity(intent)

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
 import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
 
@@ -64,7 +65,7 @@ class ConnectionFragment: Fragment() {
         connectionViewModel.networkAccess.observe(viewLifecycleOwner, Observer {
             networkStatus = it
             if(networkStatus) {
-                navController.navigate(R.id.action_connectionFragment_to_instagramLoaderFragment)
+                (activity as ConnectionActivity).openLoginFragment()
             }else{
                 connectionLayout.visibility = View.VISIBLE
             }

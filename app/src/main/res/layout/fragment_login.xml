@@ -11,20 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/purple_wave"
         android:background="@color/colorPrimary"/>
-
-    <View
-        android:id="@+id/dark_purple_wave"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/ic_dark_purple_wave"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        />
 
     <View
         android:id="@+id/purple_wave"
@@ -33,7 +23,8 @@
         android:background="@drawable/ic_purple_wave"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintBottom_toTopOf="@id/email_edittext"/>
 
     <TextView
         android:id="@+id/welcome_text_view"
@@ -71,7 +62,8 @@
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dark_purple_wave"
+        app:layout_constraintTop_toBottomOf="@+id/purple_wave"
+        app:layout_constraintBottom_toTopOf="@id/password_edittext"
         android:hint="Enter email"
         android:background="@drawable/round_border_purple"
         android:drawableStart="@drawable/ic_email_purple_24dp"
@@ -88,6 +80,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_edittext"
+        app:layout_constraintBottom_toTopOf="@id/login_button"
         android:inputType="textPassword"
         android:background="@drawable/round_border_purple"
         android:hint="Enter password"
@@ -108,6 +101,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_edittext"
+        app:layout_constraintBottom_toTopOf="@id/forgot_password_textview"
         android:background="@drawable/round_background"/>
 
     <TextView
@@ -124,6 +118,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button"
+        app:layout_constraintBottom_toTopOf="@id/or_textview"
         android:clickable="true"
         android:focusable="true" />
 
@@ -135,38 +130,23 @@
         android:text="OR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/forgot_password_textview" />
-
-    <Button
-        android:id="@+id/login_with_fb_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="32dp"
-        android:background="@color/facebookPrimary"
-        android:drawableStart="@drawable/ic_facebook_icon_new"
-        android:drawablePadding="16dp"
-        android:paddingRight="50dp"
-        android:text="Log in with Facebook"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/or_textview" />
+        app:layout_constraintTop_toBottomOf="@+id/forgot_password_textview"
+        app:layout_constraintBottom_toTopOf="@id/register_textview"/>
 
     <TextView
         android:id="@+id/register_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:clickable="true"
         android:text="New user? Register here"
         android:textColor="@color/ultra_purple"
-        android:textStyle="bold"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_with_fb_button"
-        android:clickable="true" />
+        app:layout_constraintTop_toBottomOf="@+id/or_textview"
+        app:layout_constraintBottom_toTopOf="@id/bottom_wave_purple"/>
 
     <View
         android:id="@+id/bottom_view"

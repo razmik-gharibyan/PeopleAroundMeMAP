@@ -9,15 +9,6 @@
         android:id="@+id/connectionFragment"
         android:name="com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionFragment"
         android:label="fragment_connection_check"
-        tools:layout="@layout/fragment_connection_check" >
-        <action
-            android:id="@+id/action_connectionFragment_to_instagramLoaderFragment"
-            app:destination="@id/instagramLoaderFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/instagramLoaderFragment"
-        android:name="com.studio29.gharibyan.peoplearoundmemap.ui.instagram.InstagramLoaderFragment"
-        android:label="instagram_loader"
-        tools:layout="@layout/instagram_loader" />
+        tools:layout="@layout/fragment_connection_check" />
     <include app:graph="@navigation/mobile_navigation" />
 </navigation>

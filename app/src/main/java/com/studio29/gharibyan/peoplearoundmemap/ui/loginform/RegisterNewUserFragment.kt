@@ -31,8 +31,6 @@ class RegisterNewUserFragment: Fragment() {
     // Initialization
     private lateinit var auth: FirebaseAuth
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -98,6 +96,6 @@ class RegisterNewUserFragment: Fragment() {
     private fun checkIfPasswordIsValid(password: String): Boolean {
         val passwordRegex = "[a-zA-Z0-9]*"
         val pat: Pattern = Pattern.compile(passwordRegex)
-        return pat.matcher(password).matches()
+        return pat.matcher(password).matches() && password.length >= 6
     }
 }

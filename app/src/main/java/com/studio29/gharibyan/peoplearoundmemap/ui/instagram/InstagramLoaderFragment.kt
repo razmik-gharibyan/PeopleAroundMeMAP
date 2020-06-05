@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.studio29.gharibyan.peoplearoundmemap.MainActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
 import com.studio29.gharibyan.peoplearoundmemap.api.instagram.InstagramPlaceHolderApi
@@ -21,6 +22,8 @@ import com.studio29.gharibyan.peoplearoundmemap.repositry.models.singletons.Sing
 import com.studio29.gharibyan.peoplearoundmemap.repositry.services.firestore.FirestoreApi
 import com.studio29.gharibyan.peoplearoundmemap.repositry.services.instagram.InstagramApi
 import com.google.firebase.auth.FirebaseAuth
+import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
+import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,6 +65,10 @@ class InstagramLoaderFragment: Fragment() {
     private lateinit var webView: WebView
     private lateinit var splashTextView: TextView
 
+    // Initialization
+    private lateinit var connectionViewModel: ConnectionViewModel
+    private lateinit var customViewModelFactory: CustomViewModelFactory
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetJavaScriptEnabled")
@@ -76,6 +83,11 @@ class InstagramLoaderFragment: Fragment() {
 
         webView = view.findViewById(R.id.web_view)
         splashTextView = view.findViewById(R.id.splash_text)
+
+        // ViewModel
+        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
+        connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
+            ConnectionViewModel::class.java)
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.instagram.com/")
@@ -100,32 +112,29 @@ class InstagramLoaderFragment: Fragment() {
         webSettings.javaScriptEnabled = true
         webView.webViewClient = object: WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if(url!!.contains(redirectFullBeforeCode)) {
-                    val index = url.lastIndexOf(redirectBeforeCode) + redirectBeforeCode.length
-                    val hashTagIndex = url.lastIndexOf(redirectAfterCode)
-                    code = url.substring(index,hashTagIndex)
-                    CoroutineScope(Dispatchers.Main).launch {
-                        instagramApi.getProfileInfo(code)
-                    }
-                }else if(url.equals(logoutUrl)) {
-                    openWebView()
+                        if(url!!.contains(redirectFullBeforeCode)) {
+                            val index = url.lastIndexOf(redirectBeforeCode) + redirectBeforeCode.length
+                            val hashTagIndex = url.lastIndexOf(redirectAfterCode)
+                            code = url.substring(index,hashTagIndex)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                instagramApi.getProfileInfo(code)
+                            }
+                        }else if(url.equals(logoutUrl)) {
+                            openWebView()
                 }
                 return false
             }
         }
         webView.loadUrl(authorizeUrl)
-
-        listenToInstagramLoginSuccess()
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun listenToInstagramLoginSuccess() {
         instagramApi.infoSuccess.observe(viewLifecycleOwner, Observer {
             if(it) {
-                // Enter here if successfully recieved user information from instagram
-                val email = encryptEmail(instagramUserDAO.userName!!)
-                val password = encryptPassword(instagramUserDAO.userName!!)
-                signInUser(email, password)
+                // Enter here if successfully received user information from instagram
+                logInOrRegisterUserToFirebase()
             }else{
                 throw Exception("Error loading user instagram data")
             }
@@ -134,17 +143,12 @@ class InstagramLoaderFragment: Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun checkIfUserSignedIn() {
-        val currentUser = auth.currentUser
-        if(currentUser != null) {
-            // Enter here if user is logged in and open map after getting info from
-            // its same uid document from firestore database
-            instagramUserDAO.documentId = currentUser.uid
-            CoroutineScope(Dispatchers.IO).launch {
-                firestoreApi.findUserWithDocumentId(currentUser.uid)
-            }
-        }else{
-            // Enter if user is not logged in, and open instagram panel
-            openWebView()
+        val currentUser = connectionViewModel.currentUserID!!
+        // Enter here if user is logged in and open map after getting info from
+        // its same uid document from firestore database
+        instagramUserDAO.documentId = currentUser
+        CoroutineScope(Dispatchers.IO).launch {
+            firestoreApi.findUserWithDocumentId(currentUser)
         }
     }
 
@@ -159,7 +163,6 @@ class InstagramLoaderFragment: Fragment() {
         firestoreApi.currentDocumentId.observe(viewLifecycleOwner, Observer {
             if(it == null) {
                 // Enter here if there is no user logged in
-                auth.currentUser!!.delete()
                 openWebView()
             }else {
                 // Enter here if user is logged in, get firebase document for it
@@ -196,41 +199,32 @@ class InstagramLoaderFragment: Fragment() {
     }
 
 
-    private fun signInUser(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email,password)
-            .addOnCompleteListener {
-                if(it.isSuccessful) {
-                    // Enter here if user is logged in correctly and find it's document in database
-                    val currentUser = it.result!!.user!!.uid
-                    instagramUserDAO.documentId = currentUser
-                    CoroutineScope(Dispatchers.IO).launch {
-                        firestoreApi.findUserWithDocumentId(currentUser)
-                    }
-                }else{
-                    // Enter here if user is not logged in correctly (not registered)
-                    auth.createUserWithEmailAndPassword(email,password)
-                        .addOnCompleteListener {
-                            if(it.isSuccessful) {
-                                val currentUser = it.result!!.user!!.uid
-                                instagramUserDAO.documentId = currentUser
-                                currentFirestoreUserDAO.documentId = currentUser
-                                currentFirestoreUserDAO.userName = instagramUserDAO.userName
-                                currentFirestoreUserDAO.followers = instagramUserDAO.followers
-                                currentFirestoreUserDAO.picture = instagramUserDAO.picture
-                                currentFirestoreUserDAO.token = instagramUserDAO.token
-                                currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
-                                currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
-                                currentFirestoreUserDAO.isVisible = false
-                                currentFirestoreUserDAO.isActive = true
-                                currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    firestoreApi.addNewUserWithUID(currentFirestoreUserDAO,currentUser)
-                                    openMapActivity()
-                                }
-                            }
-                        }
-                }
+    private fun logInOrRegisterUserToFirebase() {
+        val currentUser = connectionViewModel.currentUserID
+        val registerNewUser = connectionViewModel.registerNewUser
+        instagramUserDAO.documentId = currentUser
+        if(!registerNewUser!!) {
+            // Enter here if user is already registered, and should just log in to Instagram
+            CoroutineScope(Dispatchers.IO).launch {
+                firestoreApi.findUserWithDocumentId(currentUser!!)
             }
+        }else{
+            // Enter here if user is not registered yet (register new user to firebase)
+            currentFirestoreUserDAO.documentId = currentUser
+            currentFirestoreUserDAO.userName = instagramUserDAO.userName
+            currentFirestoreUserDAO.followers = instagramUserDAO.followers
+            currentFirestoreUserDAO.picture = instagramUserDAO.picture
+            currentFirestoreUserDAO.token = instagramUserDAO.token
+            currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
+            currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
+            currentFirestoreUserDAO.isVisible = false
+            currentFirestoreUserDAO.isActive = true
+            currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
+            CoroutineScope(Dispatchers.Main).launch {
+                firestoreApi.addNewUserWithUID(currentFirestoreUserDAO,currentUser!!)
+                openMapActivity()
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -241,22 +235,5 @@ class InstagramLoaderFragment: Fragment() {
                 openWebView()
             }
         })
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun encryptPassword(password: String): String {
-        val key: Key = generateKey()
-        val cipher: Cipher = Cipher.getInstance(ALGORITHM)
-        cipher.init(Cipher.ENCRYPT_MODE, key)
-        val encryptedByteValue: ByteArray = cipher.doFinal(password.toByteArray(Charset.defaultCharset()))
-        return Base64.getEncoder().encodeToString(encryptedByteValue)
-    }
-
-    private fun generateKey(): Key {
-        return SecretKeySpec(key.toByteArray(Charset.defaultCharset()), ALGORITHM)
-    }
-
-    private fun encryptEmail(username: String): String {
-        return "$username@razmikgharibyanpammap.com"
     }
 }

@@ -27,7 +27,6 @@ class ForgotPasswordFragment: Fragment() {
 
     // Initialization
     private lateinit var auth: FirebaseAuth
-    private val manager = activity!!.supportFragmentManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,8 +40,14 @@ class ForgotPasswordFragment: Fragment() {
         countdownCloseForgotPassTextView = view.findViewById(R.id.countdown_close_forgot_pass)
 
         auth = FirebaseAuth.getInstance()
-
+        sendButtonListener()
         return view
+    }
+
+    private fun sendButtonListener() {
+        sendButton.setOnClickListener {
+            checkEmail()
+        }
     }
 
     private fun checkEmail() {

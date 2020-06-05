@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -26,7 +27,7 @@ class LoginFormLoader: Fragment() {
     // Views
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
-    private lateinit var loginButton: EditText
+    private lateinit var loginButton: Button
     private lateinit var forgotPasswordTextView: TextView
     private lateinit var registerTextView: TextView
 
@@ -119,7 +120,7 @@ class LoginFormLoader: Fragment() {
     private fun checkIfPasswordIsValid(password: String): Boolean {
         val passwordRegex = "[a-zA-Z0-9]*"
         val pat: Pattern = Pattern.compile(passwordRegex)
-        return pat.matcher(password).matches()
+        return pat.matcher(password).matches() && password.length >= 6
     }
 
     private fun openInstagramLoaderFragment() {
