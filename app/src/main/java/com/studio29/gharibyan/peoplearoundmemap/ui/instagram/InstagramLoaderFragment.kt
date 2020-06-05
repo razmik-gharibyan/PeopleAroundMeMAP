@@ -1,6 +1,7 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.instagram
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.studio29.gharibyan.peoplearoundmemap.repositry.models.singletons.Sing
 import com.studio29.gharibyan.peoplearoundmemap.repositry.services.firestore.FirestoreApi
 import com.studio29.gharibyan.peoplearoundmemap.repositry.services.instagram.InstagramApi
 import com.google.firebase.auth.FirebaseAuth
+import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
 import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -55,20 +57,17 @@ class InstagramLoaderFragment: Fragment() {
     private var instagramUserDAO = Singletons.instagramUserDAO
     private var currentFirestoreUserDAO = Singletons.currentFirestoreUserDAO
     private var checkToken = false
+    private var registerUser = false
 
     // Classes
     private lateinit var instagramPlaceHolderApi: InstagramPlaceHolderApi
     private lateinit var instagramApi: InstagramApi
     private val firestoreApi = FirestoreApi()
+    lateinit var connectionViewModel: ConnectionViewModel
 
     // Views
     private lateinit var webView: WebView
     private lateinit var splashTextView: TextView
-
-    // Initialization
-    private lateinit var connectionViewModel: ConnectionViewModel
-    private lateinit var customViewModelFactory: CustomViewModelFactory
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetJavaScriptEnabled")
@@ -84,10 +83,6 @@ class InstagramLoaderFragment: Fragment() {
         webView = view.findViewById(R.id.web_view)
         splashTextView = view.findViewById(R.id.splash_text)
 
-        // ViewModel
-        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
-        connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
-            ConnectionViewModel::class.java)
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.instagram.com/")
@@ -163,7 +158,12 @@ class InstagramLoaderFragment: Fragment() {
         firestoreApi.currentDocumentId.observe(viewLifecycleOwner, Observer {
             if(it == null) {
                 // Enter here if there is no user logged in
-                openWebView()
+                if(registerUser) {
+                    registerUserToFirebase(connectionViewModel.currentUserID!!)
+                }else {
+                    openWebView()
+                    registerUser = true
+                }
             }else {
                 // Enter here if user is logged in, get firebase document for it
                 // then check if token for that user is expired or not
@@ -201,29 +201,27 @@ class InstagramLoaderFragment: Fragment() {
 
     private fun logInOrRegisterUserToFirebase() {
         val currentUser = connectionViewModel.currentUserID
-        val registerNewUser = connectionViewModel.registerNewUser
         instagramUserDAO.documentId = currentUser
-        if(!registerNewUser!!) {
-            // Enter here if user is already registered, and should just log in to Instagram
-            CoroutineScope(Dispatchers.IO).launch {
-                firestoreApi.findUserWithDocumentId(currentUser!!)
-            }
-        }else{
-            // Enter here if user is not registered yet (register new user to firebase)
-            currentFirestoreUserDAO.documentId = currentUser
-            currentFirestoreUserDAO.userName = instagramUserDAO.userName
-            currentFirestoreUserDAO.followers = instagramUserDAO.followers
-            currentFirestoreUserDAO.picture = instagramUserDAO.picture
-            currentFirestoreUserDAO.token = instagramUserDAO.token
-            currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
-            currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
-            currentFirestoreUserDAO.isVisible = false
-            currentFirestoreUserDAO.isActive = true
-            currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
-            CoroutineScope(Dispatchers.Main).launch {
-                firestoreApi.addNewUserWithUID(currentFirestoreUserDAO,currentUser!!)
-                openMapActivity()
-            }
+        // Enter here if user is already registered, and should just log in to Instagram
+        CoroutineScope(Dispatchers.IO).launch {
+            firestoreApi.findUserWithDocumentId(currentUser!!)
+        }
+    }
+
+    private fun registerUserToFirebase(currentUserId: String) {
+        currentFirestoreUserDAO.documentId = currentUserId
+        currentFirestoreUserDAO.userName = instagramUserDAO.userName
+        currentFirestoreUserDAO.followers = instagramUserDAO.followers
+        currentFirestoreUserDAO.picture = instagramUserDAO.picture
+        currentFirestoreUserDAO.token = instagramUserDAO.token
+        currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
+        currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
+        currentFirestoreUserDAO.isVisible = false
+        currentFirestoreUserDAO.isActive = true
+        currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
+        CoroutineScope(Dispatchers.Main).launch {
+            firestoreApi.addNewUserWithUID(currentFirestoreUserDAO,currentUserId)
+            openMapActivity()
         }
     }
 
@@ -235,5 +233,10 @@ class InstagramLoaderFragment: Fragment() {
                 openWebView()
             }
         })
+    }
+
+    override fun onAttach(activity: Activity) {
+        connectionViewModel = (activity as ConnectionActivity).connectionViewModel
+        super.onAttach(activity)
     }
 }

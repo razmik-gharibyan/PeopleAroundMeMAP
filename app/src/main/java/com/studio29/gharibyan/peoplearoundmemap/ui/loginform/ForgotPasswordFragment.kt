@@ -57,7 +57,7 @@ class ForgotPasswordFragment: Fragment() {
                 auth.sendPasswordResetEmail(email).addOnCompleteListener {
                     if(it.isSuccessful) {
                         countdownCloseForgotPassTextView.visibility = View.VISIBLE
-                        object: CountDownTimer(5000,1000) {
+                        object: CountDownTimer(9000,1000) {
                             override fun onTick(millisUntilFinished: Long) {
                                 val secondsUntilFinish: Int = (millisUntilFinished / 1000).toInt()
                                 countdownCloseForgotPassTextView.text = "Email successfully sent, this window will be" +
@@ -67,7 +67,7 @@ class ForgotPasswordFragment: Fragment() {
                             override fun onFinish() {
                                 (activity as ConnectionActivity).closeForgotPasswordFragment()
                             }
-                        }
+                        }.start()
                     }else{
                         Toast.makeText(context,"There is no user with this email",Toast.LENGTH_LONG).show()
                     }

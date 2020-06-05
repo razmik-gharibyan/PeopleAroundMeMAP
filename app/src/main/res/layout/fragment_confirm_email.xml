@@ -12,9 +12,9 @@
         android:layout_height="150dp"
         android:background="@color/purpleDark"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/top_wave_confirm"/>
 
     <View
         android:id="@+id/top_wave_confirm"
@@ -22,9 +22,9 @@
         android:layout_height="80dp"
         android:background="@drawable/ic_dark_purple_wave"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_view_confirm" />
+        app:layout_constraintTop_toBottomOf="@+id/top_view_confirm"
+        app:layout_constraintBottom_toTopOf="@id/confirm_text_textview"/>
 
     <TextView
         android:id="@+id/confirm_emial_textview"
@@ -47,6 +47,7 @@
         android:id="@+id/confirm_pammap_icon"
         android:layout_width="90dp"
         android:layout_height="100dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/ic_pam_map_icon"
         app:layout_constraintBottom_toTopOf="@id/top_wave_confirm"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +67,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_wave_confirm" />
+        app:layout_constraintTop_toBottomOf="@+id/top_wave_confirm"
+        app:layout_constraintBottom_toTopOf="@id/email_pic_view"/>
 
     <View
         android:id="@+id/email_pic_view"
@@ -76,6 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirm_text_textview"
+        app:layout_constraintBottom_toTopOf="@id/continue_button"
         android:background="@drawable/ic_email_purple_70dp"/>
 
     <Button
@@ -92,7 +95,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_pic_view" />
+        app:layout_constraintTop_toBottomOf="@+id/email_pic_view"
+        app:layout_constraintBottom_toTopOf="@id/bottom_wave_confirm"/>
 
     <View
         android:id="@+id/bottom_view_confirm"
@@ -101,7 +105,8 @@
         android:background="@color/purpleDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_wave_confirm"/>
 
     <View
         android:id="@+id/bottom_wave_confirm"
@@ -110,5 +115,6 @@
         android:background="@drawable/ic_bottom_wave_dark_purple"
         app:layout_constraintBottom_toTopOf="@+id/bottom_view_confirm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/continue_button"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

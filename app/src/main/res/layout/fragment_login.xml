@@ -155,16 +155,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_wave_purple"
         android:background="@color/colorPrimary"/>
-
-    <View
-        android:id="@+id/bottom_wave_dark_purple"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/ic_bottom_wave_dark_purple"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <View
         android:id="@+id/bottom_wave_purple"
@@ -173,6 +165,7 @@
         android:background="@drawable/ic_bottom_wave_purple"
         app:layout_constraintBottom_toTopOf="@+id/bottom_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_textview"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

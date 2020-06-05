@@ -1,5 +1,6 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.loginform
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ class ConfirmEmialFragment: Fragment() {
     // Initialization
     private lateinit var auth: FirebaseAuth
     private lateinit var connectionViewModel: ConnectionViewModel
-    private lateinit var customViewModelFactory: CustomViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,11 +33,6 @@ class ConfirmEmialFragment: Fragment() {
 
         continueButton = view.findViewById(R.id.continue_button)
 
-        // ViewModel
-        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
-        connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
-            ConnectionViewModel::class.java)
-
         auth = FirebaseAuth.getInstance()
         continueButtonListener()
 
@@ -46,11 +41,12 @@ class ConfirmEmialFragment: Fragment() {
 
     private fun continueButtonListener() {
         continueButton.setOnClickListener {
-            if(auth.currentUser!!.isEmailVerified) {
-                connectionViewModel.currentUserID = auth.currentUser!!.uid
-                connectionViewModel.registerNewUser = true
-                (activity as ConnectionActivity).openInstagramLoaderFragment()
-            }
+            (activity as ConnectionActivity).openLoginFragment()
         }
+    }
+
+    override fun onAttach(activity: Activity) {
+        connectionViewModel = (activity as ConnectionActivity).connectionViewModel
+        super.onAttach(activity)
     }
 }

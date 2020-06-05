@@ -1,5 +1,6 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.loginform
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,6 +64,7 @@ class RegisterNewUserFragment: Fragment() {
                                 val currentUser = it.result!!.user
                                 currentUser!!.sendEmailVerification().addOnCompleteListener {
                                     if(it.isSuccessful) {
+                                        auth.signOut()
                                         (activity as ConnectionActivity).openConfirmEmailFragment()
                                     }else{
                                         Toast.makeText(context,it.exception!!.message, Toast.LENGTH_LONG).show()
@@ -98,4 +100,5 @@ class RegisterNewUserFragment: Fragment() {
         val pat: Pattern = Pattern.compile(passwordRegex)
         return pat.matcher(password).matches() && password.length >= 6
     }
+
 }

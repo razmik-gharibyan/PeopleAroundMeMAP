@@ -1,5 +1,6 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.loginform
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,7 +35,6 @@ class LoginFormLoader: Fragment() {
     // Initialization
     private lateinit var auth: FirebaseAuth
     private lateinit var connectionViewModel: ConnectionViewModel
-    private lateinit var customViewModelFactory: CustomViewModelFactory
 
     // Vars
     private var instagramUserDAO = Singletons.instagramUserDAO
@@ -51,11 +51,6 @@ class LoginFormLoader: Fragment() {
         loginButton = view.findViewById(R.id.login_button)
         forgotPasswordTextView = view.findViewById(R.id.forgot_password_textview)
         registerTextView = view.findViewById(R.id.register_textview)
-
-        // ViewModel
-        customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
-        connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
-            ConnectionViewModel::class.java)
 
         auth = FirebaseAuth.getInstance()
 
@@ -74,7 +69,9 @@ class LoginFormLoader: Fragment() {
             instagramUserDAO.documentId = currentUser.uid
             connectionViewModel.currentUserID = currentUser.uid
             connectionViewModel.registerNewUser = false
-            openInstagramLoaderFragment()
+            if(auth.currentUser!!.isEmailVerified) {
+                openInstagramLoaderFragment()
+            }
         }else{
             // Enter if user is not logged in, and open instagram panel
             listenToLoginButton()
@@ -90,9 +87,13 @@ class LoginFormLoader: Fragment() {
                 if(checkIfEmailIsValid(email) && checkIfPasswordIsValid(password)) {
                     auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
                         if(it.isSuccessful) {
-                            connectionViewModel.currentUserID = it.result!!.user!!.uid
-                            connectionViewModel.registerNewUser = false
-                            openInstagramLoaderFragment()
+                            if(auth.currentUser!!.isEmailVerified) {
+                                connectionViewModel.currentUserID = it.result!!.user!!.uid
+                                connectionViewModel.registerNewUser = false
+                                openInstagramLoaderFragment()
+                            }else{
+                                Toast.makeText(context,"Verify your email to Log In",Toast.LENGTH_LONG).show()
+                            }
                         }else{
                             Log.d(TAG,it.exception!!.message!!)
                             Toast.makeText(context,"Wrong email or password",Toast.LENGTH_LONG).show()
@@ -137,5 +138,10 @@ class LoginFormLoader: Fragment() {
         registerTextView.setOnClickListener {
             (activity as ConnectionActivity).openRegisterFragment()
         }
+    }
+
+    override fun onAttach(activity: Activity) {
+        connectionViewModel = (activity as ConnectionActivity).connectionViewModel
+        super.onAttach(activity)
     }
 }
