@@ -7,35 +7,36 @@
     tools:context=".ui.search.SearchFragment">
 
     <LinearLayout
-        android:id="@+id/search_header_layout"
+        android:id="@+id/top_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/search_user_list_recycler_view"
+        android:layout_height="100dp"
+        android:layout_marginBottom="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/search_background_gradient"
+        android:elevation="10dp">
 
-        <ImageView
-            android:id="@+id/search_icon_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_search_purple_38dp"
-            android:contentDescription="Search" />
-
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/search_edit_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/round_border_white"
+            android:drawableStart="@drawable/ic_search_white_24dp"
+            android:drawablePadding="16dp"
+            android:hint="Type here"
+            android:padding="16dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/top_view"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textColorHint="#B363E7"
-            android:hint="TYPE HERE" />
+            app:layout_constraintStart_toStartOf="@+id/top_view"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
-
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_user_list_recycler_view"
@@ -43,6 +44,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_header_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/top_view">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

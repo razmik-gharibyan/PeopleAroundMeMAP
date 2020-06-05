@@ -73,7 +73,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dark_purple_wave"
         android:hint="Enter email"
-        android:background="@drawable/round_border"
+        android:background="@drawable/round_border_purple"
         android:drawableStart="@drawable/ic_email_purple_24dp"
         android:drawablePadding="16dp"/>
 
@@ -88,7 +88,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email_edittext"
-        android:background="@drawable/round_border"
+        android:background="@drawable/round_border_purple"
         android:hint="Enter password"
         android:drawableStart="@drawable/ic_lock_purple_24dp"
         android:drawablePadding="16dp"/>

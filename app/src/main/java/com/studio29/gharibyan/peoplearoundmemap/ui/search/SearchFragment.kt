@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -30,7 +31,7 @@ class SearchFragment : Fragment() {
 
     // Views
     private lateinit var recyclerView: RecyclerView
-    private lateinit var searchEditText: TextInputEditText
+    private lateinit var searchEditText: EditText
 
     // Variables
     private var userlist = ArrayList<FirestoreUserDAO>()
