@@ -15,7 +15,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.studio29.gharibyan.peoplearoundmemap.MainActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
 import com.studio29.gharibyan.peoplearoundmemap.api.instagram.InstagramPlaceHolderApi
@@ -24,18 +23,12 @@ import com.studio29.gharibyan.peoplearoundmemap.repositry.services.firestore.Fir
 import com.studio29.gharibyan.peoplearoundmemap.repositry.services.instagram.InstagramApi
 import com.google.firebase.auth.FirebaseAuth
 import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
-import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
 import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.nio.charset.Charset
-import java.security.Key
-import java.util.*
-import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
 
 class InstagramLoaderFragment: Fragment() {
 

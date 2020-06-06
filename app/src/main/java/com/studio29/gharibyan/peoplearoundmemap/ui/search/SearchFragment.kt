@@ -19,7 +19,6 @@ import com.studio29.gharibyan.peoplearoundmemap.R
 import com.studio29.gharibyan.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.studio29.gharibyan.peoplearoundmemap.ui.map.MapViewModel
 import com.studio29.gharibyan.peoplearoundmemap.ui.recyclerview.UserSearchAdapter
-import com.google.android.material.textfield.TextInputEditText
 
 
 class SearchFragment : Fragment() {

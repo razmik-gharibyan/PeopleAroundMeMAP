@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,18 +7,20 @@
 
     <View
         android:id="@+id/top_view_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/purpleDark"
+        app:layout_constraintBottom_toTopOf="@id/top_wave_confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/guideline13" />
 
     <View
         android:id="@+id/top_wave_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/ic_dark_purple_wave"
+        app:layout_constraintBottom_toTopOf="@id/guideline14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_view_confirm" />
@@ -30,24 +31,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="40dp"
         android:text="Confirm Email"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/top_wave_confirm"
-        app:layout_constraintEnd_toStartOf="@+id/top_view_confirm"
+        app:layout_constraintBottom_toBottomOf="@+id/top_view_confirm"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/top_view_confirm" />
 
     <View
         android:id="@+id/confirm_pammap_icon"
-        android:layout_width="90dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="70dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/ic_pam_map_icon"
-        app:layout_constraintBottom_toTopOf="@id/top_wave_confirm"
+        app:layout_constraintBottom_toBottomOf="@id/top_view_confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirm_emial_textview" />
@@ -65,25 +66,27 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_wave_confirm" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline14"
+        app:layout_constraintBottom_toTopOf="@id/email_pic_view"/>
 
     <View
         android:id="@+id/email_pic_view"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="20dp"
+        android:background="@drawable/ic_email_purple_70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirm_text_textview"
-        android:background="@drawable/ic_email_purple_70dp"/>
+        app:layout_constraintBottom_toTopOf="@id/continue_button"/>
 
     <Button
         android:id="@+id/continue_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
         android:background="@drawable/round_background"
         android:text="Continue"
         android:textColor="#FFFFFF"
@@ -91,24 +94,59 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email_pic_view" />
+        app:layout_constraintTop_toBottomOf="@+id/email_pic_view"
+        app:layout_constraintBottom_toTopOf="@id/guideline15"/>
 
     <View
         android:id="@+id/bottom_view_confirm"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/purpleDark"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guideline16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bottom_wave_confirm" />
 
     <View
         android:id="@+id/bottom_wave_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@drawable/ic_bottom_wave_dark_purple"
         app:layout_constraintBottom_toTopOf="@+id/bottom_view_confirm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="0.0" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp"
+        app:layout_constraintGuide_percent="1.0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

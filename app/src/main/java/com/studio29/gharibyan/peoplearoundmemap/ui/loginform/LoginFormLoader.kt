@@ -11,12 +11,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
 import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
 import com.studio29.gharibyan.peoplearoundmemap.repositry.models.singletons.Singletons
-import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
 import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import java.util.regex.Pattern
 

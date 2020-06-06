@@ -7,12 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
-import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
 import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 
 class ConfirmEmialFragment: Fragment() {
