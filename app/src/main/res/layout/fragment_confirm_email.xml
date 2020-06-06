@@ -60,7 +60,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="32dp"
-        android:text="We have sent you an email for confirmation. Verify your email and press Continue button"
+        android:text="We have sent an email to for confirmation. Verify your email and press Continue button"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"

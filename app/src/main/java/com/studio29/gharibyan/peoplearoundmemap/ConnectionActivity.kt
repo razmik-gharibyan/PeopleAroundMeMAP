@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
+import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import com.studio29.gharibyan.peoplearoundmemap.ui.instagram.InstagramLoaderFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ConfirmEmialFragment
@@ -25,6 +26,7 @@ class ConnectionActivity: AppCompatActivity() {
     private val instagramLoaderFragment = InstagramLoaderFragment()
     private val registerNewUserFragment = RegisterNewUserFragment()
     private val confirmEmailFragment = ConfirmEmialFragment()
+    private val connectionFragment = ConnectionFragment()
     private var active: Fragment = loginFormLoaderFragment
 
     // Initialization
@@ -46,9 +48,14 @@ class ConnectionActivity: AppCompatActivity() {
         customViewModelFactory = CustomViewModelFactory(baseContext!!,this)
         connectionViewModel = ViewModelProviders.of(this,customViewModelFactory).get(
             ConnectionViewModel::class.java)
-
+        openConnectionFragment()
         androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler()
 
+    }
+
+    fun openConnectionFragment() {
+        active = connectionFragment
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,connectionFragment).addToBackStack(null).commit()
     }
 
     fun openLoginFragment() {
@@ -63,12 +70,12 @@ class ConnectionActivity: AppCompatActivity() {
 
     fun openForgotPasswordFragment() {
         active = forgotPasswordFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,forgotPasswordFragment).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,forgotPasswordFragment).addToBackStack(null).commit()
     }
 
     fun closeForgotPasswordFragment() {
         active = loginFormLoaderFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack(null).commit()
     }
 
     fun openRegisterFragment() {

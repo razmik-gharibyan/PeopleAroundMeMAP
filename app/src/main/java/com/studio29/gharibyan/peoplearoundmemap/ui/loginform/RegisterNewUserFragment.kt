@@ -1,5 +1,6 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.loginform
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.studio29.gharibyan.peoplearoundmemap.ConnectionActivity
 import com.studio29.gharibyan.peoplearoundmemap.R
+import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
 import java.util.regex.Pattern
 
 class RegisterNewUserFragment: Fragment() {
@@ -27,6 +29,7 @@ class RegisterNewUserFragment: Fragment() {
 
     // Initialization
     private lateinit var auth: FirebaseAuth
+    private lateinit var connectionViewModel: ConnectionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +64,7 @@ class RegisterNewUserFragment: Fragment() {
                                 val currentUser = it.result!!.user
                                 currentUser!!.sendEmailVerification().addOnCompleteListener {
                                     if(it.isSuccessful) {
+                                        connectionViewModel.currentUserEmail = email
                                         auth.signOut()
                                         (activity as ConnectionActivity).openConfirmEmailFragment()
                                     }else{
@@ -100,4 +104,8 @@ class RegisterNewUserFragment: Fragment() {
         return pat.matcher(password).matches() && password.length >= 6
     }
 
+    override fun onAttach(activity: Activity) {
+        connectionViewModel = (activity as ConnectionActivity).connectionViewModel
+        super.onAttach(activity)
+    }
 }

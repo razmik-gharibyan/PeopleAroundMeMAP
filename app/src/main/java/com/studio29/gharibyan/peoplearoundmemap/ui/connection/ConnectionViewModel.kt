@@ -28,6 +28,7 @@ class ConnectionViewModel(private var context: Context): ViewModel() {
     // Vars
     var currentUserID: String? = null
     var registerNewUser: Boolean? = null
+    var currentUserEmail: String? = null
 
     fun checkNetworkStatus() {
         CoroutineScope(Dispatchers.Main).launch {
