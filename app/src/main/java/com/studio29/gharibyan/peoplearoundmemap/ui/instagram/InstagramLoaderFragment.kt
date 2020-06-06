@@ -40,6 +40,7 @@ class InstagramLoaderFragment: Fragment() {
     private val redirectBeforeCode = "Loading-map/?code="
     private val redirectAfterCode = "#_"
     private val logoutUrl = "https://www.instagram.com/"
+    private val logoutLink = "https://instagram.com/accounts/logout/"
 
     private val key = "1Hbfh667adfDEJ78"
     private val ALGORITHM = "AES"
@@ -113,7 +114,12 @@ class InstagramLoaderFragment: Fragment() {
                 return false
             }
         }
-        webView.loadUrl(authorizeUrl)
+        if(registerUser) {
+            webView.loadUrl(logoutLink)
+            registerUser = false
+        }else{
+            webView.loadUrl(authorizeUrl)
+        }
     }
 
 
@@ -122,6 +128,7 @@ class InstagramLoaderFragment: Fragment() {
         instagramApi.infoSuccess.observe(viewLifecycleOwner, Observer {
             if(it) {
                 // Enter here if successfully received user information from instagram
+                registerUser = true
                 logInOrRegisterUserToFirebase()
             }else{
                 throw Exception("Error loading user instagram data")
@@ -154,8 +161,8 @@ class InstagramLoaderFragment: Fragment() {
                 if(registerUser) {
                     registerUserToFirebase(connectionViewModel.currentUserID!!)
                 }else {
-                    openWebView()
                     registerUser = true
+                    openWebView()
                 }
             }else {
                 // Enter here if user is logged in, get firebase document for it
