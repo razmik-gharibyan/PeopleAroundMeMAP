@@ -42,7 +42,6 @@ class ConnectionFragment: Fragment() {
         val view = inflater.inflate(R.layout.fragment_connection_check,container,false)
         reconnectButton = view.findViewById(R.id.reconnect_button)
         connectionLayout = view.findViewById(R.id.connection_layout)
-        navController = Navigation.findNavController(activity!!,R.id.nav_host_fragment_connection)
 
         // ViewModel
         customViewModelFactory = CustomViewModelFactory(activity?.baseContext!!,viewLifecycleOwner)
@@ -65,7 +64,9 @@ class ConnectionFragment: Fragment() {
         connectionViewModel.networkAccess.observe(viewLifecycleOwner, Observer {
             networkStatus = it
             if(networkStatus) {
+                (activity as ConnectionActivity).popBackStackByTag(this,"connectionTag")
                 (activity as ConnectionActivity).openLoginFragment()
+
             }else{
                 connectionLayout.visibility = View.VISIBLE
             }

@@ -73,13 +73,16 @@ class RegisterNewUserFragment: Fragment() {
                                 }
                             }
                         }.addOnFailureListener {
-                            Log.d(TAG,it.message!!)
+                                val toastMsg = "The email address is already in use by another account"
+                                if(it.message!!.contains(toastMsg)) {
+                                    Toast.makeText(context,toastMsg, Toast.LENGTH_LONG).show()
+                                }
                         }
                     }else{
                         Toast.makeText(context,"Password and Confirm password does not match", Toast.LENGTH_LONG).show()
                     }
                 }else{
-                    Toast.makeText(context,"Incorrect emial or password, password should contain letters and numbers",
+                    Toast.makeText(context,"Incorrect email or password, password should contain letters and numbers",
                         Toast.LENGTH_LONG).show()
                 }
             }else{

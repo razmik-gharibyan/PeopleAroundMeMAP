@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProviders
 import com.studio29.gharibyan.peoplearoundmemap.ui.CustomViewModelFactory
 import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionFragment
@@ -55,52 +56,66 @@ class ConnectionActivity: AppCompatActivity() {
 
     fun openConnectionFragment() {
         active = connectionFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,connectionFragment).addToBackStack(null).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,connectionFragment).addToBackStack("connectionTag").commit()
     }
 
     fun openLoginFragment() {
         active = loginFormLoaderFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack(null).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack("loginTag").commit()
     }
 
     fun openInstagramLoaderFragment() {
         active = instagramLoaderFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,instagramLoaderFragment).addToBackStack(null).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,instagramLoaderFragment).addToBackStack("instagramTag").commit()
     }
 
     fun openForgotPasswordFragment() {
         active = forgotPasswordFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,forgotPasswordFragment).addToBackStack(null).commit()
-    }
-
-    fun closeForgotPasswordFragment() {
-        active = loginFormLoaderFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,loginFormLoaderFragment).addToBackStack(null).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,forgotPasswordFragment).addToBackStack("forgotpassTag").commit()
     }
 
     fun openRegisterFragment() {
         active = registerNewUserFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,registerNewUserFragment).addToBackStack(null).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,registerNewUserFragment).addToBackStack("registerTag").commit()
     }
 
     fun openConfirmEmailFragment() {
         active = confirmEmailFragment
-        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,confirmEmailFragment).addToBackStack(null).commit()
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,confirmEmailFragment).addToBackStack("confirmTag").commit()
+    }
+
+    fun closeForgotPasswordFragment() {
+        active = loginFormLoaderFragment
+        popBackStackByTag(forgotPasswordFragment,"forgotpassTag")
+    }
+
+    fun closeConfirmFragment() {
+        active = loginFormLoaderFragment
+        popBackStackByTag(confirmEmailFragment,"confirmTag")
+        popBackStackByTag(registerNewUserFragment,"registerTag")
+    }
+
+    fun popBackStackByTag(fragment: Fragment,tag: String) {
+        manager.beginTransaction().remove(fragment).commit()
+        manager.popBackStack(tag,FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     override fun onBackPressed() {
         val count = supportFragmentManager.backStackEntryCount
 
         if(active == forgotPasswordFragment) {
-            openLoginFragment()
+            active = loginFormLoaderFragment
+            popBackStackByTag(forgotPasswordFragment,"forgotpassTag")
         }else if(active == loginFormLoaderFragment) {
+            popBackStackByTag(loginFormLoaderFragment,"loginTag")
             super.onBackPressed()
         }else if(active == registerNewUserFragment) {
-            openLoginFragment()
+            active = registerNewUserFragment
+            popBackStackByTag(registerNewUserFragment,"registerTag")
         }else if(active == confirmEmailFragment) {
-            openRegisterFragment()
-        }else if(active == instagramLoaderFragment) {
-            openLoginFragment()
+            active = loginFormLoaderFragment
+            popBackStackByTag(confirmEmailFragment,"confirmTag")
+            popBackStackByTag(registerNewUserFragment,"registerTag")
         }
     }
 }

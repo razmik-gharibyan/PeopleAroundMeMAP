@@ -42,7 +42,7 @@ class ConfirmEmialFragment: Fragment() {
 
     private fun continueButtonListener() {
         continueButton.setOnClickListener {
-            (activity as ConnectionActivity).openLoginFragment()
+            (activity as ConnectionActivity).closeConfirmFragment()
         }
     }
 
