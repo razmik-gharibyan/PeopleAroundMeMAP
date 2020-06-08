@@ -1,12 +1,19 @@
-You can use username and password below to Log In to Instagram as test user.
+You can use gmail and password below to Log In as test user.
 
-USERNAME: pammaptestuser
-PASSWORD: codenamerain
+Gmail : pammaptestuser@gmail.com
+Password: codename10
+
+You can use username and password below to Log In to Instagram as test user to link Instagram profile with an account you have created using test gmail.
+
+INSTAGRAM USERNAME: pammaptestuser
+INSTAGRAM PASSWORD: codenamerain
 
 1. Download app-pam_map.apk , install and open it on android phone(xiaomi mi 9 or google pixel 2).
 2. Give access to your current location by pressing "Allow only while using the app" button.(Location is required for proper use of this application)
-3. In the next page where application asks to Save Your Login Info, press "Not Now" button.
-4. In next page application will ask to access for logged in user instagram username, profile_picture_url_hd,followers_count and account_type. Press "Authorize" button to give access and continue.
-5. Map will load and center camera to current user location on map, and show a round icon which is using profile_picture_url_hd in a round format for current user.
-6. Click on user icon, and a title bar will appear, which will show information that is fetched from username, followers_count,account_type. If you click on title bar, a corresponding user profile will be opened on Instagram application(if such installed). You can press android back button to go back to this application.
-7. Press "List" button to see all nearby visible users. In a List page all nearby users will be shown in a list format, where used user profile_picture_url_hd, username, followers_count information. You can also click on "OPEN PROFILE" button which will open corresponding user profile on Instagram application (if such installed). "Search" page uses same layout as "List" page. 
+3. Enter valid test gmail (pammaptestuser@gmail.com) and password (codename10) to Log in
+4. In next page log in with test instagram user using login (pammaptestuser) and password (codenamerain) to link Instagram account with logged in application account.
+5. In the next page where application asks to Save Your Login Info, press "Not Now" button.
+6. In next page application will ask to access for logged in user instagram username, profile_picture_url_hd,followers_count and account_type. Press "Authorize" button to give access and continue.
+7. Map will load and center camera to current user location on map, and show a round icon which is using profile_picture_url_hd in a round format for current user.
+8. Click on user icon, and a title bar will appear, which will show information that is fetched from username, followers_count,account_type. If you click on title bar, a corresponding user profile will be opened on Instagram application(if such installed). You can press android back button to go back to this application.
+9. Press "List" button to see all nearby visible users. In a List page all nearby users will be shown in a list format, where used user profile_picture_url_hd, username, followers_count information. You can also click on "OPEN PROFILE" button which will open corresponding user profile on Instagram application (if such installed). "Search" page uses same layout as "List" page. 

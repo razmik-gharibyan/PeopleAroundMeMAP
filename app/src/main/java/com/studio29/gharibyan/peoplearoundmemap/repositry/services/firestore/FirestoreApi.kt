@@ -2,6 +2,7 @@ package com.studio29.gharibyan.peoplearoundmemap.repositry.services.firestore
 
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.studio29.gharibyan.peoplearoundmemap.repositry.models.firestore.CurrentFirestoreUserDAO
@@ -33,10 +34,12 @@ class FirestoreApi: FirestoreInter {
     private var _newDocumentIDLD = MutableLiveData<String>()
     private var _usersInBoundsLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
     private var _usersFoundBySearchLD = MutableLiveData<ArrayList<FirestoreUserDAO>>()
+    private var _documentDeletedLD = MutableLiveData<Boolean>()
     var currentDocumentId: LiveData<FirestoreUserDAO> = _currentDocumentIDLD
     var newDocumentId: LiveData<String> = _newDocumentIDLD
     var usersInBoundsList: LiveData<ArrayList<FirestoreUserDAO>> = _usersInBoundsLD
     var usersFoundBySearch: LiveData<ArrayList<FirestoreUserDAO>> = _usersFoundBySearchLD
+    var documentDeleted: LiveData<Boolean> = _documentDeletedLD
 
     // Variables
     private lateinit var documentList: ArrayList<FirestoreUserDAO>
@@ -188,5 +191,18 @@ class FirestoreApi: FirestoreInter {
                _usersFoundBySearchLD.value = searchedUserList
            }
         return usersFoundBySearch
+    }
+
+    override suspend fun deleteDocument(documentId: String): LiveData<Boolean> {
+        db.collection(collectionName)
+            .document(documentId)
+            .delete()
+            .addOnSuccessListener {
+                _documentDeletedLD.value = true
+                Log.d(TAG, "Successfully deleted document")
+            }.addOnFailureListener {
+                _documentDeletedLD.value = false
+            }
+        return documentDeleted
     }
 }

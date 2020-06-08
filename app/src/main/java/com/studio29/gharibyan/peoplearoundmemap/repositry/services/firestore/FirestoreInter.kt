@@ -1,6 +1,7 @@
 package com.studio29.gharibyan.peoplearoundmemap.repositry.services.firestore
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.studio29.gharibyan.peoplearoundmemap.repositry.models.firestore.CurrentFirestoreUserDAO
 import com.studio29.gharibyan.peoplearoundmemap.repositry.models.firestore.FirestoreUserDAO
 import com.google.android.gms.maps.GoogleMap
@@ -24,5 +25,7 @@ interface FirestoreInter {
     suspend fun findAllUsersInBounds(map: GoogleMap)
 
     suspend fun findAllUsersMatchingSearch(nameText: String): LiveData<ArrayList<FirestoreUserDAO>>
+
+    suspend fun deleteDocument(documentId: String): LiveData<Boolean>
 
 }

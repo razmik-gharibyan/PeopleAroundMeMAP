@@ -10,4 +10,8 @@
         android:title="Sign Out"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/delete_account"
+        android:title="Delete Account"
+        app:showAsAction="never" />
+
 </menu>
