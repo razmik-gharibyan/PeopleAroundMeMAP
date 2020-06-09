@@ -1,5 +1,6 @@
 package com.studio29.gharibyan.peoplearoundmemap
 
+import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ConfirmEmialFragmen
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.ForgotPasswordFragment
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.LoginFormLoader
 import com.studio29.gharibyan.peoplearoundmemap.ui.loginform.RegisterNewUserFragment
+import com.studio29.gharibyan.peoplearoundmemap.ui.profile.AccountFragment
 
 class ConnectionActivity: AppCompatActivity() {
 
@@ -28,6 +30,7 @@ class ConnectionActivity: AppCompatActivity() {
     private val registerNewUserFragment = RegisterNewUserFragment()
     private val confirmEmailFragment = ConfirmEmialFragment()
     private val connectionFragment = ConnectionFragment()
+    private val accountFragment = AccountFragment()
     private var active: Fragment = loginFormLoaderFragment
 
     // Initialization
@@ -100,6 +103,12 @@ class ConnectionActivity: AppCompatActivity() {
         manager.popBackStack(tag,FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    fun openAccountFragment() {
+        active = accountFragment
+        popBackStackByTag(instagramLoaderFragment,"instagramTag")
+        manager.beginTransaction().replace(R.id.nav_host_fragment_connection,accountFragment).addToBackStack("accountTag").commit()
+    }
+
     override fun onBackPressed() {
         val count = supportFragmentManager.backStackEntryCount
 
@@ -115,6 +124,10 @@ class ConnectionActivity: AppCompatActivity() {
         }else if(active == confirmEmailFragment) {
             active = loginFormLoaderFragment
             popBackStackByTag(confirmEmailFragment,"confirmTag")
+            popBackStackByTag(registerNewUserFragment,"registerTag")
+        }else if(active == accountFragment) {
+            active = loginFormLoaderFragment
+            popBackStackByTag(accountFragment,"accountTag")
             popBackStackByTag(registerNewUserFragment,"registerTag")
         }
     }

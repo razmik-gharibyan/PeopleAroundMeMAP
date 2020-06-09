@@ -24,6 +24,10 @@ import com.studio29.gharibyan.peoplearoundmemap.ui.userlist.UserListFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.studio29.gharibyan.peoplearoundmemap.repositry.services.firestore.FirestoreApi
+import com.studio29.gharibyan.peoplearoundmemap.ui.connection.ConnectionViewModel
+import com.studio29.gharibyan.peoplearoundmemap.ui.profile.AccountFragment
+import com.studio29.gharibyan.peoplearoundmemap.ui.profile.ProfileFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapFragment: Fragment
     private lateinit var listFragment: Fragment
     private lateinit var searchFragment: Fragment
+    private lateinit var profileFragment: Fragment
+    private lateinit var accountFragment: Fragment
     private lateinit var active: Fragment
     private val fragmentManager = supportFragmentManager
 
@@ -61,10 +67,14 @@ class MainActivity : AppCompatActivity() {
         mapFragment = MapFragment()
         listFragment = UserListFragment()
         searchFragment = SearchFragment()
+        profileFragment = ProfileFragment()
+        accountFragment = AccountFragment()
+
         active = mapFragment
 
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment,mapFragment).commit()
         fragmentManager.beginTransaction().add(R.id.nav_host_fragment,searchFragment).hide(searchFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment,profileFragment).hide((profileFragment)).commit()
 
         // Views
         navView = findViewById(R.id.nav_view)
@@ -92,53 +102,8 @@ class MainActivity : AppCompatActivity() {
             firestoreUserDao.location = currentFirestoreUserDAO.location
             mapViewModel.sendSearchedUserToMap(firestoreUserDao)
             hideSearchShowMap()
-        }else if(item.itemId == R.id.signOut_item) {
-            // Sign Out user, and redirect to login fragment
-            FirebaseAuth.getInstance().signOut()
-            openLoginFormFragment()
-        }else if(item.itemId == R.id.delete_account) {
-            val user = FirebaseAuth.getInstance().currentUser
-            if(user != null) {
-                val userEmail = user.email
-                val userId = user.uid
-                val alertDialog = AlertDialog.Builder(this)
-                alertDialog.setPositiveButton("Delete",object: DialogInterface.OnClickListener{
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            firestoreApi.deleteDocument(userId)
-                        }
-                        listenIfDocumentDeleted(user)
-                    }
-                })
-                alertDialog.setNegativeButton("Cancel", object: DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-                        dialog!!.cancel()
-                    }
-                })
-                alertDialog.setTitle("Are you sure you want to delete account?")
-                alertDialog.setMessage("Delete account connected to $userEmail?")
-                alertDialog.create()
-                alertDialog.show()
-            }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun listenIfDocumentDeleted(user: FirebaseUser) {
-        firestoreApi.documentDeleted.observe(this, Observer {
-            if(it) {
-                user.delete().addOnCompleteListener {
-                    if(it.isSuccessful) {
-                        Toast.makeText(baseContext,"Account with ${user.email} email is successfully deleted",Toast.LENGTH_LONG).show()
-                        openLoginFormFragment()
-                    }else{
-                        Toast.makeText(baseContext,"Could not delete account, please try again later",Toast.LENGTH_LONG).show()
-                    }
-                }
-            }else{
-                Toast.makeText(baseContext,"Could not delete account, please try again later",Toast.LENGTH_LONG).show()
-            }
-        })
     }
 
     private fun listenToNavViewChanges() {
@@ -166,6 +131,13 @@ class MainActivity : AppCompatActivity() {
                 fragmentManager.beginTransaction().hide(mapFragment).show(searchFragment).commit()
                 active = searchFragment
                 return@setOnNavigationItemSelectedListener true
+            }else if(it.itemId == R.id.navigation_profile) {
+                if(active == listFragment) {
+                    fragmentManager.beginTransaction().remove(listFragment).commit()
+                }
+                fragmentManager.beginTransaction().hide(mapFragment).show(profileFragment).commit()
+                active = profileFragment
+                return@setOnNavigationItemSelectedListener true
             }
             return@setOnNavigationItemSelectedListener false
         }
@@ -175,9 +147,9 @@ class MainActivity : AppCompatActivity() {
         navView.selectedItemId = R.id.navigation_map
     }
 
-    private fun openLoginFormFragment() {
-        val intent = Intent(this,ConnectionActivity::class.java)
-        startActivity(intent)
+    fun openAccountFragment() {
+        fragmentManager.beginTransaction().hide(profileFragment).commit()
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment,accountFragment).commit()
     }
 
     override fun onStop() {

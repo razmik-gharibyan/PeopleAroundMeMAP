@@ -87,7 +87,10 @@ class LoginFormLoader: Fragment() {
                         if(it.isSuccessful) {
                             if(auth.currentUser!!.isEmailVerified) {
                                 connectionViewModel.currentUserID = it.result!!.user!!.uid
-                                connectionViewModel.registerNewUser = false
+                                if(connectionViewModel.registerNewUser!!) {
+                                    // User should be redirected to account page so user can link instagram account
+                                    openAccountFragment()
+                                }
                                 openInstagramLoaderFragment()
                             }else{
                                 Toast.makeText(context,"Verify your email to Log In",Toast.LENGTH_LONG).show()
@@ -124,6 +127,10 @@ class LoginFormLoader: Fragment() {
 
     private fun openInstagramLoaderFragment() {
         (activity as ConnectionActivity).openInstagramLoaderFragment()
+    }
+
+    private fun openAccountFragment() {
+        (activity as ConnectionActivity).openAccountFragment()
     }
 
     private fun forgotPasswordClicked() {

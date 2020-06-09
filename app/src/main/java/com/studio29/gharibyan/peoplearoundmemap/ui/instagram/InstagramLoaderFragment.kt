@@ -42,9 +42,6 @@ class InstagramLoaderFragment: Fragment() {
     private val logoutUrl = "https://www.instagram.com/"
     private val logoutLink = "https://instagram.com/accounts/logout/"
 
-    private val key = "1Hbfh667adfDEJ78"
-    private val ALGORITHM = "AES"
-
     // Variables
     private lateinit var code: String
     private lateinit var auth: FirebaseAuth

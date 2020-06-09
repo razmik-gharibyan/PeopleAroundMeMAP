@@ -65,6 +65,7 @@ class RegisterNewUserFragment: Fragment() {
                                 currentUser!!.sendEmailVerification().addOnCompleteListener {
                                     if(it.isSuccessful) {
                                         connectionViewModel.currentUserEmail = email
+                                        connectionViewModel.registerNewUser = true
                                         auth.signOut()
                                         (activity as ConnectionActivity).openConfirmEmailFragment()
                                     }else{

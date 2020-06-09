@@ -6,12 +6,8 @@
         android:title="Find Me"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/signOut_item"
-        android:title="Sign Out"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/delete_account"
-        android:title="Delete Account"
+    <item android:id="@+id/open_account"
+        android:title="My Account"
         app:showAsAction="never" />
 
 </menu>
