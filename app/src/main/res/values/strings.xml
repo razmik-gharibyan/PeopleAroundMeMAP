@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="last_longitude">40.790124</string>
+    <string name="last_latitude">-73.9537724</string>
 </resources>

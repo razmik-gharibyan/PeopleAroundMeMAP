@@ -20,7 +20,6 @@ import java.lang.Exception
 class MarkerApi: MarkerInter {
     private val followerProcessing = FollowerProcessing()
     private val imageProcessing = ImageProcessing(followerProcessing)
-    private val imageUrlProcessing = ImageUrlProcessing()
     var iconList = ArrayList<MarkerIconWithDocument>()
 
     override suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO, moveCamera: Boolean, context: Context): MarkerDAO? {

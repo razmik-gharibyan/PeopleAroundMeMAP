@@ -186,7 +186,7 @@ class InstagramLoaderFragment: Fragment() {
                     currentFirestoreUserDAO.token = instagramUserDAO.token
                     currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
                     currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
-                    currentFirestoreUserDAO.isVisible = false
+                    currentFirestoreUserDAO.isVisible = true
                     currentFirestoreUserDAO.isActive = true
                     currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
                     openMapActivity()
@@ -213,7 +213,7 @@ class InstagramLoaderFragment: Fragment() {
         currentFirestoreUserDAO.token = instagramUserDAO.token
         currentFirestoreUserDAO.isPrivate = instagramUserDAO.isPrivate
         currentFirestoreUserDAO.isVerified = instagramUserDAO.isVerified
-        currentFirestoreUserDAO.isVisible = false
+        currentFirestoreUserDAO.isVisible = true
         currentFirestoreUserDAO.isActive = true
         currentFirestoreUserDAO.instagram_id = instagramUserDAO.instagram_id
         CoroutineScope(Dispatchers.Main).launch {

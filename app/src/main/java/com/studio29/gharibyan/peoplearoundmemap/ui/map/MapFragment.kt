@@ -1,7 +1,9 @@
 package com.studio29.gharibyan.peoplearoundmemap.ui.map
 
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -36,6 +38,7 @@ class MapFragment : Fragment() {
 
     // Initialization
     private lateinit var mapViewModel: MapViewModel
+    private var sharedPref: SharedPreferences? = null
 
     // MarkerCluster
     private lateinit var markerClusterRenderer: MarkerClusterRenderer<MarkerItem>
@@ -60,6 +63,7 @@ class MapFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
         mapViewModel = (activity as MainActivity).mapViewModel
+        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
 
         // Views
         visibilityButton = view.findViewById(R.id.visibility_button)
@@ -117,6 +121,13 @@ class MapFragment : Fragment() {
         mapViewModel.locationUpdates.observe(viewLifecycleOwner, Observer {
             if(it != null) {
                 currentFirestoreUserDAO.location = GeoPoint(it.latitude,it.longitude)
+                CoroutineScope(Dispatchers.IO).launch {
+                    with (sharedPref!!.edit()) {
+                        putString(getString(R.string.last_longitude), it.longitude.toString())
+                        putString(getString(R.string.last_latitude),it.latitude.toString())
+                        apply()
+                    }
+                }
                 if(userDocumentId != null) {
                     mapViewModel.updateUser(currentFirestoreUserDAO)
                 }
@@ -131,10 +142,16 @@ class MapFragment : Fragment() {
             currentFirestoreUserDAO.isVisible = it.isVisible
             userVisibility = isVisible
             if(it == null || !currentFirestoreUserDAO.isVisible!!) {
-                // Enter this case if users isVisible is on false, or user is logged first time , then by default visibility is false
+                // Enter this case if users isVisible is on false, or user is logged first time
                 if(it == null) {
+                    // First time logged in
                     mapViewModel.addNewUser(currentFirestoreUserDAO)
                 }else{
+                    // isVisible is false
+                    val latitude: Double = sharedPref!!.getString(getString(R.string.last_latitude),"-73.9537724")!!.toDouble()
+                    val longitude: Double = sharedPref!!.getString(getString(R.string.last_longitude),"40.790124")!!.toDouble()
+                    currentFirestoreUserDAO.location = GeoPoint(latitude,longitude)
+                    map!!.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude,longitude),19F))
                     mapViewModel.updateUser(currentFirestoreUserDAO)
                 }
                 visibilityChanger(false)
@@ -211,11 +228,7 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) {
-                                                    //for(i in 0..6000) {
-                                                        addMarkerToCluster(marker!!, markerListCopy)
-                                                    //}
-                                                }
+                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
                                             }
                                         }
                                     }
