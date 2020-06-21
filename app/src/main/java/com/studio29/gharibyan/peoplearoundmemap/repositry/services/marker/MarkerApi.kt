@@ -2,6 +2,10 @@ package com.studio29.gharibyan.peoplearoundmemap.repositry.services.marker
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.studio29.gharibyan.peoplearoundmemap.repositry.editor.FollowerProcessing
 import com.studio29.gharibyan.peoplearoundmemap.repositry.editor.ImageProcessing
 import com.studio29.gharibyan.peoplearoundmemap.repositry.editor.ImageUrlProcessing
@@ -39,11 +43,15 @@ class MarkerApi: MarkerInter {
                     iconList.add(iconWithDocument)
                 }
                  */
-                bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
+                val widthHeightArray = followerProcessing.picSizeViaFollower(firestoreUserDAO.followers!!)
+                bitmap = Glide.with(context)
+                    .asBitmap()
+                    .load(firestoreUserDAO.picture!!)
+                    .into(widthHeightArray[0],widthHeightArray[1])
+                    .get()
+
                 val markerOptions = MarkerOptions()
-                val resizedBitMap: Bitmap =
-                    imageProcessing.getResizedBitmap(bitmap, firestoreUserDAO.followers!!,context) // Resize bitmap
-                val roundBitMap = imageProcessing.getCroppedBitmap(resizedBitMap) // Make current bitmap to round type
+                val roundBitMap = imageProcessing.getCroppedBitmap(bitmap) // Make current bitmap to round type
                 val latLng = LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude)
                 markerOptions.position(latLng)
                 markerOptions.visible(true)

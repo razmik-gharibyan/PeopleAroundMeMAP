@@ -98,6 +98,7 @@ class MapFragment : Fragment() {
     private fun initMap() {
         mapView.getMapAsync {
             if(map == null) map = it
+            //map!!.mapType = GoogleMap.MAP_TYPE_HYBRID
             // Users list operations
             mapViewModel.findAllUsersInBounds(map!!)
             mapViewModel.markerOperations()
@@ -210,7 +211,11 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) { addMarkerToCluster(marker!!, markerListCopy) }
+                                                withContext(Dispatchers.Main) {
+                                                    //for(i in 0..6000) {
+                                                        addMarkerToCluster(marker!!, markerListCopy)
+                                                    //}
+                                                }
                                             }
                                         }
                                     }
@@ -219,7 +224,7 @@ class MapFragment : Fragment() {
                                 // Add marker if there is no marker on map
                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                withContext(Dispatchers.Main) { addMarkerToCluster(marker!!, markerListCopy) }
+                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
                             }
                         }
                     }
