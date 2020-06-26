@@ -25,13 +25,11 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.GeoPoint
-import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.reflect.Type
 
 class MapFragment : Fragment() {
 
@@ -207,7 +205,6 @@ class MapFragment : Fragment() {
                     markerListCopy.addAll(markerList.map { marker -> marker.clone() })
 
                     withContext(Dispatchers.Default) {
-                        // Check min follower user in array of 1000
                         var minFollowerUser: FirestoreUserDAO?
                         list.forEach{ firestoreUserDAO ->
                             minFollowerUser = minFollowerCheck()
@@ -252,7 +249,7 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) { {addMarkerToCluster(marker!!, markerListCopy)} }
+                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
                                             }
                                         }
                                     }
@@ -334,22 +331,6 @@ class MapFragment : Fragment() {
         }
     }
 
-
-    private fun changeFireStoreUserToRoomUser(firestoreUserDAO: FirestoreUserDAO): RoomUser {
-        val roomUser = RoomUser()
-        roomUser.documentid = firestoreUserDAO.documentId
-        roomUser.username = firestoreUserDAO.userName
-        roomUser.picture = firestoreUserDAO.picture
-        roomUser.followers = firestoreUserDAO.followers
-        roomUser.latitude = firestoreUserDAO.location!!.latitude
-        roomUser.longitude = firestoreUserDAO.location!!.longitude
-        roomUser.token = firestoreUserDAO.token
-        roomUser.private = firestoreUserDAO.isPrivate
-        roomUser.visible = firestoreUserDAO.isVisible
-        roomUser.verified = firestoreUserDAO.isVerified
-        return roomUser
-    }
-
     private fun minFollowerCheck(): FirestoreUserDAO? {
         var minFollowerUser: FirestoreUserDAO? = null
         var min: Long = 0
@@ -370,9 +351,24 @@ class MapFragment : Fragment() {
         allUserListCopy.addAll(allUsersList)
         for(user in allUserListCopy) {
             if(!list.contains(user)) {
-               allUsersList.remove(user)
+                allUsersList.remove(user)
             }
         }
+    }
+
+    private fun changeFireStoreUserToRoomUser(firestoreUserDAO: FirestoreUserDAO): RoomUser {
+        val roomUser = RoomUser()
+        roomUser.documentid = firestoreUserDAO.documentId
+        roomUser.username = firestoreUserDAO.userName
+        roomUser.picture = firestoreUserDAO.picture
+        roomUser.followers = firestoreUserDAO.followers
+        roomUser.latitude = firestoreUserDAO.location!!.latitude
+        roomUser.longitude = firestoreUserDAO.location!!.longitude
+        roomUser.token = firestoreUserDAO.token
+        roomUser.private = firestoreUserDAO.isPrivate
+        roomUser.visible = firestoreUserDAO.isVisible
+        roomUser.verified = firestoreUserDAO.isVerified
+        return roomUser
     }
 
     private fun listenToSearchFragmentFoundUser() {
