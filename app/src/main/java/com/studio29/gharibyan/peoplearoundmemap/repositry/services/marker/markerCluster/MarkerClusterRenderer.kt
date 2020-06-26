@@ -17,7 +17,6 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
 ): DefaultClusterRenderer<T>(context, map, clusterManager) {
 
     private val TAG = javaClass.name
-    private var clusterCount = 0
     private var clusterList = ArrayList<Cluster<T>>()
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
@@ -53,13 +52,5 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         }catch (e: Exception) {
             Log.d(TAG,"Exception is $e")
         }
-    }
-
-    fun updateClusterCount(countSize: Int) {
-        clusterCount = countSize
-    }
-
-    fun getClusterList(): ArrayList<Cluster<T>> {
-        return clusterList
     }
 }
