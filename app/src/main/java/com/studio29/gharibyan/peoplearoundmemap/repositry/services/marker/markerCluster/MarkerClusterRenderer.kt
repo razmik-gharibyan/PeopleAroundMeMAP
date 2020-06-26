@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
@@ -14,7 +15,10 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
                                     map: GoogleMap?,
                                     clusterManager: ClusterManager<T>?
 ): DefaultClusterRenderer<T>(context, map, clusterManager) {
+
     private val TAG = javaClass.name
+    private var clusterCount = 0
+    private var clusterList = ArrayList<Cluster<T>>()
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
         return cluster!!.size >= 2
@@ -36,6 +40,9 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
                 userName = item.userName
             }
         }
+        if(!clusterList.contains(cluster)) {
+            clusterList.add(cluster)
+        }
         markerOptions!!.title("Highest number of followers in this group have $userName")
         super.onBeforeClusterRendered(cluster, markerOptions)
     }
@@ -46,6 +53,13 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         }catch (e: Exception) {
             Log.d(TAG,"Exception is $e")
         }
+    }
 
+    fun updateClusterCount(countSize: Int) {
+        clusterCount = countSize
+    }
+
+    fun getClusterList(): ArrayList<Cluster<T>> {
+        return clusterList
     }
 }

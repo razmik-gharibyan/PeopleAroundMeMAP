@@ -25,11 +25,13 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.GeoPoint
+import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 
 class MapFragment : Fragment() {
 
@@ -56,6 +58,7 @@ class MapFragment : Fragment() {
     private var markerList = ArrayList<MarkerWithDocumentId>()
     private var firstTimeCameraMove = false
     private var clusterManagerListCopy = ArrayList<MarkerItem>()
+    private var allUsersList = ArrayList<FirestoreUserDAO>()
     private var fin = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -204,7 +207,28 @@ class MapFragment : Fragment() {
                     markerListCopy.addAll(markerList.map { marker -> marker.clone() })
 
                     withContext(Dispatchers.Default) {
-                        list.forEach { firestoreUserDAO ->
+                        // Check min follower user in array of 1000
+                        var minFollowerUser: FirestoreUserDAO?
+                        list.forEach{ firestoreUserDAO ->
+                            minFollowerUser = minFollowerCheck()
+                            // Check if user in allUserList is in ListInBounds
+                            checkAllUserList(list)
+                            // Add or Replace current user, instead of minimum follower user
+                            if(!allUsersList.contains(firestoreUserDAO)) {
+                                if(minFollowerUser == null || allUsersList.size < 1000) {
+                                    // This case means there are no users in allUserList or allUserList have less users then 1000
+                                    allUsersList.add(firestoreUserDAO)
+                                }else{
+                                    if(firestoreUserDAO.followers!! >= minFollowerUser!!.followers!!) {
+                                        // Remove min follower user from allUserList,and add current user instead of it
+                                        // then update min follower user
+                                        allUsersList.remove(minFollowerUser as FirestoreUserDAO)
+                                        allUsersList.add(firestoreUserDAO)
+                                    }
+                                }
+                            }
+                        }
+                        allUsersList.forEach { firestoreUserDAO ->
                             if (markerList.isNotEmpty()) {
                                 kotlin.run loop@{
                                     markerList.forEachIndexed { index, currentMarker ->
@@ -228,7 +252,7 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
+                                                withContext(Dispatchers.Main) { {addMarkerToCluster(marker!!, markerListCopy)} }
                                             }
                                         }
                                     }
@@ -324,6 +348,31 @@ class MapFragment : Fragment() {
         roomUser.visible = firestoreUserDAO.isVisible
         roomUser.verified = firestoreUserDAO.isVerified
         return roomUser
+    }
+
+    private fun minFollowerCheck(): FirestoreUserDAO? {
+        var minFollowerUser: FirestoreUserDAO? = null
+        var min: Long = 0
+        if(allUsersList.size >= 1) {
+            min = allUsersList[0].followers!!
+        }
+        for (user in allUsersList) {
+            if(user.followers!! <= min) {
+                min = user.followers!!
+                minFollowerUser = user
+            }
+        }
+        return minFollowerUser
+    }
+
+    private fun checkAllUserList(list: List<FirestoreUserDAO>) {
+        val allUserListCopy = ArrayList<FirestoreUserDAO>()
+        allUserListCopy.addAll(allUsersList)
+        for(user in allUserListCopy) {
+            if(!list.contains(user)) {
+               allUsersList.remove(user)
+            }
+        }
     }
 
     private fun listenToSearchFragmentFoundUser() {
