@@ -113,6 +113,7 @@ class MapFragment : Fragment() {
             // Marker Cluster Initialization
             clusterManager = ClusterManager(this.context,map)
             markerClusterRenderer = MarkerClusterRenderer(this.context!!,map,clusterManager)
+            markerClusterRenderer.setContext(this.context!!)
             clusterManager.renderer = markerClusterRenderer
             listenToMarkerClick()
         }

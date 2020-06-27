@@ -1,14 +1,16 @@
 package com.studio29.gharibyan.peoplearoundmemap.repositry.services.marker.markerCluster
 
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
+import com.studio29.gharibyan.peoplearoundmemap.R
 import java.lang.Exception
 
 class MarkerClusterRenderer<T: MarkerItem>(context: Context,
@@ -18,6 +20,8 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
 
     private val TAG = javaClass.name
     private var clusterList = ArrayList<Cluster<T>>()
+    private lateinit var context: Context
+    private lateinit var clusterIcon: Bitmap
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
         return cluster!!.size >= 2
@@ -42,8 +46,10 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         if(!clusterList.contains(cluster)) {
             clusterList.add(cluster)
         }
-        markerOptions!!.title("Highest number of followers in this group have $userName")
-        super.onBeforeClusterRendered(cluster, markerOptions)
+
+        markerOptions!!.title("$userName and more")
+            .icon(BitmapDescriptorFactory.fromBitmap(clusterIcon))
+
     }
 
     fun updateMarker(markerItem: MarkerItem?, newPosition: LatLng) {
@@ -52,5 +58,22 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
         }catch (e: Exception) {
             Log.d(TAG,"Exception is $e")
         }
+    }
+
+    override fun onClusterRendered(cluster: Cluster<T>?, marker: Marker?) {
+        var max: Long = 0
+        for(item in cluster!!.items) {
+            if(item.followers >= max) {
+                max = item.followers
+
+            }
+        }
+        marker!!.setIcon(BitmapDescriptorFactory.fromBitmap(clusterIcon))
+        super.onClusterRendered(cluster, marker)
+    }
+
+    fun setContext(context: Context) {
+        this.context = context
+        clusterIcon = BitmapFactory.decodeResource(context.resources, R.drawable.cluster_bg)
     }
 }
