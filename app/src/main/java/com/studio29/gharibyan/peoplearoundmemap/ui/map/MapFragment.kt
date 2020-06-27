@@ -250,7 +250,7 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
+                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy) }
                                             }
                                         }
                                     }
@@ -316,7 +316,7 @@ class MapFragment : Fragment() {
     private fun addMarkerToCluster(markerDAO: MarkerDAO, markerListCopy: ArrayList<MarkerWithDocumentId>) {
         val markerItem = MarkerItem(markerDAO.latLng!!,"Tap to open profile",
             markerDAO.markerOptions!!.title,markerDAO.markerOptions!!.icon, markerDAO.firestoreUserDAO!!.followers!!,
-            markerDAO.firestoreUserDAO!!.userName!!,markerDAO.documentId!!)
+            markerDAO.firestoreUserDAO!!.userName!!,markerDAO.documentId!!,markerDAO.markerBitmap!!)
         mapViewModel.inBoundArrayList.add(markerDAO)
         clusterManager.addItem(markerItem)
         clusterManagerListCopy.add(markerItem)

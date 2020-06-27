@@ -23,6 +23,25 @@ class ImageProcessing(followerProcessing: FollowerProcessing) {
             )
         }
 
+        fun mergeTwoBitmaps(bitmap1: Bitmap, bitmap2: Bitmap): Bitmap {
+            val bitmap2Cropped = Bitmap.createScaledBitmap(bitmap2,155,155,false)
+            val bitmap1Width = bitmap1.width
+            val bitmap1Height = bitmap1.height
+            val bitmap2Width: Int = bitmap2Cropped.getWidth()
+            val bitmap2Height: Int = bitmap2Cropped.getHeight()
+
+            val marginLeft = (bitmap1Width * 0.5 - bitmap2Width * 0.5).toFloat()
+            val marginTop =
+                (bitmap1Height * 0.5 - bitmap2Height * 0.5).toFloat()
+
+            val finalBitmap =
+                Bitmap.createBitmap(bitmap1Width, bitmap1Height, bitmap1.config)
+            val canvas = Canvas(finalBitmap)
+            canvas.drawBitmap(bitmap1, Matrix(), null)
+            canvas.drawBitmap(bitmap2Cropped, marginLeft, marginTop, null)
+            return finalBitmap
+        }
+
         private fun convertPixelsToDp(px: Float, context: Context): Float {
             return px * (context.getResources()
                 .getDisplayMetrics().densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)

@@ -20,6 +20,7 @@ import java.lang.Exception
 class MarkerApi: MarkerInter {
     private val followerProcessing = FollowerProcessing()
     private val imageProcessing = ImageProcessing(followerProcessing)
+    private val imageUrlProcessing = ImageUrlProcessing()
     var iconList = ArrayList<MarkerIconWithDocument>()
 
     override suspend fun addMarker(firestoreUserDAO: FirestoreUserDAO, moveCamera: Boolean, context: Context): MarkerDAO? {
@@ -27,6 +28,7 @@ class MarkerApi: MarkerInter {
 
             var bitmap: Bitmap? = null
             try {
+                val widthHeightArray = followerProcessing.picSizeViaFollower(firestoreUserDAO.followers!!)
                 /*
                 var iconWithDocument = MarkerIconWithDocument()
                 for(document in iconList) {
@@ -41,16 +43,19 @@ class MarkerApi: MarkerInter {
                     iconWithDocument.documentId = firestoreUserDAO.documentId
                     iconList.add(iconWithDocument)
                 }
-                 */
-                val widthHeightArray = followerProcessing.picSizeViaFollower(firestoreUserDAO.followers!!)
+
                 bitmap = Glide.with(context)
                     .asBitmap()
                     .load(firestoreUserDAO.picture!!)
                     .into(widthHeightArray[0],widthHeightArray[1])
                     .get()
-
+                 */
+                if(bitmap == null) {
+                    bitmap = imageUrlProcessing.processImage(firestoreUserDAO.picture!!)
+                    bitmap = Bitmap.createScaledBitmap(bitmap!!,widthHeightArray[0],widthHeightArray[1],false)
+                }
                 val markerOptions = MarkerOptions()
-                val roundBitMap = imageProcessing.getCroppedBitmap(bitmap) // Make current bitmap to round type
+                val roundBitMap = imageProcessing.getCroppedBitmap(bitmap!!) // Make current bitmap to round type
                 val latLng = LatLng(firestoreUserDAO.location!!.latitude,firestoreUserDAO.location!!.longitude)
                 markerOptions.position(latLng)
                 markerOptions.visible(true)
