@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
@@ -29,7 +30,7 @@ class MarkerClusterRenderer<T: MarkerItem>(context: Context,
     private val imageProcessing = ImageProcessing(FollowerProcessing())
 
     override fun shouldRenderAsCluster(cluster: Cluster<T>?): Boolean {
-        return cluster!!.size >= 2
+        return cluster!!.size >= 2 && com.studio29.gharibyan.peoplearoundmemap.ui.map.MapFragment.shouldCluster_zoom
     }
 
     override fun onBeforeClusterItemRendered(item: T, markerOptions: MarkerOptions?) {

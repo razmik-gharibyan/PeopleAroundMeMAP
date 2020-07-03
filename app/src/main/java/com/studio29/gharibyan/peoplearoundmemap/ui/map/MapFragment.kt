@@ -33,6 +33,10 @@ import kotlinx.coroutines.withContext
 
 class MapFragment : Fragment() {
 
+    companion object{
+        @JvmStatic var shouldCluster_zoom: Boolean = false;
+    }
+
     // Constants
     private val TAG = javaClass.name
 
@@ -116,8 +120,13 @@ class MapFragment : Fragment() {
             markerClusterRenderer.setContext(this.context!!)
             clusterManager.renderer = markerClusterRenderer
             listenToMarkerClick()
+            map!!.setOnCameraIdleListener {
+                shouldCluster_zoom = map!!.cameraPosition.zoom < 18
+                clusterManager.onCameraIdle()
+            }
         }
     }
+
 
     private fun listenToLocationUpdates() {
         mapViewModel.locationUpdates.observe(viewLifecycleOwner, Observer {
@@ -250,7 +259,7 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy) }
+                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
                                             }
                                         }
                                     }

@@ -113,6 +113,8 @@ class MainActivity : AppCompatActivity() {
                     fragmentManager.beginTransaction().remove(listFragment).commit()
                 }else if(active == searchFragment) {
                     fragmentManager.beginTransaction().hide(searchFragment).commit()
+                }else if(active == profileFragment) {
+                    fragmentManager.beginTransaction().hide(profileFragment).commit()
                 }
                 fragmentManager.beginTransaction().show(mapFragment).commit()
                 active = mapFragment
@@ -127,6 +129,8 @@ class MainActivity : AppCompatActivity() {
             }else if(it.itemId == R.id.navigation_search) {
                 if(active == listFragment) {
                     fragmentManager.beginTransaction().remove(listFragment).commit()
+                }else if(active == profileFragment) {
+                    fragmentManager.beginTransaction().hide(profileFragment).commit()
                 }
                 fragmentManager.beginTransaction().hide(mapFragment).show(searchFragment).commit()
                 active = searchFragment

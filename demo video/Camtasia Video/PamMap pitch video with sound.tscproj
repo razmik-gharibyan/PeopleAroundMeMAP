@@ -1,0 +1,932 @@
+{
+  "title" : "",
+  "description" : "",
+  "author" : "",
+  "width" : 1920.0,
+  "height" : 1080.0,
+  "version" : "0.5",
+  "editRate" : 30,
+  "authoringClientName" :  {
+    "name" : "Camtasia Studio",
+    "platform" : "Windows",
+    "version" : "9.0"
+  },
+  "sourceBin" : [
+    {
+      "id" : 1,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\final video_promo.mp4",
+      "rect" : [0, 0, 1920, 1080],
+      "lastMod" : "20200626T175424",
+      "sourceTracks" : [
+        {
+          "range" : [0, 709666667],
+          "type" : 0,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 1920, 1080],
+          "sampleRate" : "1000000/33351",
+          "bitDepth" : 24,
+          "numChannels" : 0,
+          "metaData" : ""
+        },
+        {
+          "range" : [0, 709666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 16,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 2,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\all6.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100826",
+      "sourceTracks" : [
+        {
+          "range" : [0, 129333333],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 3,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\ben intro.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T095508",
+      "sourceTracks" : [
+        {
+          "range" : [0, 127666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 4,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\ben2.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100030",
+      "sourceTracks" : [
+        {
+          "range" : [0, 85666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 5,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\ben3.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100130",
+      "sourceTracks" : [
+        {
+          "range" : [0, 66333333],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 6,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\intro.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T095000",
+      "sourceTracks" : [
+        {
+          "range" : [0, 135666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 7,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\intro1.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T095109",
+      "sourceTracks" : [
+        {
+          "range" : [0, 166333333],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 8,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\intro3.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T095227",
+      "sourceTracks" : [
+        {
+          "range" : [0, 118000000],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 9,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\lucy intro.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T095400",
+      "sourceTracks" : [
+        {
+          "range" : [0, 97000000],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 10,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\outro.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100930",
+      "sourceTracks" : [
+        {
+          "range" : [0, 82666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 11,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\all1.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100234",
+      "sourceTracks" : [
+        {
+          "range" : [0, 87333333],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 12,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\all2.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100323",
+      "sourceTracks" : [
+        {
+          "range" : [0, 71333333],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 13,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\all3.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100401",
+      "sourceTracks" : [
+        {
+          "range" : [0, 79333333],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 14,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\all4.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100542",
+      "sourceTracks" : [
+        {
+          "range" : [0, 127666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    },
+    {
+      "id" : 15,
+      "src" : "D:\\Android\\PeopleAroundMeMAP\\fund raising\\Pitch video materials\\all5.mp3",
+      "rect" : [0, 0, 0, 0],
+      "lastMod" : "20200628T100629",
+      "sourceTracks" : [
+        {
+          "range" : [0, 48666667],
+          "type" : 2,
+          "editRate" : 10000000,
+          "trackRect" : [0, 0, 0, 0],
+          "sampleRate" : 44100,
+          "bitDepth" : 0,
+          "numChannels" : 2,
+          "metaData" : ""
+        }
+      ]
+    }
+  ],
+  "timeline" : {
+    "id" : 16,
+    "sceneTrack" : {
+      "scenes" : [
+        {
+          "duration" : 97.3666666666667,
+          "title" : "",
+          "type" : "",
+          "csml" : {
+            "tracks" : [
+              {
+                "trackIndex" : 0,
+                "medias" : [
+                ]
+              },
+              {
+                "trackIndex" : 1,
+                "medias" : [
+                  {
+                    "id" : 17,
+                    "_type" : "StitchedMedia",
+                    "minMediaStart" : 0,
+                    "attributes" : {
+                      "ident" : "final video_promo",
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                    "parameters" : {
+                      "cursorOpacity" : 1.0,
+                      "cursorScale" : 1.0
+                    },
+                    "medias" : [
+                        {
+                          "id" : 18,
+                          "_type" : "VMFile",
+                          "src" : 1,
+                          "trackNumber" : 0,
+                          "attributes" : {
+                            "ident" : "final video_promo"
+                          },
+                          "effects" : [
+
+                          ],
+                          "start" : 0,
+                          "duration" : 2121,
+                          "mediaStart" : 0,
+                          "mediaDuration" : 2121,
+                          "scalar" : 1,
+                          "metadata" : {
+                            "WinSubProjectDisplayName" : "",
+                            "clipSpeedAttribute" : true
+                          },
+                          "animationTracks" : {
+
+                          }
+                        },
+                        {
+                          "id" : 19,
+                          "_type" : "IMFile",
+                          "src" : 1,
+                          "trackNumber" : 0,
+                          "trimStartSum" : 0,
+                          "attributes" : {
+                            "ident" : "final video_promo"
+                          },
+                          "effects" : [
+
+                          ],
+                          "start" : 2121,
+                          "duration" : 68,
+                          "mediaStart" : 2120,
+                          "mediaDuration" : 1,
+                          "scalar" : 1,
+                          "metadata" : {
+                            "WinSubProjectDisplayName" : ""
+                          },
+                          "animationTracks" : {
+
+                          }
+                        },
+                        {
+                          "id" : 20,
+                          "_type" : "VMFile",
+                          "src" : 1,
+                          "trackNumber" : 0,
+                          "attributes" : {
+                            "ident" : "final video_promo"
+                          },
+                          "effects" : [
+
+                          ],
+                          "start" : 2189,
+                          "duration" : 8,
+                          "mediaStart" : 2121,
+                          "mediaDuration" : 8,
+                          "scalar" : 1,
+                          "metadata" : {
+                            "WinSubProjectDisplayName" : "",
+                            "clipSpeedAttribute" : true
+                          },
+                          "animationTracks" : {
+
+                          }
+                        }
+                    ],
+                    "effects" : [
+
+                    ],
+                    "start" : 0,
+                    "duration" : 2921,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 2197,
+                    "scalar" : "2921/2197",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  }
+                ]
+              },
+              {
+                "trackIndex" : 2,
+                "medias" : [
+                  {
+                    "id" : 21,
+                    "_type" : "AMFile",
+                    "src" : 1,
+                    "trackNumber" : 1,
+                    "attributes" : {
+                      "ident" : "final video_promo",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 16,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "parameters" : {
+                      "volume" : 0.153846153846154
+                    },
+                    "effects" : [
+
+                    ],
+                    "start" : 0,
+                    "duration" : 2129,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 2129,
+                    "scalar" : 1,
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : false
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 22,
+                    "_type" : "AMFile",
+                    "src" : 1,
+                    "trackNumber" : 1,
+                    "attributes" : {
+                      "ident" : "final video_promo",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 16,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "parameters" : {
+                      "volume" : 0.153846153846154
+                    },
+                    "effects" : [
+
+                    ],
+                    "start" : 2129,
+                    "duration" : 785,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 785,
+                    "scalar" : 1,
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : false
+                    },
+                    "animationTracks" : {
+
+                    }
+                  }
+                ]
+              },
+              {
+                "trackIndex" : 3,
+                "medias" : [
+                  {
+                    "id" : 23,
+                    "_type" : "AMFile",
+                    "src" : 6,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "intro",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "parameters" : {
+                      "volume" : {
+                        "type" : "double",
+                        "keyframes" : [
+                          {
+                            "time" : 0,
+                            "value" : 1.73469387755102,
+                            "duration" : 0
+                          },
+                          {
+                            "time" : 118,
+                            "value" : 1.40816326530612,
+                            "duration" : 0
+                          }
+                        ]
+                      }
+                    },
+                    "effects" : [
+
+                    ],
+                    "start" : 0,
+                    "duration" : 342,
+                    "mediaStart" : 18,
+                    "mediaDuration" : 376,
+                    "scalar" : "171/188",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 24,
+                    "_type" : "AMFile",
+                    "src" : 8,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "intro3",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 342,
+                    "duration" : 304,
+                    "mediaStart" : "3186/161",
+                    "mediaDuration" : "53808/161",
+                    "scalar" : "161/177",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 25,
+                    "_type" : "AMFile",
+                    "src" : 9,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "lucy intro",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 793,
+                    "duration" : 264,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 291,
+                    "scalar" : "88/97",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 26,
+                    "_type" : "AMFile",
+                    "src" : 3,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "ben intro",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 1093,
+                    "duration" : 317,
+                    "mediaStart" : "6511/348",
+                    "mediaDuration" : "121411/348",
+                    "scalar" : "348/383",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 27,
+                    "_type" : "AMFile",
+                    "src" : 4,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "ben2",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 1410,
+                    "duration" : 167,
+                    "mediaStart" : 28,
+                    "mediaDuration" : "38243/208",
+                    "scalar" : "208/229",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 28,
+                    "_type" : "AMFile",
+                    "src" : 5,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "ben3",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 1577,
+                    "duration" : 150,
+                    "mediaStart" : 33,
+                    "mediaDuration" : 165,
+                    "scalar" : "10/11",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 29,
+                    "_type" : "AMFile",
+                    "src" : 11,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "all1",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 1727,
+                    "duration" : 226,
+                    "mediaStart" : 12,
+                    "mediaDuration" : 249,
+                    "scalar" : "226/249",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 30,
+                    "_type" : "AMFile",
+                    "src" : 12,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "all2",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 1953,
+                    "duration" : 194,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 213,
+                    "scalar" : "194/213",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 31,
+                    "_type" : "AMFile",
+                    "src" : 14,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "all4",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 2147,
+                    "duration" : 348,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 383,
+                    "scalar" : "348/383",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 32,
+                    "_type" : "AMFile",
+                    "src" : 13,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "all3",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 2495,
+                    "duration" : 215,
+                    "mediaStart" : 0,
+                    "mediaDuration" : 237,
+                    "scalar" : "215/237",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  },
+                  {
+                    "id" : 33,
+                    "_type" : "AMFile",
+                    "src" : 10,
+                    "trackNumber" : 0,
+                    "attributes" : {
+                      "ident" : "outro",
+                      "sampleRate" : 44100,
+                      "bitDepth" : 0,
+                      "gain" : 1.0,
+                      "mixToMono" : false
+                    },
+                      "channelNumber" : "0,1",
+                    "effects" : [
+
+                    ],
+                    "start" : 2710,
+                    "duration" : 204,
+                    "mediaStart" : "4960/207",
+                    "mediaDuration" : "46376/207",
+                    "scalar" : "621/682",
+                    "metadata" : {
+                      "WinSubProjectDisplayName" : "",
+                      "clipSpeedAttribute" : true
+                    },
+                    "animationTracks" : {
+
+                    }
+                  }
+                ]
+              },
+              {
+                "trackIndex" : 4,
+                "medias" : [
+                ]
+              },
+              {
+                "trackIndex" : 5,
+                "medias" : [
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "trackAttributes" : [
+      {
+        "ident" : "",
+        "audioMuted" : false,
+        "videoHidden" : false,
+        "metadata" : {
+          "IsLocked" : "False",
+          "WinTrackHeight" : "56"
+        }
+      },
+      {
+        "ident" : "",
+        "audioMuted" : false,
+        "videoHidden" : false,
+        "metadata" : {
+          "IsLocked" : "False",
+          "WinTrackHeight" : "56"
+        }
+      },
+      {
+        "ident" : "",
+        "audioMuted" : false,
+        "videoHidden" : false,
+        "metadata" : {
+          "IsLocked" : "False",
+          "WinTrackHeight" : "56"
+        }
+      },
+      {
+        "ident" : "",
+        "audioMuted" : false,
+        "videoHidden" : false,
+        "metadata" : {
+          "IsLocked" : "False",
+          "WinTrackHeight" : "56"
+        }
+      },
+      {
+        "ident" : "",
+        "audioMuted" : false,
+        "videoHidden" : false,
+        "metadata" : {
+          "IsLocked" : "False",
+          "WinTrackHeight" : "56"
+        }
+      },
+      {
+        "ident" : "",
+        "audioMuted" : false,
+        "videoHidden" : false,
+        "metadata" : {
+          "IsLocked" : "False",
+          "WinTrackHeight" : "56"
+        }
+      }
+    ],
+    "captionAttributes" : {
+      "enabled" : true,
+      "fontName" : "Arial",
+      "fontSize" : 64,
+      "backgroundColor" : [ 0, 0, 0, 191],
+      "foregroundColor" : [ 255, 255, 255, 255],
+      "lang" : "en",
+      "alignment" : 0,
+      "defaultFontSize" : true,
+      "opacity" : 0.5,
+      "backgroundEnabled" : true,
+      "backgroundOnlyAroundText" : true
+    },
+    "backgroundColor" : [ 0, 0, 0, 255]
+  },
+  "metadata" : {
+    "AutoSaveFile" : "C:\\Users\\Razmik\\AppData\\Local\\TechSmith\\Camtasia Studio\\9.0\\Auto-Saves\\PamMap pitch video with soundff9969.autosave.tscproj",
+    "CanvasZoom" : 38,
+    "Date" : "2020-06-28 02:19:16 PM",
+    "IsAutoSave" : "0",
+    "Language" : "ENU",
+    "ProfileName" : "MP4 only (up to 1080p)",
+    "ProjectDimensionsChanged" : "1",
+    "Title" : "PamMap pitch video with sound",
+    "audioNarrationNotes" : "",
+    "calloutStyle" : "Basic",
+    "canvasDetached" : "False",
+    "canvasPositionHeight" : "0",
+    "canvasPositionLeft" : "0",
+    "canvasPositionTop" : "0",
+    "canvasPositionWidth" : "0"
+  }
+}

@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="@id/guideline17" />
 
     <TextView
-        android:id="@+id/reset_password_top_textview2"
+        android:id="@+id/welcome_profile_top_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to your profile"
@@ -38,6 +38,47 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pammap_icon_top_profile" />
+
+    <TextView
+        android:id="@+id/signed_in_as_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You are signed is as"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/profile_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline18" />
+
+    <LinearLayout
+        android:id="@+id/profile_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/menu_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signed_in_as_textview" >
+
+        <ImageView
+            android:id="@+id/profile_pic_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/username_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/menu_list"
