@@ -259,7 +259,7 @@ class MapFragment : Fragment() {
                                                 // If loop is finished and there were no marker on map with this document id, then add marker
                                                 val moveCam = currentFirestoreUserDAO.documentId == firestoreUserDAO.documentId
                                                 val marker = mapViewModel.addMarker(firestoreUserDAO, moveCam)
-                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy)}
+                                                withContext(Dispatchers.Main) {addMarkerToCluster(marker!!, markerListCopy) }
                                             }
                                         }
                                     }
